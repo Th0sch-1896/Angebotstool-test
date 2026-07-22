@@ -894,7 +894,7 @@ function buildDummyOrders(){
 const KUNDE_ORDERS = buildDummyOrders();
 function flattenOrders(){ const r=[]; KUNDE_ORDERS.forEach(o=>o.lines.forEach(ln=>r.push({nr:o.nr,datum:o.datum,line:ln}))); return r; }
 
-let choiceIdx=0, copyRows=[], copyIdx=0, promptIdx=0;
+let choiceIdx=0, copyAll=[], copyRows=[], copyIdx=0, promptIdx=0;
 
 function openPositionChoice(){
   currentStep='choice'; draft=null; choiceIdx=0; ov.hidden=false;
@@ -924,25 +924,40 @@ function renderChoice(){
 function confirmChoice(){ if(choiceIdx===0) openArtikel(); else openCopyPicker(); }
 
 function openCopyPicker(){
-  currentStep='copy'; copyRows=flattenOrders(); copyIdx=0; ov.hidden=false;
+  currentStep='copy'; copyAll=flattenOrders(); copyRows=copyAll.slice(); copyIdx=0; ov.hidden=false;
   ov.innerHTML = `
     <div class="modal">
       <div class="mhead"><h2>Aus altem Angebot kopieren</h2><span class="spacer"></span>
         <button class="linkish" data-close title="Zurück (Esc)">✕</button></div>
       <div class="mbody">
-        <p style="margin:0 0 12px;font-size:0.86rem;color:var(--ink-2)">Alle bisherigen Bestellungen von <b>${KUNDE}</b>. Zeile wählen mit <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> (oder Klick). Danach im Aufmaß nur noch die Länge anpassen.</p>
+        <div class="searchbar"><span class="ico">🔎</span>
+          <input id="copyQ" placeholder="Suchen … Angebot-Nr., Artikel, Holzart, Zuschlag – z. B. „SH", „L/D", „AN-2025", „TRO"" autocomplete="off"></div>
+        <p style="margin:0 0 12px;font-size:0.86rem;color:var(--ink-2)">Alle bisherigen Bestellungen von <b>${KUNDE}</b>. Tippen filtert, <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> wählt (oder Klick). Danach im Aufmaß nur noch die Länge anpassen.</p>
         <div class="restable"><div class="scroll"><table class="res">
           <thead><tr><th>Angebot</th><th>Datum</th><th>Artikel</th><th>Holz/Qual.</th><th class="n">Maß</th><th class="n">Länge</th><th class="n">Preis</th><th>Zuschläge</th></tr></thead>
           <tbody id="copyBody"></tbody></table></div></div>
       </div>
-      <div class="mfoot"><div class="khints"><span><kbd>↑</kbd><kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> kopieren</span><span><kbd>Esc</kbd> zurück</span></div>
+      <div class="mfoot"><div class="khints"><span><kbd>Tippen</kbd> filtern</span><span><kbd>↑</kbd><kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> kopieren</span><span><kbd>Esc</kbd> zurück</span></div>
         <span class="spacer"></span><button class="primary" id="copyGo">Übernehmen <kbd>Enter</kbd></button></div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>openPositionChoice();
   el('copyGo').onclick = ()=>chooseCopy();
+  el('copyQ').addEventListener('input', filterCopy);
   renderCopy();
+  setTimeout(()=>{ const q=el('copyQ'); if(q) q.focus(); }, 30);
+}
+function filterCopy(){
+  const q = el('copyQ').value.trim().toLowerCase();
+  copyRows = !q ? copyAll.slice() : copyAll.filter(r=>{
+    const ln=r.line, c=ln.c;
+    const hay = [r.nr, r.datum, c.a, c.h, c.q, holzName(c.h), qualName(c.q), ln.zus.map(z=>z.code+' '+z.label).join(' ')].join(' ').toLowerCase();
+    return hay.includes(q);
+  });
+  copyIdx=0; renderCopy();
 }
 function renderCopy(){
+  if(!copyRows.length){ el('copyBody').innerHTML = `<tr><td colspan="8" class="nores">Kein Treffer – Suche ändern.</td></tr>`; if(el('copyGo')) el('copyGo').disabled=true; return; }
+  if(el('copyGo')) el('copyGo').disabled=false;
   el('copyBody').innerHTML = copyRows.map((r,i)=>{
     const ln=r.line, c=ln.c;
     const z = ln.zus.length ? ln.zus.map(x=>x.code).join(', ') : '–';
@@ -1070,8 +1085,8 @@ document.addEventListener('keydown', e=>{
   }
   else if(currentStep==='copy'){
     if(e.key==='Escape'){ e.preventDefault(); openPositionChoice(); return; }
-    if(e.key==='ArrowDown'){ e.preventDefault(); copyIdx=Math.min(copyIdx+1,copyRows.length-1); renderCopy(); return; }
-    if(e.key==='ArrowUp'){ e.preventDefault(); copyIdx=Math.max(copyIdx-1,0); renderCopy(); return; }
+    if(e.key==='ArrowDown'){ e.preventDefault(); if(copyRows.length){ copyIdx=Math.min(copyIdx+1,copyRows.length-1); renderCopy(); } return; }
+    if(e.key==='ArrowUp'){ e.preventDefault(); if(copyRows.length){ copyIdx=Math.max(copyIdx-1,0); renderCopy(); } return; }
     if(e.key==='Enter'){ e.preventDefault(); chooseCopy(); return; }
     return;
   }
