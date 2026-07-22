@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angebotstool – Workflow-Mockup</title>
+<style>
+  :root {
+    --bg: oklch(0.975 0.002 250);
+    --panel: oklch(1 0 0);
+    --panel-2: oklch(0.955 0.004 250);
+    --ink: oklch(0.24 0.015 260);
+    --ink-2: oklch(0.45 0.015 260);
+    --line: oklch(0.89 0.005 250);
+    --accent: oklch(0.44 0.11 265);
+    --accent-soft: oklch(0.94 0.025 265);
+    --ok: oklch(0.52 0.12 155);
+    --ok-soft: oklch(0.95 0.03 155);
+    --warn: oklch(0.62 0.13 65);
+    --warn-soft: oklch(0.96 0.035 85);
+    --wood: oklch(0.66 0.09 65);
+    --wood-soft: oklch(0.9 0.05 75);
+    --radius: 9px;
+    font-size: 15px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; line-height: 1.45;
+  }
+  kbd {
+    font-family: inherit; font-size: 0.72rem; font-weight: 600; background: var(--panel);
+    border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px;
+    padding: 1px 6px; color: var(--ink-2); white-space: nowrap;
+  }
+
+  header.app {
+    background: oklch(0.28 0.04 265); color: oklch(0.97 0.005 265);
+    padding: 12px 24px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  header.app h1 { font-size: 1.1rem; margin: 0; font-weight: 650; letter-spacing: -0.01em; }
+  header.app .tag { font-size: 0.76rem; background: oklch(0.38 0.05 265); padding: 3px 10px; border-radius: 99px; }
+  header.app .spacer { flex: 1; }
+  header.app .khint { font-size: 0.78rem; opacity: 0.85; display: flex; gap: 10px; align-items: center; }
+  header.app kbd { background: oklch(0.34 0.04 265); color: oklch(0.95 0.01 265); border-color: oklch(0.42 0.04 265); }
+
+  main {
+    display: grid; grid-template-columns: minmax(440px, 1fr) minmax(400px, 620px);
+    gap: 20px; padding: 20px 24px 48px; max-width: 1500px; margin: 0 auto; align-items: start;
+  }
+  @media (max-width: 1040px) { main { grid-template-columns: 1fr; } }
+
+  section.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px 20px 20px; }
+  .panel h2 { font-size: 0.95rem; margin: 0 0 14px; font-weight: 650; display: flex; align-items: center; gap: 10px; }
+  .panel h2 .spacer { flex: 1; }
+
+  button { font: inherit; font-weight: 600; font-size: 0.88rem; cursor: pointer; border-radius: 7px; padding: 9px 16px; border: 1px solid transparent; transition: background 130ms ease-out, opacity 130ms; }
+  button.primary { background: var(--accent); color: white; display: inline-flex; align-items: center; gap: 8px; }
+  button.primary:hover { background: oklch(0.38 0.11 265); }
+  button.primary kbd { background: oklch(0.6 0.09 265); border-color: oklch(0.68 0.08 265); color: white; }
+  button.ghost { background: none; border: 1px solid var(--line); color: var(--ink-2); }
+  button.ghost:hover { border-color: var(--accent); color: var(--accent); }
+  button.linkish { background: none; border: none; color: var(--ink-2); padding: 4px 7px; font-size: 1rem; }
+  button.linkish:hover { color: oklch(0.5 0.15 25); }
+
+  /* ── Angebot links ── */
+  .newpos { display: flex; align-items: center; gap: 12px; }
+  .newpos .big { font-size: 1rem; padding: 12px 20px; }
+  .emptyhint { color: var(--ink-2); font-size: 0.88rem; padding: 22px 8px; text-align: center; border: 1px dashed var(--line); border-radius: 8px; }
+  .posblock { border: 1px solid var(--line); border-radius: 8px; margin-top: 12px; overflow: hidden; }
+  .posblock .head { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--panel-2); }
+  .posblock .head .no { background: var(--accent); color: white; width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.76rem; flex: none; }
+  .posblock .head b { font-size: 0.9rem; }
+  .posblock .head small { color: var(--ink-2); font-weight: 400; }
+  .posblock .body { padding: 8px 12px 12px; font-size: 0.83rem; }
+  .breakdown { display: grid; gap: 3px; font-variant-numeric: tabular-nums; }
+  .breakdown .r { display: flex; justify-content: space-between; color: var(--ink-2); }
+  .breakdown .r.wood { color: var(--ink); font-weight: 600; }
+  .breakdown .allin { display: flex; justify-content: space-between; border-top: 1px solid var(--line); margin-top: 4px; padding-top: 5px; font-weight: 700; }
+  .measures { margin-top: 8px; font-size: 0.8rem; color: var(--ink-2); }
+  .measures .m { display: flex; justify-content: space-between; padding: 2px 0; font-variant-numeric: tabular-nums; }
+
+  /* ── Angebotsviewer (A4) ── */
+  .viewerwrap { background: oklch(0.9 0.005 250); border-radius: var(--radius); padding: 18px; border: 1px solid var(--line); }
+  .sheet { background: white; box-shadow: 0 8px 30px oklch(0.4 0.02 260 / 0.14); border-radius: 3px; padding: 30px 34px; font-size: 0.8rem; color: oklch(0.28 0.01 260); min-height: 620px; }
+  .sheet .brand { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--wood); padding-bottom: 12px; }
+  .sheet .brand .logo { font-weight: 800; font-size: 1.1rem; color: var(--wood); letter-spacing: -0.02em; }
+  .sheet .brand .logo span { display: block; font-size: 0.62rem; font-weight: 500; color: var(--ink-2); letter-spacing: 0.02em; }
+  .sheet .brand .co { text-align: right; font-size: 0.66rem; color: var(--ink-2); line-height: 1.5; }
+  .sheet .to { margin: 20px 0 6px; font-size: 0.78rem; }
+  .sheet .to b { display: block; }
+  .sheet h3 { font-size: 1.05rem; margin: 16px 0 3px; }
+  .sheet .meta { font-size: 0.68rem; color: var(--ink-2); margin-bottom: 12px; }
+  table.doc { width: 100%; border-collapse: collapse; font-size: 0.73rem; }
+  table.doc th { text-align: left; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); border-bottom: 1.5px solid oklch(0.8 0.01 260); padding: 5px 6px; }
+  table.doc th.n, table.doc td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.doc td { padding: 6px; border-bottom: 1px solid oklch(0.92 0.005 260); vertical-align: top; }
+  table.doc tr.art td { font-weight: 600; }
+  table.doc tr.art td small { display: block; font-weight: 400; color: var(--ink-2); }
+  table.doc tr.zus td { color: var(--ink-2); font-style: italic; padding-left: 18px; padding-top: 2px; padding-bottom: 2px; border-bottom: none; }
+  table.doc tr.meas td { color: var(--ink-2); padding-left: 18px; padding-top: 2px; padding-bottom: 2px; border-bottom: none; }
+  .docsum { margin-top: 14px; margin-left: auto; width: 62%; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
+  .docsum .r { display: flex; justify-content: space-between; padding: 2px 0; }
+  .docsum .r.muted { color: var(--ink-2); }
+  .docsum .r.grand { border-top: 1.5px solid var(--ink); margin-top: 4px; padding-top: 6px; font-weight: 700; font-size: 0.9rem; }
+  .sheet .foot { margin-top: 20px; padding-top: 8px; border-top: 1px solid oklch(0.92 0.005 260); font-size: 0.6rem; color: var(--ink-2); }
+  .viewernote { font-size: 0.76rem; color: var(--ink-2); margin: 0 4px 12px; display: flex; gap: 6px; align-items: baseline; }
+
+  /* ── Modal ── */
+  #overlay { position: fixed; inset: 0; background: oklch(0.2 0.02 260 / 0.5); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 100; }
+  .modal { background: var(--panel); border-radius: 12px; box-shadow: 0 20px 60px oklch(0.2 0.02 260 / 0.35); width: 100%; max-width: 1240px; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+  .modal.narrow { max-width: 640px; }
+  .modal .mhead { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
+  .modal .mhead h2 { margin: 0; font-size: 1rem; font-weight: 700; }
+  .modal .mhead .spacer { flex: 1; }
+  .stepper { display: flex; gap: 6px; align-items: center; font-size: 0.74rem; }
+  .stepper .st { display: flex; align-items: center; gap: 6px; color: var(--ink-2); padding: 3px 9px; border-radius: 99px; }
+  .stepper .st .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--panel-2); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; }
+  .stepper .st.on { background: var(--accent-soft); color: var(--accent); }
+  .stepper .st.on .dot { background: var(--accent); color: white; border-color: var(--accent); }
+  .stepper .st.done .dot { background: var(--ok); color: white; border-color: var(--ok); }
+  .stepper .sep { color: var(--line); }
+  .modal .mbody { padding: 18px 20px; overflow: auto; }
+  .modal .mfoot { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-top: 1px solid var(--line); background: var(--panel-2); }
+  .modal .mfoot .spacer { flex: 1; }
+  .khints { display: flex; gap: 14px; font-size: 0.76rem; color: var(--ink-2); flex-wrap: wrap; }
+  .khints span { display: inline-flex; align-items: center; gap: 5px; }
+
+  /* Suchleiste */
+  .searchbar { position: relative; margin-bottom: 14px; }
+  .searchbar input { width: 100%; font-size: 1.05rem; padding: 12px 14px 12px 42px; border: 1px solid var(--line); border-radius: 9px; }
+  .searchbar input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .searchbar .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-2); font-size: 1.1rem; }
+
+  .pickgrid { display: grid; grid-template-columns: 1fr 540px; gap: 18px; align-items: start; }
+  @media (max-width: 900px) { .pickgrid { grid-template-columns: 1fr; } }
+  /* Aufmaß: Felder/Tabelle links, Grafiken rechts */
+  .aufgrid { display: grid; grid-template-columns: 1fr 330px; gap: 18px; align-items: start; }
+  @media (max-width: 900px) { .aufgrid { grid-template-columns: 1fr; } }
+  .aufright .gcard.sm svg { height: 172px; }
+  .aufright .gcard.sm .empty { height: 172px; }
+  .aufright .gcard.sm.pak svg, .aufright .gcard.sm.pak .empty { height: 172px; }
+  .wgnav { display: grid; gap: 7px; }
+  .wgrow { display: grid; grid-template-columns: 92px 1fr; align-items: start; gap: 8px; }
+  .wglabel { font-size: 0.74rem; font-weight: 600; color: var(--ink-2); padding-top: 6px; }
+  .seg { display: flex; flex-wrap: wrap; }
+  .segbtn { border: 1px solid var(--line); background: var(--panel); padding: 5px 10px; font-size: 0.78rem; font-weight: 600; color: var(--ink-2); cursor: pointer; margin: 0 -1px -1px 0; }
+  .segbtn:first-child { border-radius: 6px 0 0 6px; }
+  .segbtn:hover { background: var(--accent-soft); }
+  .segbtn.on { background: var(--accent); border-color: var(--accent); color: white; position: relative; z-index: 1; }
+  .segbtn:disabled { color: oklch(0.74 0.005 250); cursor: not-allowed; background: var(--panel-2); }
+  .segbtn .cnt { font-weight: 400; opacity: 0.75; font-size: 0.72rem; margin-left: 4px; }
+
+  .graphics { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .gcard { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; background: var(--panel-2); }
+  .gcard .gt { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); margin-bottom: 8px; text-align: center; }
+  .gcard svg { display: block; width: 100%; height: 202px; }
+  .gcard .empty { height: 202px; display: flex; align-items: center; justify-content: center; text-align: center; color: oklch(0.68 0.01 260); font-size: 0.78rem; line-height: 1.5; }
+
+  /* Ergebnistabelle mit Tastatur-Highlight */
+  .restable { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .restable .scroll { max-height: 300px; overflow: auto; }
+  table.res { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  table.res th { position: sticky; top: 0; background: var(--panel-2); text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-2); padding: 7px 10px; z-index: 1; }
+  table.res th.n, table.res td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  table.res td { padding: 7px 10px; border-top: 1px solid var(--line); cursor: pointer; }
+  table.res tr.row.active td { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  table.res tr.row:hover td { background: oklch(0.96 0.015 265); }
+  table.res .pill { display: inline-block; font-size: 0.68rem; font-weight: 700; padding: 1px 7px; border-radius: 99px; background: var(--wood-soft); color: oklch(0.42 0.08 65); margin-left: 6px; }
+  .nores { padding: 26px; text-align: center; color: var(--ink-2); font-size: 0.85rem; }
+
+  /* Aufmaß */
+  .arthead { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--accent-soft); border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; }
+  .arthead b { color: var(--accent); }
+  .arthead .dims { margin-left: auto; color: var(--ink-2); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+  table.aufmass { width: 100%; border-collapse: collapse; }
+  table.aufmass th { text-align: left; font-size: 0.72rem; font-weight: 600; color: var(--ink-2); padding: 4px 8px; }
+  table.aufmass th.n { text-align: right; }
+  table.aufmass td { padding: 3px 6px; }
+  table.aufmass input { width: 100%; font: inherit; font-size: 0.88rem; text-align: right; padding: 7px 7px; border: 1px solid var(--line); border-radius: 6px; font-variant-numeric: tabular-nums; }
+  table.aufmass input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: white; }
+  table.aufmass input:disabled { background: var(--panel-2); color: var(--ink-2); }
+  table.aufmass th { white-space: nowrap; }
+  table.aufmass .vol { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; padding-right: 4px; color: var(--accent); }
+  .aufhint { font-size: 0.76rem; color: var(--ink-2); margin: 6px 2px 0; }
+
+  .committed { margin-top: 18px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .committed .ch { padding: 8px 12px; background: var(--ok-soft); font-size: 0.8rem; font-weight: 600; color: var(--ok); display: flex; }
+  .committed .ch .spacer { flex: 1; }
+  table.comm { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+  table.comm th { text-align: left; font-size: 0.68rem; text-transform: uppercase; color: var(--ink-2); padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  table.comm th.n, table.comm td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  table.comm td { padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  table.comm tr.blink td { animation: rowin 600ms ease-out; }
+  @keyframes rowin { from { background: var(--accent-soft); } to { background: transparent; } }
+
+  /* Preis-Modal */
+  .pricebox { display: flex; align-items: flex-end; gap: 18px; flex-wrap: wrap; }
+  .pricebox .main label { font-size: 0.76rem; font-weight: 600; color: var(--ink-2); display: block; margin-bottom: 4px; }
+  .pricebox .main .inrow { display: flex; align-items: center; gap: 8px; }
+  .pricebox .main input { font-size: 1.7rem; font-weight: 700; width: 170px; text-align: right; padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-variant-numeric: tabular-nums; }
+  .pricebox .main input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .pricebox .main .unit { font-size: 1rem; color: var(--ink-2); font-weight: 600; }
+  .pricebox .std { margin-left: auto; text-align: right; font-size: 0.82rem; color: var(--ink-2); }
+  .pricebox .std b { display: block; font-size: 1.1rem; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .pricesrc { margin-top: 6px; font-size: 0.78rem; }
+  .pricesrc.hist { color: var(--ok); }
+  .pricesrc.std { color: var(--warn); }
+  .histtable { margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .histtable .hh { padding: 8px 12px; background: var(--panel-2); font-size: 0.78rem; font-weight: 600; color: var(--ink-2); }
+  table.hist { width: 100%; border-collapse: collapse; font-size: 0.84rem; }
+  table.hist th { text-align: left; font-size: 0.68rem; text-transform: uppercase; color: var(--ink-2); padding: 6px 12px; }
+  table.hist th.n, table.hist td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  table.hist td { padding: 7px 12px; border-top: 1px solid var(--line); cursor: pointer; }
+  table.hist tr.row.active td { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  table.hist tr.row:hover td { background: oklch(0.96 0.015 265); }
+  table.hist tr.latest td { font-weight: 600; }
+  table.hist td.pct { text-align: right; font-variant-numeric: tabular-nums; font-size: 0.8rem; white-space: nowrap; }
+  table.hist .up { color: oklch(0.5 0.12 150); font-weight: 600; }
+  table.hist .down { color: oklch(0.55 0.16 25); font-weight: 600; }
+  table.hist .flat { color: var(--ink-2); }
+  table.hist tr.stdrow td { border-top: 2px solid var(--line); background: var(--panel-2); font-weight: 600; }
+  table.hist tr.stdrow .tag { background: var(--warn-soft); color: var(--warn); }
+  table.hist .tag { font-size: 0.66rem; background: var(--ok-soft); color: var(--ok); padding: 1px 7px; border-radius: 99px; margin-left: 6px; font-weight: 700; }
+  .noHist { padding: 18px; text-align: center; font-size: 0.82rem; color: var(--ink-2); }
+
+  /* Zuschläge-Modal */
+  .zustable { border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  table.zus { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  table.zus th { text-align: left; font-size: 0.68rem; text-transform: uppercase; color: var(--ink-2); padding: 7px 12px; background: var(--panel-2); }
+  table.zus th.n, table.zus td.n { text-align: right; font-variant-numeric: tabular-nums; }
+  table.zus td { padding: 8px 12px; border-top: 1px solid var(--line); cursor: pointer; }
+  table.zus tr.row.active td { box-shadow: inset 3px 0 0 var(--accent); }
+  table.zus tr.row.sel td { background: var(--accent-soft); }
+  table.zus tr.row:hover td { background: oklch(0.96 0.015 265); }
+  table.zus .chk { width: 26px; }
+  table.zus .box { width: 17px; height: 17px; border: 1.5px solid var(--line); border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; color: white; font-size: 0.7rem; }
+  table.zus tr.sel .box { background: var(--accent); border-color: var(--accent); }
+  .zprog { font-size: 0.8rem; color: var(--ink-2); margin-top: 10px; }
+
+  /* ── Position anlegen: Auswahl / Kopieren ── */
+  .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 560px) { .choice { grid-template-columns: 1fr; } }
+  .choicecard { border: 1.5px solid var(--line); border-radius: 10px; padding: 18px 18px 16px; cursor: pointer; background: var(--panel); text-align: left; transition: border-color .15s, background .15s; }
+  .choicecard:hover { border-color: var(--accent); }
+  .choicecard.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .choicecard .cnum { display: inline-flex; width: 24px; height: 24px; border-radius: 6px; background: var(--accent); color: white; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; }
+  .choicecard h4 { margin: 10px 0 4px; font-size: 1rem; }
+  .choicecard p { margin: 0; font-size: 0.82rem; color: var(--ink-2); line-height: 1.45; }
+  .cprompt { text-align: center; padding: 6px 4px 4px; }
+  .cprompt .big { font-size: 2rem; margin-bottom: 4px; }
+  .cprompt h3 { margin: 0 0 6px; font-size: 1.08rem; }
+  .cprompt p { margin: 0 0 18px; color: var(--ink-2); font-size: 0.88rem; line-height: 1.5; }
+  .promptopts { display: flex; gap: 12px; justify-content: center; }
+  .promptopt { min-width: 140px; border: 1.5px solid var(--line); border-radius: 9px; padding: 12px 18px; cursor: pointer; font-weight: 700; font-size: 0.95rem; background: var(--panel); }
+  .promptopt.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .promptopt small { display: block; font-weight: 400; color: var(--ink-2); font-size: 0.74rem; margin-top: 3px; }
+  .copytag { font-size: 0.66rem; background: oklch(0.9 0.05 265); color: var(--accent); padding: 1px 8px; border-radius: 99px; margin-left: 8px; font-weight: 700; }
+  table.hist tr.copiedrow td { background: var(--accent-soft); }
+  table.hist tr.copiedrow .tag { background: oklch(0.88 0.06 265); color: var(--accent); }
+
+  /* ── Geführte Tour ── */
+  .tourbtn { background: oklch(0.7 0.14 90); color: oklch(0.28 0.06 90); border: 1px solid oklch(0.62 0.13 90); font-size: 0.8rem; font-weight: 700; padding: 7px 13px; border-radius: 7px; }
+  .tourbtn:hover { background: oklch(0.76 0.14 90); }
+  #tourBlock { position: fixed; inset: 0; z-index: 300; }
+  #tourRing { position: fixed; z-index: 301; border-radius: 9px; box-shadow: 0 0 0 3px var(--accent), 0 0 0 9999px oklch(0.18 0.03 260 / 0.58); pointer-events: none; transition: left .22s ease, top .22s ease, width .22s ease, height .22s ease; }
+  #tourTip { position: fixed; z-index: 302; width: 348px; background: var(--panel); border-radius: 12px; box-shadow: 0 18px 55px oklch(0.18 0.02 260 / 0.45); padding: 16px 18px 14px; }
+  #tourTip .tprog { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.03em; text-transform: uppercase; color: var(--accent); }
+  #tourTip h4 { margin: 3px 0 7px; font-size: 1.02rem; }
+  #tourTip .tbody { font-size: 0.86rem; color: var(--ink-2); line-height: 1.55; }
+  #tourTip .tbody b { color: var(--ink); }
+  #tourTip .trow { display: flex; align-items: center; gap: 8px; margin-top: 15px; }
+  #tourTip .trow .spacer { flex: 1; }
+  #tourTip button { padding: 6px 11px; font-size: 0.82rem; }
+  #tourTip button.primary { padding: 7px 15px; }
+  .tourdots { display: flex; gap: 4px; }
+  .tourdots i { width: 6px; height: 6px; border-radius: 50%; background: var(--line); display: inline-block; }
+  .tourdots i.on { background: var(--accent); }
+
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <h1>Angebotstool</h1>
+  <span class="tag">Workflow-Mockup · Tastatur + Maus</span>
+  <span class="spacer"></span>
+  <span class="khint">Neue Position: <kbd>F3</kbd> · im Modal: <kbd>↑ ↓</kbd> <kbd>Enter</kbd> <kbd>Esc</kbd></span>
+  <button id="btnTour" class="tourbtn" title="Geführte Tour starten">🧭 Tour starten</button>
+</header>
+
+<main>
+  <!-- LINKS: Angebot (Arbeitsansicht, interne Aufschlüsselung) -->
+  <section class="panel">
+    <h2>Angebot – Positionen <span class="spacer"></span>
+      <button class="ghost" id="btnReset" title="Angebot leeren">leeren</button>
+    </h2>
+    <div class="newpos">
+      <button class="primary big" id="btnNew">＋ Position erfassen <kbd>F3</kbd></button>
+      <span style="font-size:0.82rem;color:var(--ink-2)">Interne Ansicht mit Preis-Aufschlüsselung. Der Kunde sieht rechts nur den Gesamtpreis.</span>
+    </div>
+    <div id="posList"></div>
+  </section>
+
+  <!-- RECHTS: Angebotsviewer (Kundenansicht / PDF) -->
+  <div>
+    <div class="viewernote">📄 <span>Angebots-Viewer – so sieht der Kunde das PDF. Verarbeitungen erscheinen als Positionen <b>ohne</b> Einzelpreis; der Zuschlag steckt im Artikelpreis.</span></div>
+    <div class="viewerwrap">
+      <div class="sheet" id="sheet"></div>
+    </div>
+  </div>
+</main>
+
+<div id="overlay" hidden></div>
+
+<script id="DATA" type="application/json">{"cat": [{"id": 0, "a": "BRENNHOLZKISTE", "h": "", "q": "", "e": "STK", "std": 42.06, "s": 0, "b": 0, "wg": "Sägewerk|Sägerestholz|Brennholz", "paket": false, "hist": []}, {"id": 1, "a": "BRETTER UNBES", "h": "F/T", "q": "", "e": "LFM", "std": 2.55, "s": 24.0, "b": 250.0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.02.2021", "preis": 3.24, "beleg": "RE-2021-1007"}]}, {"id": 2, "a": "BRETTER UNBES", "h": "L/D", "q": "", "e": "LFM", "std": 3.5, "s": 24.0, "b": 250.0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.03.2021", "preis": 5.08, "beleg": "RE-2021-1014"}, {"datum": "09.03.2023", "preis": 5.29, "beleg": "RE-2023-1015"}]}, {"id": 3, "a": "BSH", "h": "", "q": "", "e": "QM", "std": 14.5, "s": 21.0, "b": 0, "wg": "Handel|Hobelware|BSH-Holz", "paket": true, "hist": [{"datum": "12.04.2021", "preis": 15.76, "beleg": "RE-2021-1021"}, {"datum": "09.04.2023", "preis": 16.63, "beleg": "RE-2023-1022"}, {"datum": "06.04.2025", "preis": 17.5, "beleg": "RE-2025-1023"}]}, {"id": 4, "a": "FASEBRETT N+F", "h": "L/D", "q": "", "e": "QM", "std": 17.2, "s": 18.5, "b": 0, "wg": "Handel|Hobelware|Profilholz", "paket": true, "hist": []}, {"id": 5, "a": "FASEBRETT NORDISCH", "h": "", "q": "", "e": "QM", "std": 14.5, "s": 21.0, "b": 0, "wg": "Handel|Hobelware|Profilholz", "paket": true, "hist": [{"datum": "12.06.2021", "preis": 12.76, "beleg": "RE-2021-1035"}]}, {"id": 6, "a": "GLATTKANTBRETT", "h": "L/D", "q": "", "e": "QM", "std": 19.5, "s": 18.5, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.07.2021", "preis": 18.16, "beleg": "RE-2021-1042"}, {"datum": "09.07.2023", "preis": 19.33, "beleg": "RE-2023-1043"}]}, {"id": 7, "a": "HACKSCHNITZEL 19%", "h": "", "q": "", "e": "SRM", "std": 33.61, "s": 0, "b": 0, "wg": "Sägewerk|Sägerestholz|Hackschnitzel", "paket": false, "hist": [{"datum": "12.08.2021", "preis": 31.58, "beleg": "RE-2021-1049"}, {"datum": "09.08.2023", "preis": 33.59, "beleg": "RE-2023-1050"}, {"datum": "06.08.2025", "preis": 35.61, "beleg": "RE-2025-1051"}]}, {"id": 8, "a": "HACKSCHNITZEL 7%", "h": "", "q": "", "e": "RM", "std": 28.0, "s": 0, "b": 0, "wg": "Sägewerk|Sägerestholz|Hackschnitzel", "paket": false, "hist": []}, {"id": 9, "a": "HACKSCHNITZEL WALD", "h": "", "q": "", "e": "RM", "std": 25.0, "s": 0, "b": 0, "wg": "Sägewerk|Sägerestholz|Hackschnitzel", "paket": false, "hist": [{"datum": "12.02.2021", "preis": 26.0, "beleg": "RE-2021-1063"}]}, {"id": 10, "a": "KVH", "h": "", "q": "", "e": "QM", "std": 14.5, "s": 21.0, "b": 0, "wg": "Handel|Hobelware|KVH-Holz", "paket": true, "hist": [{"datum": "12.03.2021", "preis": 12.76, "beleg": "RE-2021-1070"}, {"datum": "09.03.2023", "preis": 13.63, "beleg": "RE-2023-1071"}]}, {"id": 11, "a": "LATTEN GETR EGAL", "h": "L/D", "q": "", "e": "LFM", "std": 1.2, "s": 40.0, "b": 60.0, "wg": "Sägewerk|Seitenware|Latten/Leisten/Bohlen", "paket": true, "hist": [{"datum": "12.04.2021", "preis": 2.06, "beleg": "RE-2021-1077"}, {"datum": "09.04.2023", "preis": 2.13, "beleg": "RE-2023-1078"}, {"datum": "06.04.2025", "preis": 2.2, "beleg": "RE-2025-1079"}]}, {"id": 12, "a": "OSB- PLATTEN DIV", "h": "", "q": "", "e": "QM", "std": 9.5, "s": 15.0, "b": 0, "wg": "Handel|Holzwaren|Plattenwaren", "paket": false, "hist": []}, {"id": 13, "a": "OSB- PLATTEN N+F", "h": "", "q": "", "e": "QM", "std": 14.5, "s": 21.0, "b": 0, "wg": "Handel|Holzwaren|Plattenwaren", "paket": false, "hist": [{"datum": "12.06.2021", "preis": 15.76, "beleg": "RE-2021-1091"}]}, {"id": 14, "a": "PAL EURO GITTERBOX", "h": "", "q": "", "e": "STK", "std": 75.0, "s": 0, "b": 0, "wg": "Handel|Holzwaren|Paletten", "paket": false, "hist": [{"datum": "12.07.2021", "preis": 70.0, "beleg": "RE-2021-1098"}, {"datum": "09.07.2023", "preis": 74.5, "beleg": "RE-2023-1099"}]}, {"id": 15, "a": "PAL EURO GITTERBOX ZURÜCK", "h": "", "q": "", "e": "STK", "std": 75.0, "s": 0, "b": 0, "wg": "Handel|Holzwaren|Paletten", "paket": false, "hist": [{"datum": "12.08.2021", "preis": 66.0, "beleg": "RE-2021-1105"}, {"datum": "09.08.2023", "preis": 70.5, "beleg": "RE-2023-1106"}, {"datum": "06.08.2025", "preis": 75.0, "beleg": "RE-2025-1107"}]}, {"id": 16, "a": "PAL EURO ZURÜCK", "h": "", "q": "", "e": "STK", "std": 30.0, "s": 0, "b": 0, "wg": "Handel|Holzwaren|Paletten", "paket": false, "hist": []}, {"id": 17, "a": "PAL SIEB/FILM", "h": "", "q": "", "e": "QM", "std": 38.0, "s": 21.0, "b": 1250.0, "wg": "Handel|Holzwaren|Paletten", "paket": false, "hist": [{"datum": "12.02.2021", "preis": 35.44, "beleg": "RE-2021-1119"}]}, {"id": 18, "a": "PROFIL-RHOMBUS-LEISTE", "h": "L/D", "q": "", "e": "LFM", "std": 2.25, "s": 34.0, "b": 80.0, "wg": "Handel|Hobelware|Profilholz", "paket": true, "hist": [{"datum": "12.03.2021", "preis": 4.98, "beleg": "RE-2021-1126"}, {"datum": "09.03.2023", "preis": 5.12, "beleg": "RE-2023-1127"}]}, {"id": 19, "a": "PROFIL-STÜLP", "h": "L/D", "q": "", "e": "QM", "std": 22.5, "s": 27.0, "b": 0, "wg": "Handel|Hobelware|Profilholz", "paket": true, "hist": [{"datum": "12.04.2021", "preis": 23.8, "beleg": "RE-2021-1133"}, {"datum": "09.04.2023", "preis": 25.15, "beleg": "RE-2023-1134"}, {"datum": "06.04.2025", "preis": 26.5, "beleg": "RE-2025-1135"}]}, {"id": 20, "a": "PROFIL-T", "h": "L/D", "q": "", "e": "QM", "std": 22.5, "s": 28.0, "b": 0, "wg": "Handel|Hobelware|Profilholz", "paket": true, "hist": []}, {"id": 21, "a": "PROFIL-WECHSELFALZ", "h": "L/D", "q": "", "e": "QM", "std": 22.5, "s": 27.0, "b": 0, "wg": "Handel|Hobelware|Profilholz", "paket": true, "hist": [{"datum": "12.06.2021", "preis": 20.8, "beleg": "RE-2021-1147"}]}, {"id": 22, "a": "RAUHSPUND NORDISCH", "h": "", "q": "", "e": "QM", "std": 14.5, "s": 21.0, "b": 0, "wg": "Handel|Hobelware|Rauhspund", "paket": true, "hist": [{"datum": "12.07.2021", "preis": 14.76, "beleg": "RE-2021-1154"}, {"datum": "09.07.2023", "preis": 15.63, "beleg": "RE-2023-1155"}]}, {"id": 23, "a": "REMMERS HK 5 LTR.", "h": "", "q": "", "e": "STK", "std": 75.5, "s": 0, "b": 0, "wg": "Handel|Sonstiges Handel|Holzschutz", "paket": false, "hist": [{"datum": "12.08.2021", "preis": 69.44, "beleg": "RE-2021-1161"}, {"datum": "09.08.2023", "preis": 73.97, "beleg": "RE-2023-1162"}, {"datum": "06.08.2025", "preis": 78.5, "beleg": "RE-2025-1163"}]}, {"id": 24, "a": "RIFFELBOHLEN", "h": "L/D", "q": "", "e": "QM", "std": 24.5, "s": 26.0, "b": 0, "wg": "Sägewerk|Seitenware|Latten/Leisten/Bohlen", "paket": true, "hist": []}, {"id": 25, "a": "RINDE", "h": "", "q": "", "e": "SRM", "std": 35.0, "s": 0, "b": 0, "wg": "Sägewerk|Sägerestholz|Rohrinde", "paket": false, "hist": [{"datum": "12.02.2021", "preis": 30.8, "beleg": "RE-2021-1175"}]}, {"id": 26, "a": "RUNDHOLZ GEFRÄST", "h": "L/D", "q": "", "e": "QM", "std": 22.5, "s": 28.0, "b": 0, "wg": "Sägewerk|Seitenware|Latten/Leisten/Bohlen", "paket": false, "hist": [{"datum": "12.03.2021", "preis": 20.8, "beleg": "RE-2021-1182"}, {"datum": "09.03.2023", "preis": 22.15, "beleg": "RE-2023-1183"}]}, {"id": 27, "a": "SÄGESPÄNE", "h": "", "q": "", "e": "SRM", "std": 28.04, "s": 0, "b": 0, "wg": "Sägewerk|Sägerestholz|Sägespäne", "paket": false, "hist": [{"datum": "12.04.2021", "preis": 26.68, "beleg": "RE-2021-1189"}, {"datum": "09.04.2023", "preis": 28.36, "beleg": "RE-2023-1190"}, {"datum": "06.04.2025", "preis": 30.04, "beleg": "RE-2025-1191"}]}, {"id": 28, "a": "SH-HOLZ", "h": "F/T", "q": "", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": []}, {"id": 29, "a": "SH-HOLZ", "h": "F/T", "q": "SKL.S", "e": "CBM", "std": 320.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.06.2021", "preis": 285.6, "beleg": "RE-2021-1203"}]}, {"id": 30, "a": "SH-HOLZ", "h": "L/D", "q": "", "e": "CBM", "std": 500.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.07.2021", "preis": 440.0, "beleg": "RE-2021-1210"}, {"datum": "09.07.2023", "preis": 470.0, "beleg": "RE-2023-1211"}]}, {"id": 31, "a": "SH-HOLZ", "h": "L/D", "q": "SKL.S", "e": "CBM", "std": 520.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.08.2021", "preis": 458.6, "beleg": "RE-2021-1217"}, {"datum": "09.08.2023", "preis": 489.8, "beleg": "RE-2023-1218"}, {"datum": "06.08.2025", "preis": 521.0, "beleg": "RE-2025-1219"}]}, {"id": 32, "a": "SH-HOLZ", "h": "NH", "q": "", "e": "CBM", "std": 280.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": []}, {"id": 33, "a": "SH-HOLZ", "h": "NH", "q": "SKL.S", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.02.2021", "preis": 267.0, "beleg": "RE-2021-1231"}]}, {"id": 34, "a": "SH-HOLZ PAK", "h": "", "q": "", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.03.2021", "preis": 268.0, "beleg": "RE-2021-1238"}, {"datum": "09.03.2023", "preis": 286.0, "beleg": "RE-2023-1239"}]}, {"id": 35, "a": "SH-HOLZ PAK", "h": "F/T", "q": "", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.04.2021", "preis": 264.0, "beleg": "RE-2021-1245"}, {"datum": "09.04.2023", "preis": 282.0, "beleg": "RE-2023-1246"}, {"datum": "06.04.2025", "preis": 300.0, "beleg": "RE-2025-1247"}]}, {"id": 36, "a": "SH-HOLZ PAK", "h": "F/T", "q": "SKL.S", "e": "CBM", "std": 320.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": []}, {"id": 37, "a": "SH-HOLZ PAK", "h": "L/D", "q": "", "e": "CBM", "std": 500.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.06.2021", "preis": 442.0, "beleg": "RE-2021-1259"}]}, {"id": 38, "a": "SH-HOLZ PAK", "h": "L/D", "q": "SKL.S", "e": "CBM", "std": 520.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.07.2021", "preis": 460.6, "beleg": "RE-2021-1266"}, {"datum": "09.07.2023", "preis": 491.8, "beleg": "RE-2023-1267"}]}, {"id": 39, "a": "SH-HOLZ PAK", "h": "NH", "q": "", "e": "CBM", "std": 280.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.08.2021", "preis": 250.4, "beleg": "RE-2021-1273"}, {"datum": "09.08.2023", "preis": 267.2, "beleg": "RE-2023-1274"}, {"datum": "06.08.2025", "preis": 284.0, "beleg": "RE-2025-1275"}]}, {"id": 40, "a": "SH-HOLZ PAK", "h": "NH", "q": "SKL.S", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": []}, {"id": 41, "a": "SH-HOLZ SW DIV", "h": "F/T", "q": "", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.02.2021", "preis": 265.0, "beleg": "RE-2021-1287"}]}, {"id": 42, "a": "SH-HOLZ SW DIV", "h": "F/T", "q": "SKL.S", "e": "CBM", "std": 320.0, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.03.2021", "preis": 283.6, "beleg": "RE-2021-1294"}, {"datum": "09.03.2023", "preis": 302.8, "beleg": "RE-2023-1295"}]}, {"id": 43, "a": "SH-HOLZ SW DIV", "h": "L/D", "q": "", "e": "CBM", "std": 500.0, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.04.2021", "preis": 443.0, "beleg": "RE-2021-1301"}, {"datum": "09.04.2023", "preis": 473.0, "beleg": "RE-2023-1302"}, {"datum": "06.04.2025", "preis": 503.0, "beleg": "RE-2025-1303"}]}, {"id": 44, "a": "SH-HOLZ SW DIV", "h": "L/D", "q": "SKL.S", "e": "CBM", "std": 520.0, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": []}, {"id": 45, "a": "SH-HOLZ SW DIV", "h": "NH", "q": "", "e": "CBM", "std": 280.0, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.06.2021", "preis": 246.4, "beleg": "RE-2021-1315"}]}, {"id": 46, "a": "SH-HOLZ SW DIV", "h": "NH", "q": "SKL.S", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Brettware", "paket": true, "hist": [{"datum": "12.07.2021", "preis": 265.0, "beleg": "RE-2021-1322"}, {"datum": "09.07.2023", "preis": 283.0, "beleg": "RE-2023-1323"}]}, {"id": 47, "a": "SH-ZUSCHNITTE", "h": "F/T", "q": "", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.08.2021", "preis": 266.0, "beleg": "RE-2021-1329"}, {"datum": "09.08.2023", "preis": 284.0, "beleg": "RE-2023-1330"}, {"datum": "06.08.2025", "preis": 302.0, "beleg": "RE-2025-1331"}]}, {"id": 48, "a": "SH-ZUSCHNITTE", "h": "F/T", "q": "SKL.S", "e": "CBM", "std": 320.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": []}, {"id": 49, "a": "SH-ZUSCHNITTE", "h": "L/D", "q": "", "e": "CBM", "std": 500.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.02.2021", "preis": 444.0, "beleg": "RE-2021-1343"}]}, {"id": 50, "a": "SH-ZUSCHNITTE", "h": "L/D", "q": "SKL.S", "e": "CBM", "std": 520.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.03.2021", "preis": 457.6, "beleg": "RE-2021-1350"}, {"datum": "09.03.2023", "preis": 488.8, "beleg": "RE-2023-1351"}]}, {"id": 51, "a": "SH-ZUSCHNITTE", "h": "NH", "q": "", "e": "CBM", "std": 280.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": [{"datum": "12.04.2021", "preis": 247.4, "beleg": "RE-2021-1357"}, {"datum": "09.04.2023", "preis": 264.2, "beleg": "RE-2023-1358"}, {"datum": "06.04.2025", "preis": 281.0, "beleg": "RE-2025-1359"}]}, {"id": 52, "a": "SH-ZUSCHNITTE", "h": "NH", "q": "SKL.S", "e": "CBM", "std": 300.0, "s": 0, "b": 0, "wg": "Sägewerk|Hauptware|Schnitt-/Bauholz", "paket": true, "hist": []}, {"id": 53, "a": "ZAUN KOPPELRIEGEL", "h": "L/D", "q": "", "e": "LFM", "std": 3.3, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Latten/Leisten/Bohlen", "paket": true, "hist": [{"datum": "12.06.2021", "preis": 5.9, "beleg": "RE-2021-1371"}]}, {"id": 54, "a": "ZAUN RIEGEL", "h": "L/D", "q": "", "e": "LFM", "std": 3.25, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Latten/Leisten/Bohlen", "paket": true, "hist": [{"datum": "12.07.2021", "preis": 6.86, "beleg": "RE-2021-1378"}, {"datum": "09.07.2023", "preis": 7.05, "beleg": "RE-2023-1379"}]}, {"id": 55, "a": "ZAUN STAKETENLATTEN", "h": "L/D", "q": "", "e": "LFM", "std": 1.95, "s": 0, "b": 0, "wg": "Sägewerk|Seitenware|Latten/Leisten/Bohlen", "paket": true, "hist": [{"datum": "12.08.2021", "preis": 1.72, "beleg": "RE-2021-1385"}, {"datum": "09.08.2023", "preis": 1.83, "beleg": "RE-2023-1386"}, {"datum": "06.08.2025", "preis": 1.95, "beleg": "RE-2025-1387"}]}], "zus": [{"code": "TRO", "label": "Trocknen", "std": 50, "hist": []}, {"code": "HOB", "label": "Hobeln", "std": 30, "hist": [{"datum": "03.02.2023", "preis": 27.0, "beleg": "RE-2023-2003"}]}, {"code": "KAP PAK", "label": "Kappen im Paket", "std": 20, "hist": [{"datum": "03.03.2023", "preis": 18.0, "beleg": "RE-2023-2006"}, {"datum": "04.03.2024", "preis": 19.6, "beleg": "RE-2024-2007"}]}, {"code": "KAP SÄG EZ", "label": "Kappen einzeln (Säge)", "std": 100, "hist": []}, {"code": "C24 EM", "label": "C24-Sortierung EM", "std": 20, "hist": [{"datum": "03.05.2023", "preis": 18.0, "beleg": "RE-2023-2012"}]}, {"code": "IPPC", "label": "IPPC-Wärmebehandlung", "std": 30, "hist": [{"datum": "03.06.2023", "preis": 27.0, "beleg": "RE-2023-2015"}, {"datum": "04.06.2024", "preis": 29.4, "beleg": "RE-2024-2016"}]}, {"code": "IMP BS3", "label": "Imprägnierung BS3", "std": 20, "hist": []}, {"code": "NUTEN", "label": "Nuten", "std": 10, "hist": [{"datum": "03.08.2023", "preis": 9.0, "beleg": "RE-2023-2021"}]}], "tree": [["Sägewerk", [["Hauptware", ["Schnitt-/Bauholz", "Verpackungsholz", "Schnittholz Lä/Dou"]], ["Seitenware", ["Brettware", "Latten/Leisten/Bohlen"]], ["Sägerestholz", ["Hackschnitzel", "Sägespäne", "Rohrinde", "Brennholz"]], ["Sonstiges Sägewerk", ["Bearbeitungszuschläge", "Lohnarbeit", "Diverse/Einzelartikel"]]]], ["Handel", [["Hobelware", ["KVH-Holz", "BSH-Holz", "Rauhspund", "Profilholz"]], ["Holzwaren", ["Schnittholz", "Paletten", "Plattenwaren"]], ["Sonstiges Handel", ["Holzschutz", "Diverse/Einzelartikel"]]]], ["Rohholz", [["Sägerundholz", ["Stammholz Nadel", "Stammholz Laub", "Abschnitte", "Palette"]], ["Industrieholz", ["IK-Nadel", "Industrielaubholz", "Brenn-/Energieholz"]]]], ["Logistik", [["Sägewerk", ["Rundholz", "Schnittholz", "Sägerestholz"]], ["Handel / Transport", ["Rundholz", "Lohnfracht", "Diverse"]]]]], "holz": {"AH": "Ahorn", "BH": "Buntholz", "BU": "Buche", "DOU": "Douglasie", "EI": "Eiche", "ES": "Esche", "F/T": "Fichte/Tanne", "FI": "Fichte", "KI": "Kiefer", "KT": "Küstentanne", "L/D": "Lärche / Douglasie", "LÄ": "Lärche", "NH": "Nadelholz", "PA": "Pappel", "SFI": "Sitkafichte", "TA": "Tanne", "TJA": "Thuja", "WT": "Weißtanne"}, "qual": {"ABS": "BC-Abs", "ABS D": "D-Abs", "B/C": "Gkl. B/C", "B/C/D": "Gkl. B/C/D", "BRH AUT": "Automaten fähig", "BRH IK": "IK Qualität", "BS11": "BS 11", "C/D": "Gkl. C/D", "FRISCH": "frisch", "II": "II", "IK": "IK", "KERNGE  S": "Skl. S (Kerngetrenn)", "KERNGE A/B": "Skl. A/B (Kerngetr.)", "KREUZ A/B": "Skl. A/B (Kreuzholz)", "KREUZ S": "Skl. S (Kreuz-/Halb)", "NSI": "nicht Sichbar", "OSB": "OSB", "PAL": "Palette", "PAL DICK": "Palette dick", "S10": "S10 C24 Id.-Nr 313", "S10 A/B": "S10 Skl. A/B", "S10 S": "S10 Skl. S", "SÄGERAUH": "sägerauh", "SI": "sichtbar", "SKL.A": "Skl. A", "SKL.A/B": "Skl. A/B", "SKL.A/S": "Skl. A/S", "SKL.S": "Skl. S", "STH": "Sth", "TS": "IN"}, "einh": {"%": "%", "ATR": "atro", "CBM": "m3", "FM": "fm", "FMR": "fm", "KG": "kg", "LFM": "lfm", "LTR": "ltr", "PAU": "paus.", "QM": "m2", "RM": "RM", "RRM": "RM", "SRM": "srm", "STD": "Std", "STK": "Stk.", "TO": "to"}}</script>
+<script>
+const D = JSON.parse(document.getElementById('DATA').textContent);
+// Dummy-Preishistorie: für JEDEN Artikel & Zuschlag immer 3 „alte Rechnungen" (deterministisch, steigend)
+function makeHist(std, seed){
+  const yrs=[2021,2023,2025], facs=[0.85,0.92,0.97], tage=['14.03','22.07','09.11'];
+  const j=(seed%6)*0.006;
+  return yrs.map((y,i)=>({ datum:`${tage[i]}.${y}`, beleg:`RE-${y}-${1000+seed*7+i}`, preis:Math.round(std*(facs[i]+j+i*0.002*(seed%3))*100)/100 }));
+}
+D.cat.forEach(c=> c.hist = makeHist(c.std, c.id));
+D.zus.forEach((z,i)=> z.hist = makeHist(z.std, 100+i));
+const eur = n => n.toLocaleString('de-DE', {style:'currency', currency:'EUR'});
+const eur2 = n => n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFractionDigits:2}) + ' €';
+const num = (n,d=2) => n.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:d});
+const num3 = n => n.toLocaleString('de-DE', {minimumFractionDigits:3, maximumFractionDigits:3});
+const el = id => document.getElementById(id);
+const einhName = e => { const n = (D.einh[e]||e); return n==='m3'?'m³':n==='m2'?'m²':n; };
+const holzName = h => h ? (D.holz[h]||h) : '';
+const qualName = q => q ? (D.qual[q]||q) : '';
+const MWST = 0.19;
+const KUNDE = 'Zimmerei Müller GmbH';
+
+// ══════════ Angebots-Zustand ══════════
+let positions = [];   // {cat, desc, woodPrice, surcharges:[{code,label,price}], measures:[{pakete,stueck,laenge,s,b,vol}]}
+
+function allIn(pos){ return pos.woodPrice + pos.surcharges.reduce((s,z)=>s+z.price,0); }
+function posVol(pos){ return pos.measures.reduce((s,m)=>s+m.vol,0); }
+function posSum(pos){ return posVol(pos) * allIn(pos); }
+
+// ══════════ Warengruppen-Navigation ══════════
+const TREE = D.tree;
+let nav = { b:'Sägewerk', w:'Hauptware', u:'Schnitt-/Bauholz' };
+const wgOf = b => (TREE.find(x=>x[0]===b)||[null,[]])[1].map(x=>x[0]);
+const ugOf = (b,w) => { const e=TREE.find(x=>x[0]===b); if(!e)return[]; const g=e[1].find(x=>x[0]===w); return g?g[1]:[]; };
+const catOfPath = (b,w,u) => D.cat.filter(c => c.wg === `${b}|${w}|${u}`);
+const cntPath = (b,w,u) => catOfPath(b,w,u).length;
+const cntWG = (b,w) => ugOf(b,w).reduce((s,u)=>s+cntPath(b,w,u),0);
+const cntB = b => wgOf(b).reduce((s,w)=>s+cntWG(b,w),0);
+const firstWG = b => wgOf(b).find(w=>cntWG(b,w)>0) || wgOf(b)[0];
+const firstUG = (b,w) => ugOf(b,w).find(u=>cntPath(b,w,u)>0) || ugOf(b,w)[0];
+
+// ══════════ Modal-Infrastruktur ══════════
+let currentStep = null;    // 'artikel' | 'aufmass' | 'preis' | 'zuschlaege'
+let draft = null;          // in Arbeit befindliche Position
+const ov = el('overlay');
+
+function closeModal(){ currentStep=null; ov.hidden=true; ov.innerHTML=''; }
+function stepper(active){
+  const steps = [['1','Artikel'],['2','Aufmaß'],['3','Preis'],['4','Zuschläge']];
+  const order = ['artikel','aufmass','preis','zuschlaege'];
+  const ai = order.indexOf(active);
+  return '<div class="stepper">' + steps.map(([n,l],i)=>{
+    const cls = i===ai ? 'on' : (i<ai ? 'done' : '');
+    return `<div class="st ${cls}"><span class="dot">${i<ai?'✓':n}</span>${l}</div>` + (i<3?'<span class="sep">›</span>':'');
+  }).join('') + '</div>';
+}
+
+// ══════════ SCHRITT 1: Artikelauswahl ══════════
+let pickRows = [];     // aktuell gefilterte Katalogzeilen
+let pickIdx = 0;       // markierte Zeile
+
+function openArtikel(){
+  currentStep = 'artikel';
+  draft = null;
+  ov.hidden = false;
+  ov.innerHTML = `
+    <div class="modal">
+      <div class="mhead">
+        <h2>Position erfassen</h2>
+        ${stepper('artikel')}
+        <span class="spacer"></span>
+        <button class="linkish" data-close title="Schließen (Esc)">✕</button>
+      </div>
+      <div class="mbody">
+        <div class="searchbar"><span class="ico">🔎</span>
+          <input id="q" placeholder="Suchen … z. B. „SH", „KVH", „Riffel" – oder unten durch die Gruppen klicken" autocomplete="off">
+        </div>
+        <div class="pickgrid">
+          <div class="wgnav">
+            <div class="wgrow"><span class="wglabel">Bereich</span><div class="seg" id="segB"></div></div>
+            <div class="wgrow"><span class="wglabel">Warengruppe</span><div class="seg" id="segW"></div></div>
+            <div class="wgrow"><span class="wglabel">Untergruppe</span><div class="seg" id="segU"></div></div>
+          </div>
+          <div class="graphics">
+            <div class="gcard"><div class="gt">Querschnitt</div><div id="gxs"></div></div>
+            <div class="gcard pak"><div class="gt">Paket</div><div id="gpak"></div></div>
+          </div>
+        </div>
+        <div class="restable"><div class="scroll"><table class="res">
+          <thead><tr><th>Artikel</th><th>Holzart</th><th>Qualität</th><th class="n">Maß</th><th class="n">Std.-Preis</th></tr></thead>
+          <tbody id="resBody"></tbody>
+        </table></div></div>
+      </div>
+      <div class="mfoot">
+        <div class="khints">
+          <span><kbd>Tippen</kbd> filtern</span><span><kbd>↑</kbd><kbd>↓</kbd> markieren</span>
+          <span><kbd>Enter</kbd> wählen</span><span><kbd>Esc</kbd> abbrechen</span>
+        </div>
+        <span class="spacer"></span>
+        <button class="primary" id="pickGo">Aufmaß erfassen <kbd>Enter</kbd></button>
+      </div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = closeModal;
+  el('pickGo').onclick = () => chooseArtikel();
+  el('q').addEventListener('input', () => { applyFilterFromSearch(); });
+  renderPickNav();
+  applyFilter();
+  setTimeout(()=>{ const q=el('q'); if(q) q.focus(); }, 30);
+}
+
+function renderPickNav(){
+  const sb=el('segB'); sb.innerHTML='';
+  for(const b of TREE.map(x=>x[0])){
+    sb.appendChild(navBtn(b, cntB(b), b===nav.b, ()=>{ nav.b=b; nav.w=firstWG(b); nav.u=firstUG(b,nav.w); el('q').value=''; renderPickNav(); applyFilter(); }));
+  }
+  const sw=el('segW'); sw.innerHTML='';
+  for(const w of wgOf(nav.b)){
+    sw.appendChild(navBtn(w, cntWG(nav.b,w), w===nav.w, ()=>{ nav.w=w; nav.u=firstUG(nav.b,w); el('q').value=''; renderPickNav(); applyFilter(); }));
+  }
+  const su=el('segU'); su.innerHTML='';
+  for(const u of ugOf(nav.b,nav.w)){
+    su.appendChild(navBtn(u, cntPath(nav.b,nav.w,u), u===nav.u, ()=>{ nav.u=u; el('q').value=''; renderPickNav(); applyFilter(); }));
+  }
+}
+function navBtn(label,n,on,onClick){
+  const b=document.createElement('button'); b.type='button';
+  b.className='segbtn'+(on?' on':''); b.innerHTML=label+`<span class="cnt">${n>0?n:'–'}</span>`;
+  b.disabled=n===0; if(n>0) b.onclick=onClick; else b.title='noch keine Verkaufsartikel';
+  return b;
+}
+
+function applyFilterFromSearch(){
+  const q = el('q').value.trim().toLowerCase();
+  if(q){
+    pickRows = D.cat.filter(c =>
+      c.a.toLowerCase().includes(q) || holzName(c.h).toLowerCase().includes(q) ||
+      qualName(c.q).toLowerCase().includes(q) || (c.h+' '+c.q).toLowerCase().includes(q));
+  } else {
+    pickRows = catOfPath(nav.b, nav.w, nav.u);
+  }
+  pickIdx = 0;
+  renderRes();
+}
+function applyFilter(){ el('q') && (el('q').value=''); pickRows = catOfPath(nav.b,nav.w,nav.u); pickIdx=0; renderRes(); }
+
+function renderRes(){
+  const tb = el('resBody');
+  if(!pickRows.length){ tb.innerHTML = `<tr><td colspan="5" class="nores">Kein Treffer – Suche ändern oder andere Gruppe wählen.</td></tr>`; el('pickGo').disabled=true; updateGraphics(null); return; }
+  el('pickGo').disabled=false;
+  tb.innerHTML = pickRows.map((c,i)=>`
+    <tr class="row ${i===pickIdx?'active':''}" data-i="${i}">
+      <td><b>${c.a}</b></td>
+      <td>${c.h?c.h+' – '+holzName(c.h):'–'}</td>
+      <td>${c.q?qualName(c.q):'–'}</td>
+      <td class="n">${c.s&&c.b?num(c.s)+'×'+num(c.b)+' mm':'–'}</td>
+      <td class="n">${eur(c.std)} / ${einhName(c.e)}</td>
+    </tr>`).join('');
+  tb.querySelectorAll('tr.row').forEach(tr=>{
+    tr.onclick = ()=>{ pickIdx=+tr.dataset.i; renderRes(); };
+    tr.ondblclick = ()=>{ pickIdx=+tr.dataset.i; chooseArtikel(); };
+  });
+  const act = tb.querySelector('tr.active'); if(act) act.scrollIntoView({block:'nearest'});
+  updateGraphics(pickRows[pickIdx]);
+}
+
+function updateGraphics(c){
+  el('gxs').innerHTML = c ? crossSVG(c.s||100, c.b||100) : `<div class="empty">–</div>`;
+  el('gpak').innerHTML = `<div class="empty">kein Paket hinterlegt</div>`;
+}
+function crossSVG(s,b){
+  // Querschnitt füllt die Box weitgehend aus; Maßketten für Breite (unten) und Stärke (links)
+  const W=360,H=210;
+  const LB=52, RB=346, TB=14, BOT=150;            // Zeichenbereich (Rest = Maßketten/Beschriftung)
+  const maxw=RB-LB, maxh=BOT-TB;
+  const ratio=b/(s||1); let rw=maxw, rh=rw/ratio;
+  if(rh>maxh){ rh=maxh; rw=rh*ratio; }
+  if(rw>maxw){ rw=maxw; rh=rw/ratio; }
+  const x=LB+(maxw-rw)/2, y=TB+(maxh-rh)/2;
+  const c1='oklch(0.66 0.09 65)', c2='oklch(0.55 0.1 60)', ink='var(--ink)', in2='var(--ink-2)';
+  const yb=y+rh+18, xl=x-16;
+  return `<svg viewBox="0 0 ${W} ${H}">
+    <defs><marker id="arh" markerWidth="11" markerHeight="11" refX="5.5" refY="4" orient="auto">
+      <path d="M2,1 L8.5,4 L2,7" fill="none" stroke="${in2}" stroke-width="1.5"/></marker></defs>
+    <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="${c1}" stroke="${c2}" stroke-width="2.5" rx="3"/>
+    ${[...Array(5)].map((_,i)=>`<line x1="${x}" y1="${y+rh*(i+1)/6}" x2="${x+rw}" y2="${y+rh*(i+1)/6}" stroke="${c2}" stroke-width="0.7" opacity="0.4"/>`).join('')}
+    <line x1="${x}" y1="${yb}" x2="${x+rw}" y2="${yb}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arh)" marker-end="url(#arh)"/>
+    <line x1="${x}" y1="${y+rh+5}" x2="${x}" y2="${yb+6}" stroke="${in2}" stroke-width="1"/>
+    <line x1="${x+rw}" y1="${y+rh+5}" x2="${x+rw}" y2="${yb+6}" stroke="${in2}" stroke-width="1"/>
+    <text x="${x+rw/2}" y="${yb+24}" text-anchor="middle" font-size="18" font-weight="700" fill="${ink}">Breite ${num(b)} mm</text>
+    <line x1="${xl}" y1="${y}" x2="${xl}" y2="${y+rh}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arh)" marker-end="url(#arh)"/>
+    <line x1="${xl-6}" y1="${y}" x2="${x-5}" y2="${y}" stroke="${in2}" stroke-width="1"/>
+    <line x1="${xl-6}" y1="${y+rh}" x2="${x-5}" y2="${y+rh}" stroke="${in2}" stroke-width="1"/>
+    <text x="${xl-14}" y="${y+rh/2}" text-anchor="middle" font-size="18" font-weight="700" fill="${ink}" transform="rotate(-90 ${xl-14} ${y+rh/2})">Stärke ${num(s)} mm</text>
+  </svg>`;
+}
+function packGridSVG(reihen, lagen, staerke, breite){
+  const R=Math.max(0,reihen||0), L=Math.max(0,lagen||0);
+  if(!R || !L) return `<div class="empty">Reihen &amp; Lagen<br>eingeben</div>`;
+  const W=360,H=210;
+  const dc=Math.min(R,18), dr=Math.min(L,13);
+  const gx=58, gw=282, gy=14, gh=150;             // großes Raster, füllt die Box
+  const cw=gw/dc, ch=gh/dr;
+  const c1='oklch(0.66 0.09 65)', c2='oklch(0.5 0.1 60)', ink='var(--ink)', in2='var(--ink-2)';
+  let r='';
+  for(let ri=0;ri<dr;ri++) for(let ci=0;ci<dc;ci++)
+    r+=`<rect x="${(gx+ci*cw+0.6).toFixed(1)}" y="${(gy+ri*ch+0.6).toFixed(1)}" width="${(cw-1.2).toFixed(1)}" height="${(ch-1.2).toFixed(1)}" fill="${c1}" stroke="${c2}" stroke-width="0.8"/>`;
+  const pw = breite>0 ? `Breite ${num(R*breite)} mm` : `Breite: ${R} Reihen`;
+  const ph = staerke>0 ? `Höhe ${num(L*staerke)} mm` : `Höhe: ${L} Lagen`;
+  const yb=gy+gh+18, xl=gx-16;
+  return `<svg viewBox="0 0 ${W} ${H}">
+    <defs><marker id="arp" markerWidth="11" markerHeight="11" refX="5.5" refY="4" orient="auto">
+      <path d="M2,1 L8.5,4 L2,7" fill="none" stroke="${in2}" stroke-width="1.5"/></marker></defs>
+    ${r}
+    <line x1="${gx}" y1="${yb}" x2="${gx+gw}" y2="${yb}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arp)" marker-end="url(#arp)"/>
+    <line x1="${gx}" y1="${gy+gh+5}" x2="${gx}" y2="${yb+6}" stroke="${in2}" stroke-width="1"/>
+    <line x1="${gx+gw}" y1="${gy+gh+5}" x2="${gx+gw}" y2="${yb+6}" stroke="${in2}" stroke-width="1"/>
+    <text x="${gx+gw/2}" y="${yb+24}" text-anchor="middle" font-size="17" font-weight="700" fill="${ink}">${pw}</text>
+    <line x1="${xl}" y1="${gy}" x2="${xl}" y2="${gy+gh}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arp)" marker-end="url(#arp)"/>
+    <line x1="${xl-6}" y1="${gy}" x2="${gx-5}" y2="${gy}" stroke="${in2}" stroke-width="1"/>
+    <line x1="${xl-6}" y1="${gy+gh}" x2="${gx-5}" y2="${gy+gh}" stroke="${in2}" stroke-width="1"/>
+    <text x="${xl-14}" y="${gy+gh/2}" text-anchor="middle" font-size="17" font-weight="700" fill="${ink}" transform="rotate(-90 ${xl-14} ${gy+gh/2})">${ph}</text>
+    ${(R>dc||L>dr)?`<text x="${gx+gw/2}" y="${gy+8}" text-anchor="middle" font-size="10" fill="var(--ink-2)">${R}×${L} – Darstellung gekürzt</text>`:''}
+  </svg>`;
+}
+
+function chooseArtikel(){
+  const c = pickRows[pickIdx];
+  if(!c) return;
+  draft = { cat:c, measures:[], woodPrice:null, surcharges:[] };
+  openAufmass();
+}
+
+// ══════════ SCHRITT 2: Aufmaßerfassung ══════════
+// Stückzahl aus Aufbau: mit Paket = Pakete × Reihen × Lagen, ohne Paket = direkte Stückzahl
+function stkOf(m){ return m.pakete>0 ? m.pakete*(m.reihen||0)*(m.lagen||0) : (m.stueck||0); }
+function volOf(m){ return stkOf(m) * m.laenge * (m.staerke/1000) * (m.breite/1000); }
+
+function openAufmass(prefill){
+  currentStep = 'aufmass';
+  const c = draft.cat;
+  const P = prefill || {};
+  const pv = (k,def)=> (P[k]!=null && P[k]!=='' ? P[k] : def);
+  ov.hidden = false;
+  ov.innerHTML = `
+    <div class="modal">
+      <div class="mhead"><h2>Aufmaß erfassen</h2>${stepper('aufmass')}<span class="spacer"></span>
+        <button class="linkish" data-close title="Weiter zum Preis (Esc)">✕</button></div>
+      <div class="mbody">
+        <div class="aufgrid">
+          <div class="aufleft">
+            <div class="arthead">📐 <b>${c.a}</b> <span>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')||'&nbsp;'}</span>
+              ${draft.copied?`<span class="copytag">kopiert aus ${draft.source.nr}</span>`:''}
+              <span class="dims">Std.-Maß: ${c.s&&c.b?num(c.s)+' × '+num(c.b)+' mm':'frei'}</span></div>
+            <table class="aufmass">
+              <thead><tr>
+                <th class="n">Pakete</th><th class="n">Reihen</th><th class="n">Lagen</th>
+                <th class="n">Stück ges.</th><th class="n">Länge (m)</th>
+                <th class="n">Stärke</th><th class="n">Breite</th><th class="n" style="padding-right:6px">= m³</th>
+              </tr></thead>
+              <tbody><tr>
+                <td><input id="f_pakete" type="number" min="0" step="1" value="${pv('pakete',0)}"></td>
+                <td><input id="f_reihen" type="number" min="0" step="1" value="${pv('reihen',0)}"></td>
+                <td><input id="f_lagen" type="number" min="0" step="1" value="${pv('lagen',0)}"></td>
+                <td><input id="f_stueck" type="number" min="0" step="1" value="${pv('stueck','')}"></td>
+                <td><input id="f_laenge" type="number" min="0" step="0.01" value="${pv('laenge','')}"></td>
+                <td><input id="f_staerke" type="number" min="0" step="1" value="${pv('staerke', c.s||'')}"></td>
+                <td><input id="f_breite" type="number" min="0" step="1" value="${pv('breite', c.b||'')}"></td>
+                <td class="vol"><span id="liveVol">0,000</span> m³</td>
+              </tr></tbody>
+            </table>
+            <div class="aufhint" id="aufHint"></div>
+            <div class="committed" id="commWrap" hidden>
+              <div class="ch">Erfasste Aufmaße <span class="spacer"></span><span id="commSum"></span></div>
+              <table class="comm"><thead><tr>
+                <th class="n">Pak</th><th class="n">Aufbau</th><th class="n">Stück</th><th class="n">Länge</th><th class="n">Maß</th><th class="n">m³</th><th></th>
+              </tr></thead><tbody id="commBody"></tbody></table>
+            </div>
+          </div>
+          <div class="aufright">
+            <div class="gcard sm"><div class="gt">Querschnitt</div><div id="agxs"></div></div>
+            <div class="gcard sm pak"><div class="gt">Paket</div><div id="agpak"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="mfoot">
+        <div class="khints"><span><kbd>Enter</kbd> nächstes Feld / Zeile</span><span><kbd>Esc</kbd> fertig → Preis</span></div>
+        <span class="spacer"></span>
+        <button class="ghost" id="btnCommit">Zeile übernehmen <kbd>Enter</kbd></button>
+        <button class="primary" id="btnAufDone">Weiter zum Preis <kbd>Esc</kbd></button>
+      </div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>aufmassDone();
+  el('btnAufDone').onclick = ()=>aufmassDone();
+  el('btnCommit').onclick = ()=>commitAuf();
+  const focusF = name => { const n=el('f_'+name); n.focus(); n.select(); };
+  ['pakete','reihen','lagen','stueck','laenge','staerke','breite'].forEach(f=>{
+    const inp = el('f_'+f);
+    inp.addEventListener('input', ()=>{ updateAufMode(); });
+    inp.addEventListener('keydown', e=>{
+      if(e.key!=='Enter') return;
+      e.preventDefault(); e.stopPropagation();
+      const pak = +el('f_pakete').value||0;
+      if(f==='pakete') return focusF(pak>0 ? 'reihen' : 'stueck');
+      if(f==='reihen') return focusF('lagen');
+      if(f==='lagen')  return focusF('laenge');
+      if(f==='stueck') return focusF('laenge');
+      if(f==='laenge'){
+        // Stärke & Breite sind fix aus der Position: sind sie gesetzt, landet die Zeile direkt in der Tabelle
+        const s=+el('f_staerke').value||0, b=+el('f_breite').value||0;
+        if(s>0 && b>0) return commitAuf();
+        return focusF(s>0 ? 'breite' : 'staerke');
+      }
+      if(f==='staerke') return focusF('breite');
+      if(f==='breite') return commitAuf();
+    });
+  });
+  renderComm();
+  updateAufMode();
+  setTimeout(()=>{ const id = P.focusLaenge ? 'f_laenge' : 'f_pakete'; const p=el(id); if(p){ p.focus(); p.select(); } }, 30);
+}
+function readAuf(){
+  return { pakete:+el('f_pakete').value||0, reihen:+el('f_reihen').value||0, lagen:+el('f_lagen').value||0,
+           stueck:+el('f_stueck').value||0, laenge:+el('f_laenge').value||0,
+           staerke:+el('f_staerke').value||0, breite:+el('f_breite').value||0 };
+}
+// Feld-Modus + Live-Anzeigen (m³, Stück ges., Grafiken, Hinweis)
+function updateAufMode(){
+  const pak = +el('f_pakete').value||0;
+  const paketMode = pak>0;
+  el('f_reihen').disabled = !paketMode;
+  el('f_lagen').disabled  = !paketMode;
+  el('f_stueck').disabled = paketMode;   // im Paketmodus berechnet
+  const m = readAuf();
+  if(paketMode) el('f_stueck').value = stkOf(m)||'';   // Pakete × Reihen × Lagen
+  m.stueck = +el('f_stueck').value||0;
+  const vol = volOf(m);
+  el('liveVol').textContent = num3(vol);
+  el('aufHint').innerHTML = paketMode
+    ? `<b>Paketmodus:</b> ${pak} Paket${pak>1?'e':''} × <b>Reihen</b> × <b>Lagen</b> = Bretter je Länge. Reihen/Lagen = Bretter in Breite × Höhe. <kbd>Enter</kbd> springt Feld für Feld; am Ende landet die Zeile in der Tabelle. Für weitere Längen einfach nur die Länge ändern + <kbd>Enter</kbd>.`
+    : `<b>Pakete = 0</b> → kein Paket, Stückzahl direkt eingeben. Reihenfolge mit <kbd>Enter</kbd>: Stück → Länge → (Stärke/Breite einmalig) → Zeile. Danach nur noch die Länge ändern + <kbd>Enter</kbd>.`;
+  updateAufGraphics(m, paketMode);
+}
+function updateAufGraphics(m, paketMode){
+  const s = m.staerke||draft.cat.s||100, b = m.breite||draft.cat.b||100;
+  el('agxs').innerHTML = crossSVG(s, b);
+  el('agpak').innerHTML = paketMode ? packGridSVG(m.reihen, m.lagen, s, b) : `<div class="empty">kein Paket<br>(Pakete = 0)</div>`;
+}
+function commitAuf(){
+  const m = readAuf();
+  m.stueck = stkOf(m);
+  if(!(m.stueck>0 && m.laenge>0 && m.staerke>0 && m.breite>0)){
+    if(m.pakete>0){ for(const f of ['reihen','lagen','laenge','staerke','breite']) if(!(+el('f_'+f).value>0)){ el('f_'+f).focus(); el('f_'+f).select(); break; } }
+    else { for(const f of ['stueck','laenge','staerke','breite']) if(!(+el('f_'+f).value>0)){ el('f_'+f).focus(); el('f_'+f).select(); break; } }
+    return;
+  }
+  m.vol = volOf(m);
+  draft.measures.push(m);
+  renderComm(true);
+  const lf = el('f_laenge'); lf.focus(); lf.select();   // nächstes Aufmaß: nur Länge ändern
+}
+function renderComm(blink){
+  const wrap=el('commWrap');
+  if(!draft.measures.length){ wrap.hidden=true; return; }
+  wrap.hidden=false;
+  el('commBody').innerHTML = draft.measures.map((m,i)=>{
+    const aufbau = m.pakete>0 ? `${m.reihen}×${m.lagen}` : 'lose';
+    return `<tr class="${blink&&i===draft.measures.length-1?'blink':''}">
+      <td class="n">${m.pakete>0?m.pakete:'–'}</td><td class="n">${aufbau}</td>
+      <td class="n">${num(m.stueck,0)}</td><td class="n">${num(m.laenge)} m</td>
+      <td class="n">${num(m.staerke)}×${num(m.breite)}</td><td class="n"><b>${num3(m.vol)}</b></td>
+      <td class="n"><button class="linkish" data-del="${i}" title="Zeile löschen">✕</button></td></tr>`;
+  }).join('');
+  el('commSum').textContent = num3(draft.measures.reduce((s,m)=>s+m.vol,0)) + ' m³ gesamt';
+  el('commBody').querySelectorAll('[data-del]').forEach(b=> b.onclick=()=>{ draft.measures.splice(+b.dataset.del,1); renderComm(); });
+}
+function aufmassDone(){
+  if(!draft.measures.length){ commitAuf(); if(!draft.measures.length) return; }
+  if(draft.copied && !draft.editing){ openCopyPrompt(); return; }   // kopiert → erst fragen, ob Preise bearbeiten
+  openPreisWood();
+}
+
+// ══════════ SCHRITT 3: Preis (wiederverwendbar für Holz + jeden Zuschlag) ══════════
+let priceCtx = null;  // {titel, einheit, std, hist, onConfirm}
+let histIdx = -1;
+
+let priceRows = [];   // Anzeigezeilen der Preistabelle (neueste zuerst, Standard unten)
+function buildPriceRows(ctx){
+  const hist = ctx.hist || [];
+  const rows = [];
+  const std = ctx.std;
+  for(let i=hist.length-1;i>=0;i--){                       // neueste Rechnung oben
+    const older = i>0 ? hist[i-1].preis : null;
+    const pct = older!=null && older>0 ? (hist[i].preis-older)/older*100 : null;
+    const abw = std>0 ? (hist[i].preis-std)/std*100 : null;
+    rows.push({preis:hist[i].preis, datum:hist[i].datum, beleg:hist[i].beleg, pct, abw, latest:i===hist.length-1, isStd:false});
+  }
+  rows.push({preis:std, datum:'—', beleg:'Standardpreis (Stammdaten)', pct:null, abw:null, isStd:true});
+  if(ctx.copied){                                          // kopierte Position: Quell-Angebot oben, vorausgewählt
+    rows.unshift({preis:ctx.copied.preis, datum:ctx.copied.datum, beleg:'Angebot '+ctx.copied.nr,
+      pct:null, abw: std>0?(ctx.copied.preis-std)/std*100:null, isCopied:true});
+  }
+  return rows;
+}
+function openPreis(ctx){
+  priceCtx = ctx; currentStep = 'preis';
+  priceRows = buildPriceRows(ctx);
+  histIdx = 0;                                             // Vorauswahl = oberste Zeile (letzter Kundenpreis, sonst Standard)
+  const initial = priceRows[0].preis;
+  ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal narrow">
+      <div class="mhead"><h2>${ctx.titel}</h2>${stepper(ctx.step||'preis')}<span class="spacer"></span>
+        <button class="linkish" data-close title="Übernehmen (Esc)">✕</button></div>
+      <div class="mbody">
+        <div class="pricebox">
+          <div class="main"><label>Preis</label>
+            <div class="inrow"><input id="pInput" type="number" step="0.01" value="${initial}"><span class="unit">/ ${einhName(ctx.einheit)}</span></div>
+            <div class="pricesrc" id="pSrc"></div>
+          </div>
+        </div>
+        <div class="histtable">
+          <div class="hh">Preishistorie · ${KUNDE} · „${ctx.artLabel}"</div>
+          <table class="hist"><thead><tr><th>Datum</th><th>Beleg</th><th class="n">Preis</th><th class="pct">Δ Vorwert</th><th class="pct">Δ Standard</th></tr></thead>
+            <tbody id="histBody"></tbody></table>
+        </div>
+      </div>
+      <div class="mfoot">
+        <div class="khints"><span><kbd>↑</kbd><kbd>↓</kbd> Zeile wählen</span><span><kbd>Tippen</kbd> überschreiben</span><span><kbd>Enter</kbd>/<kbd>Esc</kbd> übernehmen</span></div>
+        <span class="spacer"></span>
+        <button class="primary" id="pGo">Übernehmen <kbd>Enter</kbd></button>
+      </div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>confirmPreis();
+  el('pGo').onclick = ()=>confirmPreis();
+  const pin = el('pInput');
+  pin.addEventListener('input', ()=>{ histIdx=-1; renderHist(); updateSrc(true); });
+  pin.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); confirmPreis(); } });
+  renderHist(); updateSrc();
+  setTimeout(()=>{ if(document.body.contains(pin)){ pin.focus(); pin.select(); } }, 30);
+}
+function pctHtml(pct){
+  if(pct==null) return '<span class="flat">–</span>';
+  const s = (pct>=0?'+':'') + num(pct,1) + ' %';
+  if(Math.abs(pct)<0.05) return `<span class="flat">±0 %</span>`;
+  return pct>0 ? `<span class="up">▲ ${s}</span>` : `<span class="down">▼ ${s}</span>`;
+}
+function updateSrc(manual){
+  const s = el('pSrc'); if(!s) return;
+  if(manual){ s.className='pricesrc'; s.style.color='var(--accent)'; s.textContent='✎ manuell überschrieben'; return; }
+  const r = priceRows[histIdx];
+  if(!r){ s.textContent=''; return; }
+  if(r.isCopied){ s.className='pricesrc hist'; s.textContent='✓ übernommen aus Angebot '+priceCtx.copied.nr+' ('+r.datum+')'; }
+  else if(r.isStd){ s.className='pricesrc std'; s.textContent='⚠ Standardpreis aus den Stammdaten'; }
+  else if(r.latest){ s.className='pricesrc hist'; s.textContent='✓ letzter Preis dieses Kunden ('+r.datum+')'; }
+  else { s.className='pricesrc'; s.style.color='var(--ink-2)'; s.textContent='früherer Preis ('+r.datum+')'; }
+}
+function renderHist(){
+  const tb=el('histBody'); if(!tb) return;
+  tb.innerHTML = priceRows.map((r,i)=>`
+    <tr class="row ${i===histIdx?'active':''} ${r.latest?'latest':''} ${r.isStd?'stdrow':''} ${r.isCopied?'copiedrow':''}" data-i="${i}">
+      <td>${r.isStd?'':r.datum}${r.latest?'<span class="tag">zuletzt</span>':''}${r.isStd?'<span class="tag">Standard</span>':''}${r.isCopied?'<span class="tag">kopiert</span>':''}</td>
+      <td style="color:var(--ink-2)">${r.beleg}</td>
+      <td class="n">${eur(r.preis)}</td>
+      <td class="pct">${pctHtml(r.pct)}</td>
+      <td class="pct">${r.isStd?'<span class="flat">Basis</span>':pctHtml(r.abw)}</td></tr>`).join('');
+  tb.querySelectorAll('tr.row').forEach(tr=> tr.onclick=()=>{ histIdx=+tr.dataset.i; el('pInput').value=priceRows[histIdx].preis; renderHist(); updateSrc(); });
+}
+function confirmPreis(){ const v = +el('pInput').value||0; const cb = priceCtx.onConfirm; closePreisToNext(); cb(v); }
+function closePreisToNext(){ /* Übergang wird vom onConfirm gesteuert */ }
+
+function openPreisWood(){
+  const c = draft.cat;
+  openPreis({
+    titel:'Holzpreis bestimmen', step:'preis', einheit:c.e, std:c.std, hist:c.hist,
+    artLabel:`${c.a}${c.h?' '+holzName(c.h):''}`,
+    copied: (draft.copied ? {preis:draft.woodPrice, nr:draft.source.nr, datum:draft.source.datum} : null),
+    onConfirm:(v)=>{ draft.woodPrice = v; openZuschlaege(); }
+  });
+}
+
+// ══════════ SCHRITT 4: Zuschläge (Mehrfachauswahl) + Preis je Zuschlag ══════════
+let zList = [];       // D.zus
+let zSel = new Set(); // ausgewählte Indizes
+let zIdx = 0;
+
+function openZuschlaege(){
+  currentStep='zuschlaege';
+  zList = D.zus; zSel = new Set(); zIdx = 0;
+  if(draft.copied && draft.editing){                       // kopierte Zuschläge vorab ankreuzen
+    draft.surcharges.forEach(s=>{ const i=zList.findIndex(z=>z.code===s.code); if(i>=0) zSel.add(i); });
+  }
+  ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal narrow">
+      <div class="mhead"><h2>Zuschläge / Verarbeitungen</h2>${stepper('zuschlaege')}<span class="spacer"></span>
+        <button class="linkish" data-close title="Ohne Zuschlag ins Angebot (Esc)">✕</button></div>
+      <div class="mbody">
+        <p style="margin:0 0 12px;font-size:0.84rem;color:var(--ink-2)">Mehrere mit <kbd>Leertaste</kbd> / <kbd>Strg</kbd>+Klick markieren, dann <kbd>Enter</kbd>. Für jeden Zuschlag folgt dasselbe Preis-Menü wie beim Holz.</p>
+        <div class="zustable"><table class="zus">
+          <thead><tr><th class="chk"></th><th>Verarbeitung</th><th class="n">Standard</th><th class="n">Historie</th></tr></thead>
+          <tbody id="zBody"></tbody></table></div>
+        <div class="zprog" id="zProg"></div>
+      </div>
+      <div class="mfoot">
+        <div class="khints"><span><kbd>↑</kbd><kbd>↓</kbd> bewegen</span><span><kbd>Leertaste</kbd> markieren</span><span><kbd>Enter</kbd> Preise festlegen</span><span><kbd>Esc</kbd> ohne Zuschlag</span></div>
+        <span class="spacer"></span>
+        <button class="primary" id="zGo">Preise festlegen <kbd>Enter</kbd></button>
+      </div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>finalizePosition();
+  el('zGo').onclick = ()=>startZuschlagPrices();
+  renderZ();
+}
+function renderZ(){
+  el('zBody').innerHTML = zList.map((z,i)=>`
+    <tr class="row ${i===zIdx?'active':''} ${zSel.has(i)?'sel':''}" data-i="${i}">
+      <td class="chk"><span class="box">${zSel.has(i)?'✓':''}</span></td>
+      <td>${z.label} <span style="color:var(--ink-2);font-size:0.78rem">(${z.code})</span></td>
+      <td class="n">${eur(z.std)} /m³</td>
+      <td class="n" style="color:var(--ink-2)">${z.hist.length?z.hist.length+' Belege':'–'}</td></tr>`).join('');
+  el('zBody').querySelectorAll('tr.row').forEach(tr=>{
+    tr.onclick=(e)=>{ const i=+tr.dataset.i; zIdx=i; if(e.ctrlKey||e.metaKey){ toggleZ(i); } else { toggleZ(i); } renderZ(); };
+  });
+  const n = zSel.size;
+  el('zProg').textContent = n ? `${n} Zuschlag${n>1?'/Zuschläge':''} markiert – Enter öffnet die Preis-Menüs nacheinander.` : 'Kein Zuschlag markiert – Esc übernimmt die Position ohne Verarbeitung.';
+  el('zGo').disabled = n===0;
+}
+function toggleZ(i){ zSel.has(i)?zSel.delete(i):zSel.add(i); }
+
+function startZuschlagPrices(){
+  if(!zSel.size) return;
+  const chosen = [...zSel].sort((a,b)=>a-b).map(i=>zList[i]);
+  draft.surcharges = [];                                   // Preise werden im Chain neu gesetzt
+  chainZ(chosen, 0);
+}
+function chainZ(list, i){
+  if(i>=list.length){ finalizePosition(); return; }
+  const z = list[i];
+  const cop = (draft.copiedZ && draft.copiedZ[z.code]!=null) ? {preis:draft.copiedZ[z.code], nr:draft.source.nr, datum:draft.source.datum} : null;
+  openPreis({
+    titel:`Preis: ${z.label}`, step:'zuschlaege', einheit:'CBM', std:z.std, hist:z.hist,
+    artLabel:`${z.label} – ${draft.cat.a}`, copied:cop,
+    onConfirm:(v)=>{ draft.surcharges.push({code:z.code, label:z.label, price:v}); chainZ(list, i+1); }
+  });
+}
+
+function finalizePosition(){
+  if(draft && draft.woodPrice!=null && draft.measures.length){
+    positions.push(draft);
+  }
+  draft=null;
+  closeModal();
+  renderAll();
+}
+
+// ══════════ Position anlegen: Neu / Aus altem Angebot kopieren ══════════
+const zByCode = c => D.zus.find(z=>z.code===c) || {code:c,label:c,std:0};
+function buildDummyOrders(){
+  const cbm = D.cat.filter(c=>c.e==='CBM');
+  const pick = (a,h)=> cbm.find(c=>c.a===a&&c.h===h&&c.q==='') || cbm.find(c=>c.a===a&&c.h===h) || cbm.find(c=>c.a===a) || cbm[0];
+  const L = (a,h,s,b,laenge,stueck,preis,codes)=>({ c:pick(a,h), s,b,laenge,stueck,preis,
+      zus: codes.map(cd=>({code:cd, label:zByCode(cd).label, price:zByCode(cd).std})) });
+  return [
+    {nr:'AN-2025-0412', datum:'12.11.2025', lines:[
+      L('SH-HOLZ','F/T',100,100,4,60,322.56,['TRO','HOB']),
+      L('SH-HOLZ','L/D',80,160,5,40,520,['TRO']),
+    ]},
+    {nr:'AN-2025-0188', datum:'03.06.2025', lines:[
+      L('SH-HOLZ','F/T',60,120,4,100,300,[]),
+      L('SH-HOLZ','NH',40,60,3,200,280,['KAP PAK']),
+    ]},
+    {nr:'AN-2024-0631', datum:'21.10.2024', lines:[
+      L('SH-HOLZ','L/D',100,200,6,25,505,['TRO','HOB','IMP BS3']),
+    ]},
+  ];
+}
+const KUNDE_ORDERS = buildDummyOrders();
+function flattenOrders(){ const r=[]; KUNDE_ORDERS.forEach(o=>o.lines.forEach(ln=>r.push({nr:o.nr,datum:o.datum,line:ln}))); return r; }
+
+let choiceIdx=0, copyRows=[], copyIdx=0, promptIdx=0;
+
+function openPositionChoice(){
+  currentStep='choice'; draft=null; choiceIdx=0; ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal narrow">
+      <div class="mhead"><h2>Neue Position anlegen</h2><span class="spacer"></span>
+        <button class="linkish" data-close title="Abbrechen (Esc)">✕</button></div>
+      <div class="mbody"><div class="choice" id="choiceCards"></div></div>
+      <div class="mfoot"><div class="khints"><span><kbd>1</kbd>/<kbd>2</kbd> oder <kbd>←</kbd><kbd>→</kbd></span><span><kbd>Enter</kbd> wählen</span><span><kbd>Esc</kbd> abbrechen</span></div></div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = closeModal;
+  renderChoice();
+}
+function renderChoice(){
+  const opts=[
+    {n:'1',t:'Neue Position',d:'Artikel neu auswählen und Aufmaß, Preis und Zuschläge frisch erfassen.'},
+    {n:'2',t:'Aus altem Angebot kopieren',d:`Frühere Bestellung von ${KUNDE} übernehmen – meist nur die Länge anpassen, Preise & Zuschläge kommen mit.`},
+  ];
+  el('choiceCards').innerHTML = opts.map((o,i)=>`
+    <button type="button" class="choicecard ${i===choiceIdx?'on':''}" data-i="${i}">
+      <span class="cnum">${o.n}</span><h4>${o.t}</h4><p>${o.d}</p></button>`).join('');
+  el('choiceCards').querySelectorAll('.choicecard').forEach(c=>{
+    c.onclick=()=>{ choiceIdx=+c.dataset.i; renderChoice(); };
+    c.ondblclick=()=>confirmChoice();
+  });
+}
+function confirmChoice(){ if(choiceIdx===0) openArtikel(); else openCopyPicker(); }
+
+function openCopyPicker(){
+  currentStep='copy'; copyRows=flattenOrders(); copyIdx=0; ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal">
+      <div class="mhead"><h2>Aus altem Angebot kopieren</h2><span class="spacer"></span>
+        <button class="linkish" data-close title="Zurück (Esc)">✕</button></div>
+      <div class="mbody">
+        <p style="margin:0 0 12px;font-size:0.86rem;color:var(--ink-2)">Alle bisherigen Bestellungen von <b>${KUNDE}</b>. Zeile wählen mit <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> (oder Klick). Danach im Aufmaß nur noch die Länge anpassen.</p>
+        <div class="restable"><div class="scroll"><table class="res">
+          <thead><tr><th>Angebot</th><th>Datum</th><th>Artikel</th><th>Holz/Qual.</th><th class="n">Maß</th><th class="n">Länge</th><th class="n">Preis</th><th>Zuschläge</th></tr></thead>
+          <tbody id="copyBody"></tbody></table></div></div>
+      </div>
+      <div class="mfoot"><div class="khints"><span><kbd>↑</kbd><kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> kopieren</span><span><kbd>Esc</kbd> zurück</span></div>
+        <span class="spacer"></span><button class="primary" id="copyGo">Übernehmen <kbd>Enter</kbd></button></div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>openPositionChoice();
+  el('copyGo').onclick = ()=>chooseCopy();
+  renderCopy();
+}
+function renderCopy(){
+  el('copyBody').innerHTML = copyRows.map((r,i)=>{
+    const ln=r.line, c=ln.c;
+    const z = ln.zus.length ? ln.zus.map(x=>x.code).join(', ') : '–';
+    return `<tr class="row ${i===copyIdx?'active':''}" data-i="${i}">
+      <td><b>${r.nr}</b></td><td>${r.datum}</td>
+      <td>${c.a}</td><td>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')||'–'}</td>
+      <td class="n">${num(ln.s)}×${num(ln.b)}</td><td class="n">${num(ln.laenge)} m</td>
+      <td class="n">${eur(ln.preis)}/${einhName(c.e)}</td><td style="color:var(--ink-2)">${z}</td></tr>`;
+  }).join('');
+  el('copyBody').querySelectorAll('tr.row').forEach(tr=>{
+    tr.onclick=()=>{ copyIdx=+tr.dataset.i; renderCopy(); };
+    tr.ondblclick=()=>chooseCopy();
+  });
+  const act=el('copyBody').querySelector('tr.active'); if(act) act.scrollIntoView({block:'nearest'});
+}
+function chooseCopy(){
+  const r=copyRows[copyIdx]; if(!r) return;
+  const ln=r.line;
+  draft={ cat:ln.c, measures:[], woodPrice:ln.preis, surcharges:ln.zus.map(z=>({...z})),
+          copied:true, editing:false, source:{nr:r.nr,datum:r.datum},
+          copiedZ:Object.fromEntries(ln.zus.map(z=>[z.code,z.price])) };
+  openAufmass({pakete:0,reihen:0,lagen:0,stueck:ln.stueck,laenge:ln.laenge,staerke:ln.s,breite:ln.b,focusLaenge:true});
+}
+
+function openCopyPrompt(){
+  currentStep='copyprompt'; promptIdx=0; ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal narrow">
+      <div class="mhead"><h2>Kopierte Position</h2><span class="spacer"></span>
+        <button class="linkish" data-close title="Nein (Esc)">✕</button></div>
+      <div class="mbody"><div class="cprompt">
+        <div class="big">📋</div>
+        <h3>Position wurde kopiert</h3>
+        <p>Preis (${eur(draft.woodPrice)}/${einhName(draft.cat.e)}) und ${draft.surcharges.length} Zuschlag${draft.surcharges.length===1?'':'e'} aus Angebot <b>${draft.source.nr}</b> übernommen. Preise jetzt nachbearbeiten?</p>
+        <div class="promptopts" id="promptOpts"></div>
+      </div></div>
+      <div class="mfoot"><div class="khints"><span><kbd>←</kbd><kbd>→</kbd> wählen</span><span><kbd>N</kbd>/<kbd>J</kbd></span><span><kbd>Enter</kbd> bestätigen</span></div></div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>{ promptIdx=0; confirmPrompt(); };
+  renderPrompt();
+}
+function renderPrompt(){
+  const opts=[{t:'Nein',d:'kopierte Preise übernehmen'},{t:'Ja',d:'Preise durchgehen'}];
+  el('promptOpts').innerHTML = opts.map((o,i)=>`<button type="button" class="promptopt ${i===promptIdx?'on':''}" data-i="${i}">${o.t}<small>${o.d}</small></button>`).join('');
+  el('promptOpts').querySelectorAll('.promptopt').forEach(bn=>{ bn.onclick=()=>{ promptIdx=+bn.dataset.i; renderPrompt(); }; bn.ondblclick=()=>confirmPrompt(); });
+}
+function confirmPrompt(){
+  if(promptIdx===0){ finalizePosition(); }               // Nein → kopierte Preise übernehmen
+  else { draft.editing=true; openPreisWood(); }           // Ja → Preise durchgehen (vorbelegt)
+}
+
+// ══════════ Angebot + Viewer rendern ══════════
+function renderAll(){ renderPosList(); renderSheet(); }
+
+function renderPosList(){
+  const wrap = el('posList');
+  if(!positions.length){ wrap.innerHTML = `<div class="emptyhint" style="margin-top:14px">Noch keine Position. <kbd>F3</kbd> oder „Position erfassen" startet den geführten Ablauf: Artikel → Aufmaß → Preis → Zuschläge.</div>`; return; }
+  wrap.innerHTML = positions.map((p,i)=>{
+    const c=p.cat, vol=posVol(p), ai=allIn(p);
+    const bd = [`<div class="r wood"><span>Holz (${c.a})</span><span>${eur2(p.woodPrice)} /${einhName(c.e)}</span></div>`]
+      .concat(p.surcharges.map(z=>`<div class="r"><span>+ ${z.label}</span><span>${eur2(z.price)} /m³</span></div>`))
+      .concat([`<div class="allin"><span>Verkaufspreis (all-in)</span><span>${eur2(ai)} /${einhName(c.e)}</span></div>`]).join('');
+    const meas = p.measures.map(m=>{
+      const stk=(m.pakete>0?m.pakete:1)*m.stueck;
+      return `<div class="m"><span>${m.pakete>0?m.pakete+' Pak × ':''}${num(m.stueck,0)} Stk · ${num(m.laenge)} m · ${num(m.staerke)}×${num(m.breite)} mm</span><span>${num3(m.vol)} m³ · ${eur2(m.vol*ai)}</span></div>`;
+    }).join('');
+    return `<div class="posblock">
+      <div class="head"><span class="no">${i+1}</span><b>${c.a}</b>
+        <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${num3(vol)} m³</small>
+        <span class="spacer"></span><b>${eur(posSum(p))}</b>
+        <button class="linkish" data-del="${i}" title="Position löschen">✕</button></div>
+      <div class="body"><div class="breakdown">${bd}</div><div class="measures">${meas}</div></div>
+    </div>`;
+  }).join('');
+  wrap.querySelectorAll('[data-del]').forEach(b=> b.onclick=()=>{ positions.splice(+b.dataset.del,1); renderAll(); });
+}
+
+function renderSheet(){
+  const netto = positions.reduce((s,p)=>s+posSum(p),0);
+  const mwst = netto*MWST;
+  let rows='';
+  positions.forEach((p,i)=>{
+    const c=p.cat, ai=allIn(p), vol=posVol(p);
+    rows += `<tr class="art"><td>${i+1}</td><td>${c.a}<small>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')}</small></td>
+      <td class="n">${num3(vol)} m³</td><td class="n">${eur2(ai)}</td><td class="n">${eur2(posSum(p))}</td></tr>`;
+    p.measures.forEach(m=>{
+      rows += `<tr class="meas"><td></td><td>${m.pakete>0?m.pakete+' Pakete × ':''}${num(m.stueck,0)} Stk, Länge ${num(m.laenge)} m, ${num(m.staerke)}×${num(m.breite)} mm</td><td class="n">${num3(m.vol)} m³</td><td></td><td></td></tr>`;
+    });
+    p.surcharges.forEach(z=>{
+      rows += `<tr class="zus"><td></td><td>${z.label} (im Preis enthalten)</td><td></td><td></td><td></td></tr>`;
+    });
+  });
+  if(!positions.length) rows = `<tr><td colspan="5" style="text-align:center;color:var(--ink-2);padding:26px">Noch keine Positionen im Angebot</td></tr>`;
+  const d = new Date(2026,6,13).toLocaleDateString('de-DE');
+  el('sheet').innerHTML = `
+    <div class="brand"><div class="logo">Ihr Sägewerk GmbH<span>Schnittholz · Handel · Rundholz</span></div>
+      <div class="co">Waldstraße 1 · 27472 Musterort<br>Tel. 0123 / 456 78 · info@saegewerk.de<br>USt-IdNr. DE123456789</div></div>
+    <div class="to"><b>${KUNDE}</b>Zimmereiweg 5 · 27474 Handwerkstadt</div>
+    <h3>Angebot</h3>
+    <div class="meta">Angebot-Nr. 2026-0742 · Datum ${d} · Lieferung: LKW-fähige Abladestelle · gültig 30 Tage</div>
+    <table class="doc"><thead><tr><th>Pos</th><th>Bezeichnung</th><th class="n">Menge</th><th class="n">Einzel</th><th class="n">Gesamt</th></tr></thead>
+      <tbody>${rows}</tbody></table>
+    <div class="docsum">
+      <div class="r"><span>Summe netto</span><span>${eur2(netto)}</span></div>
+      <div class="r muted"><span>zzgl. 19 % MwSt</span><span>${eur2(mwst)}</span></div>
+      <div class="r grand"><span>Gesamtbetrag</span><span>${eur2(netto+mwst)}</span></div>
+    </div>
+    <div class="foot">Es gelten unsere AGB. Preise freibleibend. Alle Maße in mm, Mengen in m³ (Kubikmeter).</div>`;
+}
+
+// ══════════ Globale Tastatursteuerung ══════════
+document.addEventListener('keydown', e=>{
+  // F3 / global
+  if(e.key==='F3'){ e.preventDefault(); if(!currentStep) openPositionChoice(); return; }
+  if(!currentStep){ return; }
+
+  if(currentStep==='choice'){
+    if(e.key==='Escape'){ e.preventDefault(); closeModal(); return; }
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); choiceIdx=0; renderChoice(); return; }
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); choiceIdx=1; renderChoice(); return; }
+    if(e.key==='1'){ e.preventDefault(); choiceIdx=0; renderChoice(); confirmChoice(); return; }
+    if(e.key==='2'){ e.preventDefault(); choiceIdx=1; renderChoice(); confirmChoice(); return; }
+    if(e.key==='Enter'){ e.preventDefault(); confirmChoice(); return; }
+    return;
+  }
+  else if(currentStep==='copy'){
+    if(e.key==='Escape'){ e.preventDefault(); openPositionChoice(); return; }
+    if(e.key==='ArrowDown'){ e.preventDefault(); copyIdx=Math.min(copyIdx+1,copyRows.length-1); renderCopy(); return; }
+    if(e.key==='ArrowUp'){ e.preventDefault(); copyIdx=Math.max(copyIdx-1,0); renderCopy(); return; }
+    if(e.key==='Enter'){ e.preventDefault(); chooseCopy(); return; }
+    return;
+  }
+  else if(currentStep==='copyprompt'){
+    if(e.key==='Escape'){ e.preventDefault(); promptIdx=0; confirmPrompt(); return; }
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); promptIdx=0; renderPrompt(); return; }
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); promptIdx=1; renderPrompt(); return; }
+    if(e.key==='n'||e.key==='N'){ e.preventDefault(); promptIdx=0; confirmPrompt(); return; }
+    if(e.key==='j'||e.key==='J'){ e.preventDefault(); promptIdx=1; confirmPrompt(); return; }
+    if(e.key==='Enter'){ e.preventDefault(); confirmPrompt(); return; }
+    return;
+  }
+
+  if(currentStep==='artikel'){
+    if(e.key==='Escape'){ e.preventDefault(); closeModal(); return; }
+    if(e.key==='ArrowDown'){ e.preventDefault(); if(pickRows.length){ pickIdx=Math.min(pickIdx+1,pickRows.length-1); renderRes(); } return; }
+    if(e.key==='ArrowUp'){ e.preventDefault(); if(pickRows.length){ pickIdx=Math.max(pickIdx-1,0); renderRes(); } return; }
+    if(e.key==='Enter'){ e.preventDefault(); chooseArtikel(); return; }
+  }
+  else if(currentStep==='aufmass'){
+    if(e.key==='Escape'){ e.preventDefault(); aufmassDone(); return; }
+  }
+  else if(currentStep==='preis'){
+    if(e.key==='Escape'){ e.preventDefault(); confirmPreis(); return; }
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+      if(!priceRows.length) return; e.preventDefault();
+      histIdx = histIdx<0 ? 0 : (e.key==='ArrowDown'?Math.min(histIdx+1,priceRows.length-1):Math.max(histIdx-1,0));
+      el('pInput').value = priceRows[histIdx].preis; renderHist(); updateSrc(); return;
+    }
+  }
+  else if(currentStep==='zuschlaege'){
+    if(e.key==='Escape'){ e.preventDefault(); finalizePosition(); return; }
+    if(e.key==='ArrowDown'){ e.preventDefault(); zIdx=Math.min(zIdx+1,zList.length-1); renderZ(); return; }
+    if(e.key==='ArrowUp'){ e.preventDefault(); zIdx=Math.max(zIdx-1,0); renderZ(); return; }
+    if(e.key===' '){ e.preventDefault(); toggleZ(zIdx); renderZ(); return; }
+    if(e.key==='Enter'){ e.preventDefault(); if(zSel.size) startZuschlagPrices(); else finalizePosition(); return; }
+  }
+});
+
+el('btnNew').onclick = ()=>{ if(!currentStep && !tourActive) openPositionChoice(); };
+el('btnReset').onclick = ()=>{ if(tourActive) return; positions=[]; renderAll(); };
+
+// ══════════ Geführte Tour ══════════
+let tourActive=false, tourIdx=-1, tourSnapshot=null;
+
+function demoPick(){
+  el('q').value='SH'; applyFilterFromSearch();
+  const i = pickRows.findIndex(c=>c.a==='SH-HOLZ' && c.h==='F/T' && c.q==='');
+  pickIdx = i>=0?i:0; renderRes();
+}
+function demoAuf(){
+  el('f_pakete').value=0; el('f_stueck').value=60; el('f_laenge').value=4; el('f_staerke').value=100; el('f_breite').value=100;
+  updateAufMode(); commitAuf();
+  el('f_laenge').value=5; commitAuf();
+}
+function demoFinalize(){
+  if(draft && draft.woodPrice==null) draft.woodPrice = draft.cat.hist.length ? draft.cat.hist[draft.cat.hist.length-1].preis : draft.cat.std;
+  if(draft) draft.surcharges=[{code:'TRO',label:'Trocknen',price:50},{code:'HOB',label:'Hobeln',price:30}];
+  finalizePosition();
+}
+
+function demoCopyAuf(){ const lf=el('f_laenge'); if(lf) lf.value='5'; updateAufMode(); aufmassDone(); }
+
+const TOUR = [
+  { target:'#btnNew', title:'Willkommen 👋',
+    body:`Diese Tour führt einmal komplett durch die Angebotserfassung und zeigt, welche Taste wann hilft. <b>Alles geht auch mit der Maus.</b><br><br>Eine neue Position startest du mit <kbd>F3</kbd> oder diesem Knopf. Weiter mit <kbd>Enter</kbd> / <kbd>→</kbd>.` },
+  { setup:()=>openPositionChoice(), target:'.choice', title:'Zwei Wege',
+    body:`Beim Anlegen fragt das Tool: <b>1 · Neue Position</b> (frisch erfassen) oder <b>2 · Aus altem Angebot kopieren</b> (frühere Bestellung des Kunden übernehmen).<br><br>Wählbar mit <kbd>1</kbd>/<kbd>2</kbd>, <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd> oder Klick. <b>Wir gehen zuerst „Neu".</b>` },
+
+  // ── Weg 1: Neue Position ──
+  { setup:()=>{ choiceIdx=0; confirmChoice(); }, target:'#q', title:'Weg 1 · Artikel suchen',
+    body:`Der Cursor steht sofort in der Suche – einfach lostippen, z. B. <kbd>S</kbd><kbd>H</kbd>. Die Tabelle unten filtert live auf alles, wo „SH" vorkommt.` },
+  { target:'.wgnav', title:'Weg 1 · … oder durchklicken',
+    body:`Wer lieber klickt, navigiert hier durch <b>Bereich → Warengruppe → Untergruppe</b>. Graue Zweige (Rohholz/Einkauf, Logistik) haben noch keine Verkaufsartikel.` },
+  { target:'.graphics', title:'Weg 1 · Vorschau rechts',
+    body:`Rechts siehst du den <b>Querschnitt</b> (Stärke × Breite mit Maßketten) und – falls der Artikel im Paket verkauft wird – die <b>Paketansicht</b>.` },
+  { setup:()=>demoPick(), target:'.restable', title:'Weg 1 · Treffer auswählen',
+    body:`Die <b>erste Zeile ist automatisch markiert</b>. Mit <kbd>↑</kbd><kbd>↓</kbd> wandern, mit <kbd>Enter</kbd> übernehmen. Mit der Maus: Zeile anklicken (Doppelklick wählt direkt).` },
+  { setup:()=>chooseArtikel(), target:'table.aufmass', title:'Weg 1 · Aufmaß eingeben',
+    body:`Jetzt die Maße. <kbd>Enter</kbd> springt Feld für Feld: <b>Pakete → Reihen → Lagen → Länge → (Stärke/Breite einmalig)</b>.<br><br><b>Pakete = 0</b> = kein Paket, dann direkt Stück. Ein Paket = <b>Reihen × Lagen</b> Bretter (z. B. 10 × 10 = 100).` },
+  { target:'.aufright', title:'Weg 1 · Live-Grafik',
+    body:`Querschnitt und Paket zeichnen sich live mit – beim Paket mit Maßketten für <b>Breite</b> und <b>Höhe</b>.` },
+  { setup:()=>demoAuf(), target:'#commWrap', title:'Weg 1 · Mehrere Längen',
+    body:`Am Zeilenende landet das Aufmaß hier in der Tabelle. Für weitere Längen einfach <b>nur die Länge ändern</b> und <kbd>Enter</kbd> – Stärke/Breite bleiben stehen. Fertig? <kbd>Esc</kbd> führt zum Preis.` },
+  { setup:()=>aufmassDone(), target:'.histtable', title:'Weg 1 · Preis bestimmen',
+    body:`Vorbelegt ist der <b>letzte Preis dieses Kunden</b> (oberste Zeile). Mit <kbd>↑</kbd><kbd>↓</kbd> eine ältere Rechnung übernehmen oder einfach neuen Preis tippen.<br><br>Spalten: <b>Δ Vorwert</b> und <b>Δ Standard</b>. Ganz unten der Standardpreis – bei Neukunden steht er dadurch oben. Weiter mit <kbd>Enter</kbd> / <kbd>Esc</kbd>.` },
+  { setup:()=>confirmPreis(), target:'.zustable', title:'Weg 1 · Zuschläge wählen',
+    body:`Verarbeitungen mehrfach markieren mit <kbd>Leertaste</kbd> (oder <kbd>Strg</kbd>+Klick), dann <kbd>Enter</kbd>. Ohne Zuschlag: einfach <kbd>Esc</kbd>.` },
+  { setup:()=>{ zSel=new Set([0,1]); zIdx=1; renderZ(); startZuschlagPrices(); }, target:'.pricebox', title:'Weg 1 · Preis je Zuschlag',
+    body:`Für <b>jeden</b> markierten Zuschlag öffnet sich exakt dasselbe Preis-Menü – mit eigener Historie. Nacheinander durchbestätigen mit <kbd>Enter</kbd> / <kbd>Esc</kbd>.` },
+  { setup:()=>demoFinalize(), target:'#posList', title:'Weg 1 · fertig ✔',
+    body:`Position 1 steht im Angebot. <b>Links</b> die interne Aufschlüsselung (Holz + Zuschläge, all-in), <b>rechts</b> das Kunden-PDF mit nur dem Gesamtpreis. <br><br>Jetzt zeigen wir den <b>zweiten Weg</b> – weiter mit <kbd>Enter</kbd>.` },
+
+  // ── Weg 2: Aus altem Angebot kopieren ──
+  { setup:()=>{ openPositionChoice(); choiceIdx=1; renderChoice(); }, target:'.choice', title:'Weg 2 · Aus altem Angebot kopieren',
+    body:`Für Wiederholungsbestellungen der schnellste Weg. Wir wählen jetzt <b>Option 2</b> (Taste <kbd>2</kbd>).` },
+  { setup:()=>{ choiceIdx=1; confirmChoice(); }, target:'.restable', title:'Weg 2 · Frühere Bestellung wählen',
+    body:`Hier stehen <b>alle bisherigen Bestellungen des Kunden</b> (Angebot-Nr, Datum, Artikel, Maß, Länge, Preis, Zuschläge). Zeile mit <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> (oder Klick) übernehmen.` },
+  { setup:()=>{ copyIdx=0; chooseCopy(); }, target:'table.aufmass', title:'Weg 2 · Nur die Länge',
+    body:`Du landest direkt im Aufmaß – <b>Länge ist markiert</b>, Stärke/Breite/Stück kommen aus der Kopie. Länge ändern, <kbd>Enter</kbd> (weitere Längen) oder <kbd>Esc</kbd>.` },
+  { setup:()=>demoCopyAuf(), target:'.cprompt', title:'Weg 2 · Preise nachbearbeiten?',
+    body:`Preis <b>und</b> Zuschläge sind aus dem alten Angebot übernommen. Die Abfrage: <b>Nein</b> (Vorauswahl) = so übernehmen, <b>Ja</b> = Preise durchgehen (dann vorbelegt mit dem kopierten Wert). Wählbar mit <kbd>N</kbd>/<kbd>J</kbd> bzw. <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd>.` },
+  { setup:()=>{ promptIdx=0; confirmPrompt(); }, target:'#posList', title:'Fertig ✔ – das war die Tour',
+    body:`Position 2 wurde in Sekunden kopiert – ganz ohne Preis- und Zuschlag-Klicks. <br><br>Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b> wählen, und los. Viel Erfolg!` },
+];
+
+function startTour(){
+  if(tourActive) return;
+  closeModal(); draft=null;
+  tourSnapshot = JSON.parse(JSON.stringify(positions));
+  tourActive=true; tourIdx=-1;
+  buildTourDom();
+  goTour(0);
+}
+function endTour(){
+  tourActive=false;
+  const d=el('tourBlock'); if(d) d.remove();
+  closeModal(); draft=null;
+  positions = tourSnapshot ? JSON.parse(JSON.stringify(tourSnapshot)) : positions;
+  renderAll();
+}
+function buildTourDom(){
+  const d=document.createElement('div'); d.id='tourBlock';
+  d.innerHTML = `<div id="tourRing"></div>
+    <div id="tourTip">
+      <div class="tprog"><span id="tourProg"></span></div>
+      <h4 id="tourTitle"></h4>
+      <div class="tbody" id="tourBody"></div>
+      <div class="trow">
+        <button class="ghost" id="tourEnd">Beenden</button>
+        <span class="spacer"></span>
+        <div class="tourdots" id="tourDots"></div>
+        <button class="ghost" id="tourPrev">← Zurück</button>
+        <button class="primary" id="tourNext">Weiter →</button>
+      </div>
+    </div>`;
+  document.body.appendChild(d);
+  el('tourEnd').onclick = endTour;
+  el('tourPrev').onclick = ()=>goTour(tourIdx-1);
+  el('tourNext').onclick = ()=>goTour(tourIdx+1);
+  d.addEventListener('mousedown', e=>{ if(!e.target.closest('#tourTip')) e.preventDefault(); });
+}
+function goTour(newIdx){
+  if(newIdx<0 || newIdx>=TOUR.length){ endTour(); return; }
+  if(newIdx === tourIdx+1){ TOUR[newIdx].setup && TOUR[newIdx].setup(); }
+  else { // Rücksprung: sauber von vorne replayen
+    positions = JSON.parse(JSON.stringify(tourSnapshot)); draft=null; closeModal(); renderAll();
+    for(let k=0;k<=newIdx;k++) TOUR[k].setup && TOUR[k].setup();
+  }
+  tourIdx=newIdx;
+  setTimeout(renderTourUI, 70);
+}
+function renderTourUI(){
+  const st=TOUR[tourIdx]; if(!st) return;
+  el('tourProg').textContent = `Schritt ${tourIdx+1} von ${TOUR.length}`;
+  el('tourTitle').textContent = st.title;
+  el('tourBody').innerHTML = st.body;
+  el('tourPrev').style.visibility = tourIdx===0 ? 'hidden':'visible';
+  el('tourNext').textContent = tourIdx===TOUR.length-1 ? 'Fertig ✔' : 'Weiter →';
+  el('tourDots').innerHTML = TOUR.map((_,i)=>`<i class="${i===tourIdx?'on':''}"></i>`).join('');
+  const tgt = document.querySelector(st.target);
+  const ring=el('tourRing'), tip=el('tourTip');
+  if(tgt){
+    try{ tgt.scrollIntoView({block:'center'}); }catch(e){}
+    const r = tgt.getBoundingClientRect(), pad=6;
+    ring.style.display='block';
+    ring.style.left=(r.left-pad)+'px'; ring.style.top=(r.top-pad)+'px';
+    ring.style.width=(r.width+pad*2)+'px'; ring.style.height=(r.height+pad*2)+'px';
+    placeTip(tip, r);
+  } else { ring.style.display='none'; tip.style.left=(innerWidth/2-174)+'px'; tip.style.top=(innerHeight/2-120)+'px'; }
+}
+function placeTip(tip, r){
+  const tw=348, th=tip.offsetHeight||210, m=14, vw=innerWidth, vh=innerHeight;
+  let left, top;
+  if(r.bottom+th+m < vh){ top=r.bottom+m; left=r.left; }
+  else if(r.top-th-m > 0){ top=r.top-th-m; left=r.left; }
+  else if(r.right+tw+m < vw){ left=r.right+m; top=r.top; }
+  else { left=r.left-tw-m; top=r.top; }
+  left=Math.min(Math.max(left,m), vw-tw-m);
+  top=Math.min(Math.max(top,m), vh-th-m);
+  tip.style.left=left+'px'; tip.style.top=top+'px';
+}
+// Tastatursteuerung der Tour (Capture, damit die App-Handler nicht mitfeuern)
+window.addEventListener('keydown', e=>{
+  if(!tourActive) return;
+  e.stopPropagation(); e.preventDefault();
+  if(e.key==='ArrowRight'||e.key==='Enter') goTour(tourIdx+1);
+  else if(e.key==='ArrowLeft') goTour(tourIdx-1);
+  else if(e.key==='Escape') endTour();
+}, true);
+window.addEventListener('resize', ()=>{ if(tourActive) renderTourUI(); });
+el('btnTour').onclick = startTour;
+
+renderAll();
+</script>
+</body>
+</html>
