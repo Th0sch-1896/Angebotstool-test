@@ -239,6 +239,20 @@
   table.zus tr.sel .box { background: var(--accent); border-color: var(--accent); }
   .zprog { font-size: 0.8rem; color: var(--ink-2); margin-top: 10px; }
 
+  /* ── Position bearbeiten (Klick-Bereiche + Inline) ── */
+  .editrow { position: relative; cursor: pointer; border-radius: 6px; padding: 3px 8px 3px 24px; margin: 0 -8px; transition: background .12s, box-shadow .12s; }
+  .editrow::before { content: '✎'; position: absolute; left: 6px; top: 50%; transform: translateY(-50%); color: var(--ink-2); opacity: 0.4; font-size: 0.85em; transition: opacity .12s, color .12s; }
+  .editrow:hover { background: var(--accent-soft); box-shadow: inset 0 0 0 1px oklch(0.85 0.05 265); }
+  .editrow:hover::before { opacity: 1; color: var(--accent); }
+  /* Inline-Werte: sehen aus wie kleine Eingabefelder */
+  .qedit { cursor: text; background: oklch(0.965 0.02 265); border: 1px solid oklch(0.86 0.04 265); border-radius: 5px; padding: 1px 6px; font-weight: 600; white-space: nowrap; transition: border-color .12s, background .12s; }
+  .qedit::after { content: ' ✎'; font-size: 0.72em; opacity: 0.55; }
+  .qedit:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .qinput { width: 74px; font: inherit; font-size: 0.82rem; padding: 2px 6px; border: 1.5px solid var(--accent); border-radius: 5px; text-align: right; font-variant-numeric: tabular-nums; box-shadow: 0 0 0 3px var(--accent-soft); }
+  .edithint { font-size: 0.74rem; color: var(--accent); margin-top: 10px; padding-top: 8px; border-top: 1px dashed var(--line); font-weight: 600; }
+  .posflash { animation: posflash 1.2s ease-out; }
+  @keyframes posflash { 0% { box-shadow: 0 0 0 3px var(--accent); } 100% { box-shadow: 0 0 0 0 transparent; } }
+
   /* ── Position anlegen: Auswahl / Kopieren ── */
   .choice { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   @media (max-width: 560px) { .choice { grid-template-columns: 1fr; } }
@@ -359,6 +373,7 @@ const firstUG = (b,w) => ugOf(b,w).find(u=>cntPath(b,w,u)>0) || ugOf(b,w)[0];
 // ══════════ Modal-Infrastruktur ══════════
 let currentStep = null;    // 'artikel' | 'aufmass' | 'preis' | 'zuschlaege'
 let draft = null;          // in Arbeit befindliche Position
+let editMode = null;       // {idx, aspect} während des Bearbeitens einer bestehenden Position
 const ov = el('overlay');
 
 function closeModal(){ currentStep=null; ov.hidden=true; ov.innerHTML=''; }
@@ -560,8 +575,8 @@ function openAufmass(prefill){
   ov.hidden = false;
   ov.innerHTML = `
     <div class="modal">
-      <div class="mhead"><h2>Aufmaß erfassen</h2>${stepper('aufmass')}<span class="spacer"></span>
-        <button class="linkish" data-close title="Weiter zum Preis (Esc)">✕</button></div>
+      <div class="mhead"><h2>${editMode?'Aufmaß ändern':'Aufmaß erfassen'}</h2>${editMode?'':stepper('aufmass')}<span class="spacer"></span>
+        <button class="linkish" data-close title="${editMode?'Speichern':'Weiter zum Preis'} (Esc)">✕</button></div>
       <div class="mbody">
         <div class="aufgrid">
           <div class="aufleft">
@@ -603,7 +618,7 @@ function openAufmass(prefill){
         <div class="khints"><span><kbd>Enter</kbd> nächstes Feld / Zeile</span><span><kbd>Esc</kbd> fertig → Preis</span></div>
         <span class="spacer"></span>
         <button class="ghost" id="btnCommit">Zeile übernehmen <kbd>Enter</kbd></button>
-        <button class="primary" id="btnAufDone">Weiter zum Preis <kbd>Esc</kbd></button>
+        <button class="primary" id="btnAufDone">${editMode?'Speichern':'Weiter zum Preis'} <kbd>Esc</kbd></button>
       </div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>aufmassDone();
@@ -673,7 +688,8 @@ function commitAuf(){
   m.vol = volOf(m);
   draft.measures.push(m);
   renderComm(true);
-  const lf = el('f_laenge'); lf.focus(); lf.select();   // nächstes Aufmaß: nur Länge ändern
+  const lf = el('f_laenge'); lf.value=''; lf.focus();   // Länge leeren → keine Doppel-Erfassung, nächste Länge eintippen
+  updateAufMode();
 }
 function renderComm(blink){
   const wrap=el('commWrap');
@@ -691,6 +707,7 @@ function renderComm(blink){
   el('commBody').querySelectorAll('[data-del]').forEach(b=> b.onclick=()=>{ draft.measures.splice(+b.dataset.del,1); renderComm(); });
 }
 function aufmassDone(){
+  if(editMode){ tryCommitPending(); if(!draft.measures.length) return; saveEdit(); return; }   // Bearbeitung: speichern
   if(!draft.measures.length){ commitAuf(); if(!draft.measures.length) return; }
   if(draft.copied && !draft.editing){ openCopyPrompt(); return; }   // kopiert → erst fragen, ob Preise bearbeiten
   openPreisWood();
@@ -716,6 +733,10 @@ function buildPriceRows(ctx){
     rows.unshift({preis:ctx.copied.preis, datum:ctx.copied.datum, beleg:'Angebot '+ctx.copied.nr,
       pct:null, abw: std>0?(ctx.copied.preis-std)/std*100:null, isCopied:true});
   }
+  if(ctx.current){                                         // Bearbeitung: aktueller Positionspreis oben, vorausgewählt
+    rows.unshift({preis:ctx.current.preis, datum:'', beleg:ctx.current.label,
+      pct:null, abw: std>0?(ctx.current.preis-std)/std*100:null, isCurrent:true});
+  }
   return rows;
 }
 function openPreis(ctx){
@@ -726,7 +747,7 @@ function openPreis(ctx){
   ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead"><h2>${ctx.titel}</h2>${stepper(ctx.step||'preis')}<span class="spacer"></span>
+      <div class="mhead"><h2>${ctx.titel}</h2>${editMode?'':stepper(ctx.step||'preis')}<span class="spacer"></span>
         <button class="linkish" data-close title="Übernehmen (Esc)">✕</button></div>
       <div class="mbody">
         <div class="pricebox">
@@ -766,7 +787,8 @@ function updateSrc(manual){
   if(manual){ s.className='pricesrc'; s.style.color='var(--accent)'; s.textContent='✎ manuell überschrieben'; return; }
   const r = priceRows[histIdx];
   if(!r){ s.textContent=''; return; }
-  if(r.isCopied){ s.className='pricesrc hist'; s.textContent='✓ übernommen aus Angebot '+priceCtx.copied.nr+' ('+r.datum+')'; }
+  if(r.isCurrent){ s.className='pricesrc hist'; s.textContent='✓ aktueller Preis der Position – bei Bedarf ändern'; }
+  else if(r.isCopied){ s.className='pricesrc hist'; s.textContent='✓ übernommen aus Angebot '+priceCtx.copied.nr+' ('+r.datum+')'; }
   else if(r.isStd){ s.className='pricesrc std'; s.textContent='⚠ Standardpreis aus den Stammdaten'; }
   else if(r.latest){ s.className='pricesrc hist'; s.textContent='✓ letzter Preis dieses Kunden ('+r.datum+')'; }
   else { s.className='pricesrc'; s.style.color='var(--ink-2)'; s.textContent='früherer Preis ('+r.datum+')'; }
@@ -774,8 +796,8 @@ function updateSrc(manual){
 function renderHist(){
   const tb=el('histBody'); if(!tb) return;
   tb.innerHTML = priceRows.map((r,i)=>`
-    <tr class="row ${i===histIdx?'active':''} ${r.latest?'latest':''} ${r.isStd?'stdrow':''} ${r.isCopied?'copiedrow':''}" data-i="${i}">
-      <td>${r.isStd?'':r.datum}${r.latest?'<span class="tag">zuletzt</span>':''}${r.isStd?'<span class="tag">Standard</span>':''}${r.isCopied?'<span class="tag">kopiert</span>':''}</td>
+    <tr class="row ${i===histIdx?'active':''} ${r.latest?'latest':''} ${r.isStd?'stdrow':''} ${(r.isCopied||r.isCurrent)?'copiedrow':''}" data-i="${i}">
+      <td>${r.isStd?'':r.datum}${r.latest?'<span class="tag">zuletzt</span>':''}${r.isStd?'<span class="tag">Standard</span>':''}${r.isCopied?'<span class="tag">kopiert</span>':''}${r.isCurrent?'<span class="tag">aktuell</span>':''}</td>
       <td style="color:var(--ink-2)">${r.beleg}</td>
       <td class="n">${eur(r.preis)}</td>
       <td class="pct">${pctHtml(r.pct)}</td>
@@ -803,13 +825,13 @@ let zIdx = 0;
 function openZuschlaege(){
   currentStep='zuschlaege';
   zList = D.zus; zSel = new Set(); zIdx = 0;
-  if(draft.copied && draft.editing){                       // kopierte Zuschläge vorab ankreuzen
-    draft.surcharges.forEach(s=>{ const i=zList.findIndex(z=>z.code===s.code); if(i>=0) zSel.add(i); });
+  if(draft.copiedZ){                                        // kopierte / vorhandene Zuschläge vorab ankreuzen
+    Object.keys(draft.copiedZ).forEach(code=>{ const i=zList.findIndex(z=>z.code===code); if(i>=0) zSel.add(i); });
   }
   ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead"><h2>Zuschläge / Verarbeitungen</h2>${stepper('zuschlaege')}<span class="spacer"></span>
+      <div class="mhead"><h2>Zuschläge / Verarbeitungen</h2>${editMode?'':stepper('zuschlaege')}<span class="spacer"></span>
         <button class="linkish" data-close title="Ohne Zuschlag ins Angebot (Esc)">✕</button></div>
       <div class="mbody">
         <p style="margin:0 0 12px;font-size:0.84rem;color:var(--ink-2)">Mehrere mit <kbd>Leertaste</kbd> / <kbd>Strg</kbd>+Klick markieren, dann <kbd>Enter</kbd>. Für jeden Zuschlag folgt dasselbe Preis-Menü wie beim Holz.</p>
@@ -862,12 +884,65 @@ function chainZ(list, i){
 }
 
 function finalizePosition(){
+  if(editMode){ saveEdit(); return; }                       // Bearbeitung: ersetzen statt anhängen
   if(draft && draft.woodPrice!=null && draft.measures.length){
     positions.push(draft);
   }
   draft=null;
   closeModal();
   renderAll();
+}
+
+// ══════════ Position nachträglich bearbeiten ══════════
+function cloneDraft(p){ return {...p, cat:p.cat, measures:p.measures.map(m=>({...m})), surcharges:p.surcharges.map(s=>({...s}))}; }
+function saveEdit(){
+  if(!editMode) return;
+  const i=editMode.idx;
+  ['copied','editing','copiedZ','source'].forEach(k=>delete draft[k]);
+  positions[i]=draft; editMode=null; draft=null; closeModal(); renderAll(); flashPos(i);
+}
+function flashPos(i){ const p=positions[i]; if(p){ p._flash=true; renderPosList(); } }
+
+function editAufmass(i){
+  editMode={idx:i,aspect:'aufmass'}; draft=cloneDraft(positions[i]);
+  const m0=draft.measures[0]||{};
+  openAufmass({pakete:m0.pakete||0, reihen:m0.reihen||0, lagen:m0.lagen||0, stueck:m0.stueck||'',
+    laenge:'', staerke:m0.staerke||draft.cat.s||'', breite:m0.breite||draft.cat.b||'', focusLaenge:true});
+}
+function editPreisWood(i){
+  editMode={idx:i,aspect:'preis'}; draft=cloneDraft(positions[i]);
+  const c=draft.cat;
+  openPreis({ titel:'Holzpreis ändern', einheit:c.e, std:c.std, hist:c.hist,
+    artLabel:`${c.a}${c.h?' '+holzName(c.h):''}`, current:{preis:draft.woodPrice, label:'aktueller Positionspreis'},
+    onConfirm:(v)=>{ draft.woodPrice=v; saveEdit(); } });
+}
+function editSurcharge(i, code){
+  editMode={idx:i,aspect:'preis'}; draft=cloneDraft(positions[i]);
+  const z=draft.surcharges.find(s=>s.code===code); if(!z){ editMode=null; draft=null; return; }
+  const zd=zByCode(code);
+  openPreis({ titel:`Preis „${z.label}" ändern`, einheit:'CBM', std:zd.std, hist:zd.hist,
+    artLabel:`${z.label} – ${draft.cat.a}`, current:{preis:z.price, label:'aktueller Positionspreis'},
+    onConfirm:(v)=>{ z.price=v; saveEdit(); } });
+}
+function editZuschlaege(i){
+  editMode={idx:i,aspect:'zuschlaege'}; draft=cloneDraft(positions[i]);
+  draft.copiedZ = Object.fromEntries(draft.surcharges.map(s=>[s.code,s.price]));
+  openZuschlaege();
+}
+function tryCommitPending(){
+  const m=readAuf(); m.stueck=stkOf(m);
+  if(m.stueck>0 && m.laenge>0 && m.staerke>0 && m.breite>0){ m.vol=volOf(m); draft.measures.push(m); return true; }
+  return false;
+}
+// Inline-Schnellkorrektur direkt in der Liste (Länge / Preis)
+function inlineEdit(spanEl, cur, onSave){
+  const inp=document.createElement('input');
+  inp.type='number'; inp.step='0.01'; inp.value=cur; inp.className='qinput';
+  spanEl.replaceWith(inp); inp.focus(); inp.select();
+  let done=false;
+  const finish=(commit)=>{ if(done) return; done=true; if(commit){ const v=parseFloat(inp.value); if(v>0) onSave(v); } renderAll(); };
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); finish(true); } else if(e.key==='Escape'){ e.preventDefault(); finish(false); } });
+  inp.addEventListener('blur', ()=>finish(true));
 }
 
 // ══════════ Position anlegen: Neu / Aus altem Angebot kopieren ══════════
@@ -1017,22 +1092,38 @@ function renderPosList(){
   if(!positions.length){ wrap.innerHTML = `<div class="emptyhint" style="margin-top:14px">Noch keine Position. <kbd>F3</kbd> oder „Position erfassen" startet den geführten Ablauf: Artikel → Aufmaß → Preis → Zuschläge.</div>`; return; }
   wrap.innerHTML = positions.map((p,i)=>{
     const c=p.cat, vol=posVol(p), ai=allIn(p);
-    const bd = [`<div class="r wood"><span>Holz (${c.a})</span><span>${eur2(p.woodPrice)} /${einhName(c.e)}</span></div>`]
-      .concat(p.surcharges.map(z=>`<div class="r"><span>+ ${z.label}</span><span>${eur2(z.price)} /m³</span></div>`))
-      .concat([`<div class="allin"><span>Verkaufspreis (all-in)</span><span>${eur2(ai)} /${einhName(c.e)}</span></div>`]).join('');
-    const meas = p.measures.map(m=>{
-      const stk=(m.pakete>0?m.pakete:1)*m.stueck;
-      return `<div class="m"><span>${m.pakete>0?m.pakete+' Pak × ':''}${num(m.stueck,0)} Stk · ${num(m.laenge)} m · ${num(m.staerke)}×${num(m.breite)} mm</span><span>${num3(m.vol)} m³ · ${eur2(m.vol*ai)}</span></div>`;
+    const fl=p._flash; delete p._flash;
+    const woodLine = `<div class="r wood editrow" data-edit="preis" data-i="${i}" title="Klick: Holzpreis ändern (mit Historie)"><span>Holz (${c.a})</span><span class="qedit" data-q="wood" data-i="${i}" title="Doppelklick: Preis schnell ändern">${eur2(p.woodPrice)} /${einhName(c.e)}</span></div>`;
+    const surLines = p.surcharges.map(z=>`<div class="r editrow" data-edit="sur" data-i="${i}" data-code="${z.code}" title="Klick: Preis „${z.label}" ändern"><span>+ ${z.label}</span><span>${eur2(z.price)} /m³</span></div>`).join('');
+    const allinLine = `<div class="allin editrow" data-edit="zus" data-i="${i}" title="Klick: Zuschläge hinzufügen/entfernen"><span>Verkaufspreis (all-in)</span><span>${eur2(ai)} /${einhName(c.e)}</span></div>`;
+    const meas = p.measures.map((m,j)=>{
+      return `<div class="m editrow" data-edit="auf" data-i="${i}" title="Klick: Aufmaß bearbeiten"><span>${m.pakete>0?m.pakete+' Pak × ':''}${num(m.stueck,0)} Stk · <span class="qedit" data-q="len" data-i="${i}" data-mi="${j}" title="Doppelklick: Länge schnell ändern">${num(m.laenge)} m</span> · ${num(m.staerke)}×${num(m.breite)} mm</span><span>${num3(m.vol)} m³ · ${eur2(m.vol*ai)}</span></div>`;
     }).join('');
-    return `<div class="posblock">
+    return `<div class="posblock ${fl?'posflash':''}">
       <div class="head"><span class="no">${i+1}</span><b>${c.a}</b>
         <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${num3(vol)} m³</small>
         <span class="spacer"></span><b>${eur(posSum(p))}</b>
         <button class="linkish" data-del="${i}" title="Position löschen">✕</button></div>
-      <div class="body"><div class="breakdown">${bd}</div><div class="measures">${meas}</div></div>
+      <div class="body"><div class="breakdown">${woodLine}${surLines}${allinLine}</div><div class="measures">${meas}</div>
+        <div class="edithint">✎ Bereich anklicken zum Bearbeiten · Zahl doppelklicken zum schnell Ändern</div></div>
     </div>`;
   }).join('');
-  wrap.querySelectorAll('[data-del]').forEach(b=> b.onclick=()=>{ positions.splice(+b.dataset.del,1); renderAll(); });
+  wrap.querySelectorAll('[data-del]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation(); positions.splice(+b.dataset.del,1); renderAll(); });
+  wrap.querySelectorAll('.editrow').forEach(row=> row.onclick=(e)=>{
+    if(e.target.closest('.qedit')) return;
+    const i=+row.dataset.i, w=row.dataset.edit;
+    if(w==='preis') editPreisWood(i);
+    else if(w==='sur') editSurcharge(i, row.dataset.code);
+    else if(w==='zus') editZuschlaege(i);
+    else if(w==='auf') editAufmass(i);
+  });
+  wrap.querySelectorAll('.qedit').forEach(q=>{
+    q.onclick=(e)=>e.stopPropagation();
+    q.ondblclick=(e)=>{ e.stopPropagation(); const i=+q.dataset.i;
+      if(q.dataset.q==='wood') inlineEdit(q, positions[i].woodPrice, v=>{ positions[i].woodPrice=v; });
+      else if(q.dataset.q==='len'){ const j=+q.dataset.mi; inlineEdit(q, positions[i].measures[j].laenge, v=>{ const m=positions[i].measures[j]; m.laenge=v; m.vol=volOf(m); }); }
+    };
+  });
 }
 
 function renderSheet(){
@@ -1189,8 +1280,16 @@ const TOUR = [
     body:`Du landest direkt im Aufmaß – <b>Länge ist markiert</b>, Stärke/Breite/Stück kommen aus der Kopie. Länge ändern, <kbd>Enter</kbd> (weitere Längen) oder <kbd>Esc</kbd>.` },
   { setup:()=>demoCopyAuf(), target:'.cprompt', title:'Weg 2 · Preise nachbearbeiten?',
     body:`Preis <b>und</b> Zuschläge sind aus dem alten Angebot übernommen. Die Abfrage: <b>Nein</b> (Vorauswahl) = so übernehmen, <b>Ja</b> = Preise durchgehen (dann vorbelegt mit dem kopierten Wert). Wählbar mit <kbd>N</kbd>/<kbd>J</kbd> bzw. <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd>.` },
-  { setup:()=>{ promptIdx=0; confirmPrompt(); }, target:'#posList', title:'Fertig ✔ – das war die Tour',
-    body:`Position 2 wurde in Sekunden kopiert – ganz ohne Preis- und Zuschlag-Klicks. <br><br>Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b> wählen, und los. Viel Erfolg!` },
+  { setup:()=>{ promptIdx=0; confirmPrompt(); }, target:'#posList', title:'Weg 2 · fertig ✔',
+    body:`Position 2 wurde in Sekunden kopiert – ganz ohne Preis- und Zuschlag-Klicks. <br><br>Zum Schluss noch: Positionen <b>nachträglich bearbeiten</b> – weiter mit <kbd>Enter</kbd>.` },
+
+  // ── Nachträglich bearbeiten ──
+  { target:'.posblock .edithint', title:'Bearbeiten · zwei Wege',
+    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen: <b>Bereich anklicken</b> öffnet das passende Menü, <b>Zahl doppelklicken</b> ändert direkt in der Liste.` },
+  { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Bereich anklicken',
+    body:`Klick z. B. auf den <b>Holzpreis</b> einer Position → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position (kein Durchklicken). Genauso für Zuschläge und Aufmaß.` },
+  { setup:()=>confirmPreis(), target:'.qedit', title:'Bearbeiten · Doppelklick',
+    body:`Noch schneller: <b>Länge</b> oder <b>Preis</b> (gepunktet unterstrichen) <b>doppelklicken</b> und direkt überschreiben – Mengen und Summen rechnen sofort mit.<br><br>Das war die Tour! Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b>, und los. Viel Erfolg!` },
 ];
 
 function startTour(){
@@ -1204,7 +1303,7 @@ function startTour(){
 function endTour(){
   tourActive=false;
   const d=el('tourBlock'); if(d) d.remove();
-  closeModal(); draft=null;
+  closeModal(); draft=null; editMode=null;
   positions = tourSnapshot ? JSON.parse(JSON.stringify(tourSnapshot)) : positions;
   renderAll();
 }
@@ -1233,7 +1332,7 @@ function goTour(newIdx){
   if(newIdx<0 || newIdx>=TOUR.length){ endTour(); return; }
   if(newIdx === tourIdx+1){ TOUR[newIdx].setup && TOUR[newIdx].setup(); }
   else { // Rücksprung: sauber von vorne replayen
-    positions = JSON.parse(JSON.stringify(tourSnapshot)); draft=null; closeModal(); renderAll();
+    positions = JSON.parse(JSON.stringify(tourSnapshot)); draft=null; editMode=null; closeModal(); renderAll();
     for(let k=0;k<=newIdx;k++) TOUR[k].setup && TOUR[k].setup();
   }
   tourIdx=newIdx;
