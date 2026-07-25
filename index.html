@@ -701,7 +701,7 @@ function openAufmass(prefill){
               <div class="gridwrap"><table class="pgrid comm">
                 <thead id="commHead"></thead><tbody id="commBody"></tbody>
               </table></div>
-              <div class="commhint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert ändern · <kbd>Enter</kbd> Zelle darunter · <kbd>Tab</kbd> Zelle rechts · <kbd>Esc</kbd> abbrechen. Die <b>Grafiken rechts zeigen immer die angeklickte Zeile</b> – Klick auf die Zeilennummer genügt.</div>
+              <div class="commhint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert ändern · <kbd>Enter</kbd> / <kbd>Tab</kbd> Zelle rechts · <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Zelle wechseln · <kbd>Esc</kbd> abbrechen. Die <b>Grafiken rechts zeigen immer die angeklickte Zeile</b> – Klick auf die Zeilennummer genügt.</div>
             </div>
           </div>
           <div class="aufright">
@@ -731,13 +731,26 @@ function openAufmass(prefill){
   });
   ['pakete','reihen','lagen','stueck','laenge','staerke','breite'].forEach(f=>{
     const inp = el('f_'+f);
-    inp.addEventListener('focus', ()=>{ setFocusRow(null); });   // oben = Grafik zeigt wieder die neue Zeile
+    let caret = false;                                           // Mausklick ins Feld → ←/→ bewegen die Schreibmarke
+    inp.addEventListener('focus', ()=>{ setFocusRow(null); caret=false; });   // oben = Grafik zeigt wieder die neue Zeile
+    inp.addEventListener('mouseup', ()=>{ caret = true; });
     inp.addEventListener('input', ()=>{ updateAufMode(); });
     inp.addEventListener('keydown', e=>{
-      if(e.key!=='Enter') return;
-      e.preventDefault(); e.stopPropagation();
-      if(e.ctrlKey || e.metaKey) return commitAuf();   // Strg+Enter: Zeile sofort übernehmen
-      nextAufField(f);
+      if(e.key==='Enter'){
+        e.preventDefault(); e.stopPropagation();
+        if(e.ctrlKey || e.metaKey) return commitAuf();   // Strg+Enter: Zeile sofort übernehmen
+        return nextAufField(f);
+      }
+      // Pfeiltasten wandern durch die Felder – ↓ steigt in die erfassten Zeilen darunter
+      if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
+        if(caret) return;
+        e.preventDefault(); e.stopPropagation();
+        return stepAufField(f, e.key==='ArrowRight' ? 1 : -1);
+      }
+      if(e.key==='ArrowDown' || e.key==='ArrowUp'){
+        e.preventDefault(); e.stopPropagation();                 // nie die Zahl hoch-/runterzählen
+        if(e.key==='ArrowDown') openCellByKey(`d|${f}|0`);        // in die erste erfasste Zeile
+      }
     });
   });
   focusRow = null;
@@ -773,6 +786,14 @@ function nextAufField(from){
     n.focus(); n.select(); return;
   }
   commitAuf();
+}
+// Ein Feld nach rechts/links – ohne zu übernehmen (Pfeiltasten)
+function stepAufField(from, dir){
+  for(let i=AUF_COLS.indexOf(from)+dir; i>=0 && i<AUF_COLS.length; i+=dir){
+    const n = el('f_'+AUF_COLS[i]);
+    if(!n || n.disabled) continue;
+    n.focus(); n.select(); return;
+  }
 }
 function readAuf(){
   return { pakete:+el('f_pakete').value||0, reihen:+el('f_reihen').value||0, lagen:+el('f_lagen').value||0,
@@ -1333,7 +1354,7 @@ function renderPosList(){
         <div class="gridwrap">${measTable}</div>
         <div class="gridlbl">Preisaufbau (intern)</div>
         <div class="gridwrap">${priceTable}</div>
-        <div class="edithint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert überschreiben · <kbd>Enter</kbd> Zelle darunter · <kbd>Tab</kbd> Zelle rechts · <kbd>Esc</kbd> abbrechen · „✎ Menü" öffnet den vollen Dialog (mit Preishistorie).</div>
+        <div class="edithint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert überschreiben · <kbd>Enter</kbd> / <kbd>Tab</kbd> Zelle rechts · <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Zelle wechseln · <kbd>Esc</kbd> abbrechen · „✎ Menü" öffnet den vollen Dialog (mit Preishistorie).</div>
       </div>
     </div>`;
   }).join('');
@@ -1383,18 +1404,32 @@ function startCellEdit(td){
   // Grafik rechts folgt der angeklickten Zeile (nur im Aufmaß-Dialog)
   if(drafted) setFocusRow(+td.dataset.mi);
   let done=false;
-  const finish=(commit, moveKey)=>{
+  const finish=(commit, moveKey, topField)=>{
     if(done) return; done=true;
     const v = parseFloat(inp.value);
     if(commit && !isNaN(v) && v>=0) applyCellEdit(p, td, f, v);
     const click = pendingCell; pendingCell = null;
     if(drafted){ renderComm(); updateAufMode(); } else { renderAll(); }
     openCellByKey(moveKey || click);
+    if(topField){ const t = el('f_'+topField); if(t && !t.disabled){ t.focus(); t.select(); } }
   };
+  // Wer mit der Maus in das Feld klickt, will den Text bearbeiten – dann bewegen
+  // ←/→ die Schreibmarke statt die Zellenauswahl (wie in Excel nach F2).
+  let caretMode = false;
+  inp.addEventListener('mouseup', ()=>{ caretMode = true; });
   inp.addEventListener('keydown', e=>{
     e.stopPropagation();
-    if(e.key==='Enter'){ e.preventDefault(); finish(true, nextKey('down')); }
+    const ARROW = {ArrowRight:'right', ArrowLeft:'left', ArrowUp:'up', ArrowDown:'down'}[e.key];
+    if(e.key==='Enter'){ e.preventDefault(); finish(true, nextKey(e.shiftKey?'left':'right')); }
     else if(e.key==='Tab'){ e.preventDefault(); finish(true, nextKey(e.shiftKey?'left':'right')); }
+    else if(ARROW){
+      const sideways = (ARROW==='left' || ARROW==='right');
+      if(sideways && caretMode) return;                 // im Text bewegen, nicht die Zelle wechseln
+      e.preventDefault();                               // ↑/↓ dürfen die Zahl nicht hoch-/runterzählen
+      const k = nextKey(ARROW);
+      if(k) finish(true, k);
+      else if(ARROW==='up' && drafted) finish(true, null, f);   // über der ersten Zeile: zurück in die Eingabezeile
+    }
     else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done=true; pendingCell=null;
       if(drafted){ renderComm(); } else { renderAll(); } }
   });
@@ -1409,13 +1444,27 @@ function startCellEdit(td){
 }
 // Nachbarzelle bestimmen (vor dem Neu-Rendern, solange die alte Tabelle noch steht)
 function cellNeighbour(td, dir){
-  const t=td.closest('table');
-  const all= t ? [...t.querySelectorAll('td.cell')] : [];
-  const idx=all.indexOf(td);
-  if(idx<0) return null;
-  if(dir==='right') return all[idx+1] ? all[idx+1].dataset.key : null;
-  if(dir==='left')  return all[idx-1] ? all[idx-1].dataset.key : null;
-  for(let k=idx+1;k<all.length;k++) if(all[k].dataset.f===td.dataset.f) return all[k].dataset.key;   // gleiche Spalte, nächste Zeile
+  const t = td.closest('table');
+  if(!t) return null;
+  // ←/→ laufen durch die Zellen in Lesereihenfolge (auch über das Zeilenende hinaus)
+  if(dir==='right' || dir==='left'){
+    const all=[...t.querySelectorAll('td.cell')], i=all.indexOf(td);
+    const n = all[i + (dir==='right'?1:-1)];
+    return n ? n.dataset.key : null;
+  }
+  // ↑/↓ bleiben in derselben Spalte
+  const tr = td.closest('tr'), rows = [...t.querySelectorAll('tbody tr')];
+  const r = rows.indexOf(tr), col = td.cellIndex;
+  if(r<0) return null;
+  const stepR = (dir==='down') ? 1 : -1;
+  for(let k=r+stepR; k>=0 && k<rows.length; k+=stepR){
+    const c = rows[k].cells[col];
+    if(c && c.classList.contains('cell')) return c.dataset.key;
+    // Spalte in dieser Zeile nicht editierbar (z. B. Summenzeile) → nächstgelegene Zelle nehmen
+    const near = [...rows[k].querySelectorAll('td.cell')]
+      .sort((a,b)=>Math.abs(a.cellIndex-col)-Math.abs(b.cellIndex-col))[0];
+    if(near && rows[k].querySelectorAll('td.cell').length && Math.abs(near.cellIndex-col)<=1) return near.dataset.key;
+  }
   return null;
 }
 function applyCellEdit(p, td, f, v){
@@ -1605,7 +1654,7 @@ const TOUR = [
   { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Bereich anklicken',
     body:`Klick z. B. auf den <b>Holzpreis</b> einer Position → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position (kein Durchklicken). Genauso für Zuschläge und Aufmaß.` },
   { setup:()=>confirmPreis(), target:'#posList table.pgrid', title:'Bearbeiten · wie in Excel',
-    body:`Noch schneller: <b>in eine Zelle klicken</b> und den Wert überschreiben – Stückzahl, Länge, Stärke, Breite, Pakete, aber auch Holz- und Zuschlagspreise.<br><br><kbd>Enter</kbd> springt in die Zelle darunter, <kbd>Tab</kbd> nach rechts, <kbd>Umschalt</kbd>+<kbd>Tab</kbd> nach links, <kbd>Esc</kbd> bricht ab. Mengen, m³ und Summen rechnen sofort mit.<br><br>Das war die Tour! Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b>, und los. Viel Erfolg!` },
+    body:`Noch schneller: <b>in eine Zelle klicken</b> und den Wert überschreiben – Stückzahl, Länge, Stärke, Breite, Pakete, aber auch Holz- und Zuschlagspreise.<br><br><kbd>Enter</kbd> und <kbd>Tab</kbd> springen eine Zelle nach rechts, <kbd>Umschalt</kbd>+ dazu nach links. Mit den <kbd>Pfeiltasten</kbd> geht es in jede Richtung durch die Zellen, <kbd>Esc</kbd> bricht ab. Mengen, m³ und Summen rechnen sofort mit.<br><br>Das war die Tour! Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b>, und los. Viel Erfolg!` },
 ];
 
 function startTour(){
