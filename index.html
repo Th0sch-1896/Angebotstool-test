@@ -81,6 +81,54 @@
   .measures { margin-top: 8px; font-size: 0.8rem; color: var(--ink-2); }
   .measures .m { display: flex; justify-content: space-between; padding: 2px 0; font-variant-numeric: tabular-nums; }
 
+  /* ── Positionsliste als Excel-artige Tabelle ── */
+  .gridwrap { margin-top: 4px; overflow-x: auto; }
+  .gridlbl { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-2); margin: 10px 0 4px; }
+  /* Excel-Gefühl: durchgehend gleiche, dünne Gitterlinien; jede Zelle exakt gleich hoch.
+     --cellpy/--cellpx/--celllh gelten für die Anzeige UND das Eingabefeld, damit beim
+     Hineinklicken nichts größer wird. */
+  table.pgrid { --cellpy: 5px; --cellpx: 8px; --celllh: 18px; --grid: oklch(0.885 0.006 250);
+                width: 100%; border-collapse: collapse; font-size: 0.79rem; font-variant-numeric: tabular-nums;
+                background: white; border: 1px solid oklch(0.8 0.008 250); }
+  table.pgrid th { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-2);
+                   background: oklch(0.955 0.003 250); border: 1px solid var(--grid); border-bottom-color: oklch(0.8 0.008 250);
+                   padding: var(--cellpy) var(--cellpx); line-height: var(--celllh); text-align: right; white-space: nowrap; }
+  table.pgrid th.l { text-align: left; }
+  table.pgrid td { border: 1px solid var(--grid); padding: 0; text-align: right; white-space: nowrap;
+                   line-height: var(--celllh); background: white; }
+  table.pgrid td.l { text-align: left; }
+  table.pgrid td.ro { padding: var(--cellpy) var(--cellpx); color: var(--ink-2); background: oklch(0.975 0.002 250); }
+  table.pgrid td.unit, table.pgrid tr.allinrow td.unit { text-align: left; }
+  table.pgrid td.calc { padding: var(--cellpy) var(--cellpx); font-weight: 700; color: var(--ink); background: oklch(0.968 0.008 265); }
+  table.pgrid td.act { border: none; background: none; padding-left: 4px; }
+  /* editierbare Zelle: weiß wie ein Excel-Feld, ein Klick genügt */
+  table.pgrid td.cell { cursor: cell; position: relative; background: white; }
+  table.pgrid td.cell .v { display: block; box-sizing: border-box; padding: var(--cellpy) var(--cellpx);
+                           line-height: var(--celllh); transition: background .12s, box-shadow .12s; }
+  table.pgrid td.cell:hover .v { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent); }
+  table.pgrid td.cell.editing { box-shadow: inset 0 0 0 2px var(--accent); }
+  table.pgrid td.cell input::-webkit-outer-spin-button,
+  table.pgrid td.cell input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  /* Das Eingabefeld liegt exakt über der Zelle (absolut positioniert). Der Wert bleibt als
+     unsichtbarer Platzhalter stehen – so bleibt die Spaltenbreite beim Hineinklicken gleich. */
+  table.pgrid td.cell.editing .v { visibility: hidden; }
+  table.pgrid td.cell input { -moz-appearance: textfield; box-sizing: border-box; position: absolute; inset: 0; width: 100%; height: 100%;
+                              font: inherit; font-size: inherit; font-variant-numeric: tabular-nums; text-align: right; color: var(--ink);
+                              border: none; outline: none; background: white; margin: 0; min-width: 0;
+                              padding: var(--cellpy) var(--cellpx); line-height: var(--celllh); }
+  /* Zeilennummern-Spalte links – wie der graue Rand in Excel */
+  table.pgrid th.rn, table.pgrid td.rn { width: 26px; min-width: 26px; text-align: center; padding: var(--cellpy) 4px;
+                                         background: oklch(0.955 0.003 250); color: var(--ink-2); font-size: 0.7rem;
+                                         font-weight: 600; user-select: none; }
+  table.pgrid.comm td.rn { cursor: pointer; }
+  table.pgrid.comm td.rn:hover { background: var(--accent-soft); color: var(--accent); }
+  table.pgrid tr.rowsel td.rn { background: var(--accent); color: white; }
+  table.pgrid tr.sum td { font-weight: 700; background: var(--panel-2); }
+  table.pgrid tr.allinrow td { font-weight: 700; background: oklch(0.955 0.025 265); }
+  table.pgrid .lbl { color: var(--ink-2); font-weight: 500; }
+  .menubtn { background: none; border: 1px solid transparent; border-radius: 5px; color: var(--ink-2); font-size: 0.76rem; padding: 2px 6px; }
+  .menubtn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
   /* ── Angebotsviewer (A4) ── */
   .viewerwrap { background: oklch(0.9 0.005 250); border-radius: var(--radius); padding: 18px; border: 1px solid var(--line); }
   .sheet { background: white; box-shadow: 0 8px 30px oklch(0.4 0.02 260 / 0.14); border-radius: 3px; padding: 30px 34px; font-size: 0.8rem; color: oklch(0.28 0.01 260); min-height: 620px; }
@@ -114,6 +162,12 @@
   .modal .mhead { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
   .modal .mhead h2 { margin: 0; font-size: 1rem; font-weight: 700; }
   .modal .mhead .spacer { flex: 1; }
+  /* Zurück-Knopf: immer oben links, in jedem Menü */
+  .backbtn { display: inline-flex; align-items: center; gap: 6px; background: var(--panel-2); border: 1px solid var(--line); color: var(--ink-2);
+             padding: 5px 11px 5px 8px; border-radius: 7px; font-size: 0.78rem; font-weight: 600; flex: none; transition: background .15s, color .15s, border-color .15s; }
+  .backbtn:hover { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+  .backbtn .ar { font-size: 0.95rem; line-height: 1; }
+  .backbtn kbd { margin-left: 2px; }
   .stepper { display: flex; gap: 6px; align-items: center; font-size: 0.74rem; }
   .stepper .st { display: flex; align-items: center; gap: 6px; color: var(--ink-2); padding: 3px 9px; border-radius: 99px; }
   .stepper .st .dot { width: 18px; height: 18px; border-radius: 50%; background: var(--panel-2); border: 1px solid var(--line); display: inline-flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 700; }
@@ -174,25 +228,36 @@
   .arthead { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--accent-soft); border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; }
   .arthead b { color: var(--accent); }
   .arthead .dims { margin-left: auto; color: var(--ink-2); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
-  table.aufmass { width: 100%; border-collapse: collapse; }
-  table.aufmass th { text-align: left; font-size: 0.72rem; font-weight: 600; color: var(--ink-2); padding: 4px 8px; }
-  table.aufmass th.n { text-align: right; }
-  table.aufmass td { padding: 3px 6px; }
+  table.aufmass { width: 100%; border-collapse: separate; border-spacing: 0; }
+  table.aufmass th { text-align: right; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: var(--ink-2);
+                     padding: 7px 9px; background: var(--panel-2); border: 1px solid var(--line); border-right-width: 0; white-space: nowrap;
+                     cursor: context-menu; user-select: none; position: relative; transition: background .15s, color .15s; }
+  table.aufmass th:first-child { border-top-left-radius: 7px; border-bottom-left-radius: 7px; }
+  table.aufmass th:last-child { border-right-width: 1px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; }
+  table.aufmass th.pinnable:hover { background: var(--accent-soft); color: var(--accent); }
+  table.aufmass th.pincol, table.aufmass th.pinnable.pincol:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  table.aufmass th.pincol::after { content: '📌'; margin-left: 5px; font-size: 0.8em; }
+  table.aufmass td { padding: 4px 3px; }
+  table.aufmass td.pincol input { border-color: var(--accent); background: oklch(0.985 0.012 265); }
   table.aufmass input { width: 100%; font: inherit; font-size: 0.88rem; text-align: right; padding: 7px 7px; border: 1px solid var(--line); border-radius: 6px; font-variant-numeric: tabular-nums; }
   table.aufmass input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: white; }
   table.aufmass input:disabled { background: var(--panel-2); color: var(--ink-2); }
-  table.aufmass th { white-space: nowrap; }
+  .pinnote { font-size: 0.74rem; color: var(--ink-2); margin: 8px 2px 0; }
+  .pinnote b { color: var(--accent); }
+  .pinflash { animation: pinpop 700ms ease-out; }
+  @keyframes pinpop { 0% { box-shadow: 0 0 0 0 var(--accent); } 60% { box-shadow: 0 0 0 6px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
   table.aufmass .vol { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; padding-right: 4px; color: var(--accent); }
   .aufhint { font-size: 0.76rem; color: var(--ink-2); margin: 6px 2px 0; }
 
   .committed { margin-top: 18px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .committed .gridwrap { margin-top: 0; }
   .committed .ch { padding: 8px 12px; background: var(--ok-soft); font-size: 0.8rem; font-weight: 600; color: var(--ok); display: flex; }
   .committed .ch .spacer { flex: 1; }
-  table.comm { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  table.comm th { text-align: left; font-size: 0.68rem; text-transform: uppercase; color: var(--ink-2); padding: 6px 10px; border-bottom: 1px solid var(--line); }
-  table.comm th.n, table.comm td.n { text-align: right; font-variant-numeric: tabular-nums; }
-  table.comm td { padding: 6px 10px; border-bottom: 1px solid var(--line); }
+  table.pgrid.comm { --cellpy: 6px; --cellpx: 9px; font-size: 0.82rem; border-left: none; border-right: none; }
+  table.pgrid.comm tr.rowsel td { background: var(--accent-soft); }
+  table.pgrid.comm tr.rowsel td.cell .v { background: transparent; }
   table.comm tr.blink td { animation: rowin 600ms ease-out; }
+  .commhint { font-size: 0.73rem; color: var(--ink-2); padding: 7px 12px 9px; border-top: 1px dashed var(--line); }
   @keyframes rowin { from { background: var(--accent-soft); } to { background: transparent; } }
 
   /* Preis-Modal */
@@ -377,6 +442,17 @@ let editMode = null;       // {idx, aspect} während des Bearbeitens einer beste
 const ov = el('overlay');
 
 function closeModal(){ currentStep=null; ov.hidden=true; ov.innerHTML=''; }
+
+// ── Zurück-Navigation: jedes Menü hat oben links einen Zurück-Knopf ──
+function backBtn(label){
+  return `<button type="button" class="backbtn" data-back title="Zurück${label?': '+label:''} (Rücktaste / Alt+←)"><span class="ar">←</span>Zurück<kbd>⌫</kbd></button>`;
+}
+function wireBack(fn){
+  const b = ov.querySelector('[data-back]');
+  if(b) b.onclick = ()=>fn();
+}
+// Rücktaste / Alt+← überall: löst den Zurück-Knopf des offenen Menüs aus
+function goBack(){ const b = ov.querySelector('[data-back]'); if(b) b.click(); }
 function stepper(active){
   const steps = [['1','Artikel'],['2','Aufmaß'],['3','Preis'],['4','Zuschläge']];
   const order = ['artikel','aufmass','preis','zuschlaege'];
@@ -398,6 +474,7 @@ function openArtikel(){
   ov.innerHTML = `
     <div class="modal">
       <div class="mhead">
+        ${backBtn('Neue Position anlegen')}
         <h2>Position erfassen</h2>
         ${stepper('artikel')}
         <span class="spacer"></span>
@@ -433,6 +510,7 @@ function openArtikel(){
       </div>
     </div>`;
   ov.querySelector('[data-close]').onclick = closeModal;
+  wireBack(()=>openPositionChoice());
   el('pickGo').onclick = () => chooseArtikel();
   el('q').addEventListener('input', () => { applyFilterFromSearch(); });
   renderPickNav();
@@ -564,8 +642,19 @@ function chooseArtikel(){
 
 // ══════════ SCHRITT 2: Aufmaßerfassung ══════════
 // Stückzahl aus Aufbau: mit Paket = Pakete × Reihen × Lagen, ohne Paket = direkte Stückzahl
-function stkOf(m){ return m.pakete>0 ? m.pakete*(m.reihen||0)*(m.lagen||0) : (m.stueck||0); }
-function volOf(m){ return stkOf(m) * m.laenge * (m.staerke/1000) * (m.breite/1000); }
+// Stück je Paket: entweder aus Reihen × Lagen berechnet oder direkt eingetippt
+function stkJe(m){ return (m.reihen>0 && m.lagen>0) ? m.reihen*m.lagen : (m.stueck||0); }
+// Stück gesamt: Pakete sind ein reiner Multiplikator (0 = kein Paket)
+function stkOf(m){ const je = stkJe(m); return m.pakete>0 ? m.pakete*je : je; }
+// Länge wird in ZENTIMETERN erfasst → für m³ durch 100 teilen
+function volOf(m){ return stkOf(m) * (m.laenge/100) * (m.staerke/1000) * (m.breite/1000); }
+// Stück gesamt einer bereits erfassten Zeile (m.total wird beim Übernehmen gesetzt)
+function totOf(m){ return m.total!=null ? m.total : stkOf(m); }
+
+// Spaltenreihenfolge des Aufmaßkopfes + frei wählbare Startspalte (Rechtsklick auf den Spaltenkopf)
+const AUF_COLS = ['pakete','reihen','lagen','stueck','laenge','staerke','breite'];
+const AUF_LABEL = {pakete:'Pakete', reihen:'Reihen', lagen:'Lagen', stueck:'Stück', laenge:'Länge', staerke:'Stärke', breite:'Breite'};
+let returnCol = 'laenge';   // hier landet der Cursor nach jeder übernommenen Zeile
 
 function openAufmass(prefill){
   currentStep = 'aufmass';
@@ -575,7 +664,7 @@ function openAufmass(prefill){
   ov.hidden = false;
   ov.innerHTML = `
     <div class="modal">
-      <div class="mhead"><h2>${editMode?'Aufmaß ändern':'Aufmaß erfassen'}</h2>${editMode?'':stepper('aufmass')}<span class="spacer"></span>
+      <div class="mhead">${backBtn(editMode?'Angebot (ohne Änderung)':(draft.copied?'altes Angebot wählen':'Artikelauswahl'))}<h2>${editMode?'Aufmaß ändern':'Aufmaß erfassen'}</h2>${editMode?'':stepper('aufmass')}<span class="spacer"></span>
         <button class="linkish" data-close title="${editMode?'Speichern':'Weiter zum Preis'} (Esc)">✕</button></div>
       <div class="mbody">
         <div class="aufgrid">
@@ -584,28 +673,35 @@ function openAufmass(prefill){
               ${draft.copied?`<span class="copytag">kopiert aus ${draft.source.nr}</span>`:''}
               <span class="dims">Std.-Maß: ${c.s&&c.b?num(c.s)+' × '+num(c.b)+' mm':'frei'}</span></div>
             <table class="aufmass">
-              <thead><tr>
-                <th class="n">Pakete</th><th class="n">Reihen</th><th class="n">Lagen</th>
-                <th class="n">Stück ges.</th><th class="n">Länge (m)</th>
-                <th class="n">Stärke</th><th class="n">Breite</th><th class="n" style="padding-right:6px">= m³</th>
+              <thead><tr id="aufHead">
+                <th class="pinnable" data-col="pakete" title="Rechtsklick: hier nach jeder Zeile starten">Pakete</th>
+                <th class="pinnable" data-col="reihen" title="Rechtsklick: hier nach jeder Zeile starten">Reihen</th>
+                <th class="pinnable" data-col="lagen" title="Rechtsklick: hier nach jeder Zeile starten">Lagen</th>
+                <th class="pinnable" data-col="stueck" id="thStueck" title="Rechtsklick: hier nach jeder Zeile starten">Stück ges.</th>
+                <th class="pinnable" data-col="laenge" title="Rechtsklick: hier nach jeder Zeile starten">Länge (cm)</th>
+                <th class="pinnable" data-col="staerke" title="Rechtsklick: hier nach jeder Zeile starten">Stärke</th>
+                <th class="pinnable" data-col="breite" title="Rechtsklick: hier nach jeder Zeile starten">Breite</th>
+                <th>= m³</th>
               </tr></thead>
-              <tbody><tr>
-                <td><input id="f_pakete" type="number" min="0" step="1" value="${pv('pakete',0)}"></td>
-                <td><input id="f_reihen" type="number" min="0" step="1" value="${pv('reihen',0)}"></td>
-                <td><input id="f_lagen" type="number" min="0" step="1" value="${pv('lagen',0)}"></td>
-                <td><input id="f_stueck" type="number" min="0" step="1" value="${pv('stueck','')}"></td>
-                <td><input id="f_laenge" type="number" min="0" step="0.01" value="${pv('laenge','')}"></td>
-                <td><input id="f_staerke" type="number" min="0" step="1" value="${pv('staerke', c.s||'')}"></td>
-                <td><input id="f_breite" type="number" min="0" step="1" value="${pv('breite', c.b||'')}"></td>
+              <tbody><tr id="aufRow">
+                <td data-col="pakete"><input id="f_pakete" type="number" min="0" step="1" value="${pv('pakete',0)}"></td>
+                <td data-col="reihen"><input id="f_reihen" type="number" min="0" step="1" value="${pv('reihen','')}"></td>
+                <td data-col="lagen"><input id="f_lagen" type="number" min="0" step="1" value="${pv('lagen','')}"></td>
+                <td data-col="stueck"><input id="f_stueck" type="number" min="0" step="1" value="${pv('stueck','')}"></td>
+                <td data-col="laenge"><input id="f_laenge" type="number" min="0" step="1" value="${pv('laenge','')}"></td>
+                <td data-col="staerke"><input id="f_staerke" type="number" min="0" step="1" value="${pv('staerke', c.s||'')}"></td>
+                <td data-col="breite"><input id="f_breite" type="number" min="0" step="1" value="${pv('breite', c.b||'')}"></td>
                 <td class="vol"><span id="liveVol">0,000</span> m³</td>
               </tr></tbody>
             </table>
+            <div class="pinnote" id="pinNote"></div>
             <div class="aufhint" id="aufHint"></div>
             <div class="committed" id="commWrap" hidden>
               <div class="ch">Erfasste Aufmaße <span class="spacer"></span><span id="commSum"></span></div>
-              <table class="comm"><thead><tr>
-                <th class="n">Pak</th><th class="n">Aufbau</th><th class="n">Stück</th><th class="n">Länge</th><th class="n">Maß</th><th class="n">m³</th><th></th>
-              </tr></thead><tbody id="commBody"></tbody></table>
+              <div class="gridwrap"><table class="pgrid comm">
+                <thead id="commHead"></thead><tbody id="commBody"></tbody>
+              </table></div>
+              <div class="commhint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert ändern · <kbd>Enter</kbd> Zelle darunter · <kbd>Tab</kbd> Zelle rechts · <kbd>Esc</kbd> abbrechen. Die <b>Grafiken rechts zeigen immer die angeklickte Zeile</b> – Klick auf die Zeilennummer genügt.</div>
             </div>
           </div>
           <div class="aufright">
@@ -615,96 +711,184 @@ function openAufmass(prefill){
         </div>
       </div>
       <div class="mfoot">
-        <div class="khints"><span><kbd>Enter</kbd> nächstes Feld / Zeile</span><span><kbd>Esc</kbd> fertig → Preis</span></div>
+        <div class="khints"><span><kbd>Enter</kbd> nächstes Feld</span><span><kbd>Strg</kbd>+<kbd>Enter</kbd> Zeile übernehmen</span><span><kbd>Rechtsklick</kbd> auf Spaltenkopf = Startspalte</span><span><kbd>Esc</kbd> fertig → Preis</span></div>
         <span class="spacer"></span>
-        <button class="ghost" id="btnCommit">Zeile übernehmen <kbd>Enter</kbd></button>
+        <button class="ghost" id="btnCommit">Zeile übernehmen <kbd>Strg</kbd>+<kbd>Enter</kbd></button>
         <button class="primary" id="btnAufDone">${editMode?'Speichern':'Weiter zum Preis'} <kbd>Esc</kbd></button>
       </div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>aufmassDone();
+  wireBack(()=>{
+    if(editMode){ cancelEdit(); return; }             // Bearbeitung abbrechen
+    if(draft.copied){ openCopyPicker(); return; }     // kopierte Position → zurück zur Angebotsliste
+    openArtikel();                                    // sonst → Artikelauswahl
+  });
   el('btnAufDone').onclick = ()=>aufmassDone();
   el('btnCommit').onclick = ()=>commitAuf();
-  const focusF = name => { const n=el('f_'+name); n.focus(); n.select(); };
+  // Rechtsklick auf einen Spaltenkopf → Startspalte nach jeder übernommenen Zeile
+  el('aufHead').querySelectorAll('th.pinnable').forEach(th=>{
+    th.addEventListener('contextmenu', e=>{ e.preventDefault(); setReturnCol(th.dataset.col); });
+  });
   ['pakete','reihen','lagen','stueck','laenge','staerke','breite'].forEach(f=>{
     const inp = el('f_'+f);
+    inp.addEventListener('focus', ()=>{ setFocusRow(null); });   // oben = Grafik zeigt wieder die neue Zeile
     inp.addEventListener('input', ()=>{ updateAufMode(); });
     inp.addEventListener('keydown', e=>{
       if(e.key!=='Enter') return;
       e.preventDefault(); e.stopPropagation();
-      const pak = +el('f_pakete').value||0;
-      if(f==='pakete') return focusF(pak>0 ? 'reihen' : 'stueck');
-      if(f==='reihen') return focusF('lagen');
-      if(f==='lagen')  return focusF('laenge');
-      if(f==='stueck') return focusF('laenge');
-      if(f==='laenge'){
-        // Stärke & Breite sind fix aus der Position: sind sie gesetzt, landet die Zeile direkt in der Tabelle
-        const s=+el('f_staerke').value||0, b=+el('f_breite').value||0;
-        if(s>0 && b>0) return commitAuf();
-        return focusF(s>0 ? 'breite' : 'staerke');
-      }
-      if(f==='staerke') return focusF('breite');
-      if(f==='breite') return commitAuf();
+      if(e.ctrlKey || e.metaKey) return commitAuf();   // Strg+Enter: Zeile sofort übernehmen
+      nextAufField(f);
     });
   });
+  focusRow = null;
   renderComm();
   updateAufMode();
   setTimeout(()=>{ const id = P.focusLaenge ? 'f_laenge' : 'f_pakete'; const p=el(id); if(p){ p.focus(); p.select(); } }, 30);
+}
+// Startspalte festlegen (Rechtsklick auf den Spaltenkopf)
+function setReturnCol(col){
+  if(!AUF_COLS.includes(col)) return;
+  returnCol = col;
+  renderPinCol(true);
+}
+function renderPinCol(flash){
+  const head = el('aufHead'); if(!head) return;
+  head.querySelectorAll('th').forEach(th=> th.classList.toggle('pincol', th.dataset.col===returnCol));
+  const row = el('aufRow');
+  if(row) row.querySelectorAll('td').forEach(td=> td.classList.toggle('pincol', td.dataset.col===returnCol));
+  const note = el('pinNote');
+  if(note){
+    note.innerHTML = `📌 Startspalte nach jeder übernommenen Zeile: <b>${AUF_LABEL[returnCol]}</b> · Rechtsklick auf einen anderen Spaltenkopf ändert das. <kbd>Enter</kbd> = ein Feld nach rechts (auch Stärke/Breite), <kbd>Strg</kbd>+<kbd>Enter</kbd> = Zeile sofort übernehmen.`;
+  }
+  if(flash){ const th = head.querySelector('th.pincol'); if(th){ th.classList.remove('pinflash'); void th.offsetWidth; th.classList.add('pinflash'); } }
+}
+// Enter: ins nächste freie Feld rechts – auch bereits gefüllte (Stärke/Breite) werden angelaufen,
+// damit man den Querschnitt jederzeit noch ändern kann. Am Zeilenende wird übernommen.
+// Wer sofort übernehmen will: Strg+Enter.
+function nextAufField(from){
+  const start = AUF_COLS.indexOf(from);
+  for(let i=start+1;i<AUF_COLS.length;i++){
+    const n = el('f_'+AUF_COLS[i]);
+    if(!n || n.disabled) continue;           // nur gesperrte Felder werden übersprungen
+    n.focus(); n.select(); return;
+  }
+  commitAuf();
 }
 function readAuf(){
   return { pakete:+el('f_pakete').value||0, reihen:+el('f_reihen').value||0, lagen:+el('f_lagen').value||0,
            stueck:+el('f_stueck').value||0, laenge:+el('f_laenge').value||0,
            staerke:+el('f_staerke').value||0, breite:+el('f_breite').value||0 };
 }
-// Feld-Modus + Live-Anzeigen (m³, Stück ges., Grafiken, Hinweis)
+// Feld-Sperren + Live-Anzeigen (m³, Stück, Grafiken, Hinweis)
+// Regel: Reihen/Lagen gefüllt → Stück wird berechnet und gesperrt.
+//        Stück direkt gefüllt → Reihen/Lagen bleiben leer und werden gesperrt.
+//        Beides leer → alles offen.
 function updateAufMode(){
+  const st = el('f_stueck'), rh = el('f_reihen'), lg = el('f_lagen');
   const pak = +el('f_pakete').value||0;
-  const paketMode = pak>0;
-  el('f_reihen').disabled = !paketMode;
-  el('f_lagen').disabled  = !paketMode;
-  el('f_stueck').disabled = paketMode;   // im Paketmodus berechnet
+  const r = +rh.value||0, l = +lg.value||0;
+  let mode;
+  if(r>0 || l>0) mode='rl';
+  else {
+    if(st.dataset.computed){ st.value=''; delete st.dataset.computed; }   // Reihen/Lagen geleert → Stück wieder freigeben
+    mode = (+st.value||0)>0 ? 'stk' : 'open';
+  }
+  rh.disabled = (mode==='stk');
+  lg.disabled = (mode==='stk');
+  st.disabled = (mode==='rl');
+  if(mode==='rl'){ st.value = (r*l)||''; st.dataset.computed='1'; }
   const m = readAuf();
-  if(paketMode) el('f_stueck').value = stkOf(m)||'';   // Pakete × Reihen × Lagen
-  m.stueck = +el('f_stueck').value||0;
+  const je = stkJe(m), ges = stkOf(m);
+  el('thStueck').firstChild.nodeValue = pak>0 ? 'Stück/Paket' : 'Stück ges.';
   const vol = volOf(m);
   el('liveVol').textContent = num3(vol);
-  el('aufHint').innerHTML = paketMode
-    ? `<b>Paketmodus:</b> ${pak} Paket${pak>1?'e':''} × <b>Reihen</b> × <b>Lagen</b> = Bretter je Länge. Reihen/Lagen = Bretter in Breite × Höhe. <kbd>Enter</kbd> springt Feld für Feld; am Ende landet die Zeile in der Tabelle. Für weitere Längen einfach nur die Länge ändern + <kbd>Enter</kbd>.`
-    : `<b>Pakete = 0</b> → kein Paket, Stückzahl direkt eingeben. Reihenfolge mit <kbd>Enter</kbd>: Stück → Länge → (Stärke/Breite einmalig) → Zeile. Danach nur noch die Länge ändern + <kbd>Enter</kbd>.`;
-  updateAufGraphics(m, paketMode);
+  el('aufHint').innerHTML =
+      mode==='rl'
+        ? `<b>Reihen × Lagen:</b> ${r||'–'} × ${l||'–'} = <b>${je||0}</b> Stück je Paket – die Stückzahl wird daraus berechnet und ist gesperrt.${pak>0?` × ${pak} Paket${pak>1?'e':''} = <b>${ges}</b> Stück gesamt.`:''} Reihen/Lagen leeren gibt die Stückzahl wieder frei.`
+      : mode==='stk'
+        ? `<b>Stückzahl direkt:</b> ${pak>0?`${pak} Paket${pak>1?'e':''} × ${je} Stück = <b>${ges}</b> Stück gesamt`:`<b>${ges}</b> Stück`} – Reihen/Lagen sind gesperrt (werden nicht gebraucht). Stückzahl leeren gibt sie wieder frei.`
+        : `<b>Zwei Wege:</b> entweder <b>Reihen × Lagen</b> eingeben (Stückzahl wird berechnet) oder die <b>Stückzahl</b> direkt – das jeweils andere wird gesperrt. Pakete = Multiplikator, 0 = kein Paket.`;
+  // Grafik rechts: normalerweise die Zeile, die oben gerade eingegeben wird.
+  // Klickt man unten in eine erfasste Zeile, zeigt sie genau dieses Objekt (focusRow).
+  const fr = (focusRow!=null) ? draft.measures[focusRow] : null;
+  if(fr) updateAufGraphics(fr, fr.reihen>0 && fr.lagen>0);
+  else   updateAufGraphics(m, r>0&&l>0);
+  renderPinCol();
+}
+// Welche erfasste Zeile die Grafiken rechts steuert (null = die Eingabezeile oben)
+let focusRow = null;
+function setFocusRow(i){
+  if(focusRow===i) return;
+  focusRow = i;
+  markFocusRow();
+  updateAufMode();
+}
+function markFocusRow(){
+  const b = el('commBody'); if(!b) return;
+  [...b.rows].forEach((tr,i)=> tr.classList.toggle('rowsel', i===focusRow));
 }
 function updateAufGraphics(m, paketMode){
   const s = m.staerke||draft.cat.s||100, b = m.breite||draft.cat.b||100;
   el('agxs').innerHTML = crossSVG(s, b);
-  el('agpak').innerHTML = paketMode ? packGridSVG(m.reihen, m.lagen, s, b) : `<div class="empty">kein Paket<br>(Pakete = 0)</div>`;
+  el('agpak').innerHTML = paketMode
+    ? packGridSVG(m.reihen, m.lagen, s, b)
+    : (m.pakete>0
+        ? `<div class="empty">${m.pakete} Paket${m.pakete>1?'e':''}${m.stueck>0?` à ${num(m.stueck,0)} Stück`:''}<br>Aufbau (Reihen × Lagen) nicht angegeben</div>`
+        : `<div class="empty">kein Paket<br>(Pakete = 0)</div>`);
 }
 function commitAuf(){
   const m = readAuf();
-  m.stueck = stkOf(m);
-  if(!(m.stueck>0 && m.laenge>0 && m.staerke>0 && m.breite>0)){
-    if(m.pakete>0){ for(const f of ['reihen','lagen','laenge','staerke','breite']) if(!(+el('f_'+f).value>0)){ el('f_'+f).focus(); el('f_'+f).select(); break; } }
-    else { for(const f of ['stueck','laenge','staerke','breite']) if(!(+el('f_'+f).value>0)){ el('f_'+f).focus(); el('f_'+f).select(); break; } }
+  m.stueck = stkJe(m);          // Stück je Paket (bzw. gesamt, wenn Pakete = 0)
+  m.total  = stkOf(m);          // Stück gesamt inkl. Paket-Multiplikator
+  if(!(m.total>0 && m.laenge>0 && m.staerke>0 && m.breite>0)){
+    const need = (m.reihen>0||m.lagen>0) ? ['reihen','lagen','laenge','staerke','breite'] : ['stueck','laenge','staerke','breite'];
+    for(const f of need) if(!(+el('f_'+f).value>0)){ el('f_'+f).focus(); el('f_'+f).select(); break; }
     return;
   }
   m.vol = volOf(m);
   draft.measures.push(m);
   renderComm(true);
-  const lf = el('f_laenge'); lf.value=''; lf.focus();   // Länge leeren → keine Doppel-Erfassung, nächste Länge eintippen
+  // zurück in die gewählte Startspalte (Rechtsklick auf den Spaltenkopf)
+  let rc = returnCol, f = el('f_'+rc);
+  if(!f || f.disabled){ rc='laenge'; f=el('f_laenge'); }
+  if(['pakete','reihen','lagen','stueck','laenge'].includes(rc)) f.value='';   // leeren → keine Doppel-Erfassung
+  f.focus(); f.select();
   updateAufMode();
 }
 function renderComm(blink){
   const wrap=el('commWrap');
   if(!draft.measures.length){ wrap.hidden=true; return; }
   wrap.hidden=false;
-  el('commBody').innerHTML = draft.measures.map((m,i)=>{
-    const aufbau = m.pakete>0 ? `${m.reihen}×${m.lagen}` : 'lose';
-    return `<tr class="${blink&&i===draft.measures.length-1?'blink':''}">
-      <td class="n">${m.pakete>0?m.pakete:'–'}</td><td class="n">${aufbau}</td>
-      <td class="n">${num(m.stueck,0)}</td><td class="n">${num(m.laenge)} m</td>
-      <td class="n">${num(m.staerke)}×${num(m.breite)}</td><td class="n"><b>${num3(m.vol)}</b></td>
-      <td class="n"><button class="linkish" data-del="${i}" title="Zeile löschen">✕</button></td></tr>`;
-  }).join('');
+  if(focusRow!=null && !draft.measures[focusRow]) focusRow=null;
+  const anyPak = draft.measures.some(m=>m.pakete>0);
+  el('commHead').innerHTML = `<tr>
+    <th class="rn"></th>
+    <th>Pakete</th><th>Reihen</th><th>Lagen</th><th>Stück${anyPak?'/Pak':''}</th>
+    <th>Länge cm</th><th>Stärke</th><th>Breite</th><th>Stück ges.</th><th>m³</th><th></th></tr>`;
+  // jede weiße Zelle ist einzeln änderbar – genau wie in der Positionsliste
+  const dcell = (mi,f,val)=>`<td class="cell" data-src="draft" data-key="d|${f}|${mi}" data-mi="${mi}" data-f="${f}"
+      title="Klick: ${AUF_LABEL[f]||f} ändern"><span class="v">${val}</span></td>`;
+  el('commBody').innerHTML = draft.measures.map((m,i)=>`
+    <tr class="${blink&&i===draft.measures.length-1?'blink':''}">
+      <td class="rn">${i+1}</td>
+      ${dcell(i,'pakete', m.pakete>0?num(m.pakete,0):'–')}
+      ${dcell(i,'reihen', m.reihen>0?num(m.reihen,0):'–')}
+      ${dcell(i,'lagen',  m.lagen>0?num(m.lagen,0):'–')}
+      ${dcell(i,'stueck', num(stkJe(m),0))}
+      ${dcell(i,'laenge', num(m.laenge,0))}
+      ${dcell(i,'staerke',num(m.staerke,0))}
+      ${dcell(i,'breite', num(m.breite,0))}
+      <td class="calc">${num(totOf(m),0)}</td>
+      <td class="calc">${num3(m.vol)}</td>
+      <td class="act"><button class="menubtn" data-del="${i}" title="Zeile löschen">✕</button></td>
+    </tr>`).join('');
   el('commSum').textContent = num3(draft.measures.reduce((s,m)=>s+m.vol,0)) + ' m³ gesamt';
-  el('commBody').querySelectorAll('[data-del]').forEach(b=> b.onclick=()=>{ draft.measures.splice(+b.dataset.del,1); renderComm(); });
+  el('commBody').querySelectorAll('[data-del]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation();
+    draft.measures.splice(+b.dataset.del,1); focusRow=null; renderComm(); updateAufMode(); });
+  // Klick auf die Zeilennummer wählt die Zeile aus → Grafiken rechts zeigen dieses Objekt
+  el('commBody').querySelectorAll('td.rn').forEach((td,i)=> td.onclick = ()=> setFocusRow(i));
+  wireCells(el('commBody'));
+  markFocusRow();
 }
 function aufmassDone(){
   if(editMode){ tryCommitPending(); if(!draft.measures.length) return; saveEdit(); return; }   // Bearbeitung: speichern
@@ -747,7 +931,7 @@ function openPreis(ctx){
   ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead"><h2>${ctx.titel}</h2>${editMode?'':stepper(ctx.step||'preis')}<span class="spacer"></span>
+      <div class="mhead">${backBtn(ctx.backLabel||'')}<h2>${ctx.titel}</h2>${editMode?'':stepper(ctx.step||'preis')}<span class="spacer"></span>
         <button class="linkish" data-close title="Übernehmen (Esc)">✕</button></div>
       <div class="mbody">
         <div class="pricebox">
@@ -769,6 +953,7 @@ function openPreis(ctx){
       </div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>confirmPreis();
+  wireBack(()=>{ if(editMode) cancelEdit(); else if(ctx.onBack) ctx.onBack(); else openAufmass(); });
   el('pGo').onclick = ()=>confirmPreis();
   const pin = el('pInput');
   pin.addEventListener('input', ()=>{ histIdx=-1; renderHist(); updateSrc(true); });
@@ -807,10 +992,17 @@ function renderHist(){
 function confirmPreis(){ const v = +el('pInput').value||0; const cb = priceCtx.onConfirm; closePreisToNext(); cb(v); }
 function closePreisToNext(){ /* Übergang wird vom onConfirm gesteuert */ }
 
+// Aufmaß erneut öffnen (Zurück-Weg) – erfasste Zeilen bleiben erhalten
+function reopenAufmass(){
+  const m0 = draft.measures[draft.measures.length-1] || {};
+  openAufmass({pakete:m0.pakete||0, reihen:m0.reihen||0, lagen:m0.lagen||0, stueck:m0.stueck||'',
+    laenge:'', staerke:m0.staerke||draft.cat.s||'', breite:m0.breite||draft.cat.b||'', focusLaenge:true});
+}
 function openPreisWood(){
   const c = draft.cat;
   openPreis({
     titel:'Holzpreis bestimmen', step:'preis', einheit:c.e, std:c.std, hist:c.hist,
+    backLabel:'Aufmaß', onBack:()=>reopenAufmass(),
     artLabel:`${c.a}${c.h?' '+holzName(c.h):''}`,
     copied: (draft.copied ? {preis:draft.woodPrice, nr:draft.source.nr, datum:draft.source.datum} : null),
     onConfirm:(v)=>{ draft.woodPrice = v; openZuschlaege(); }
@@ -825,13 +1017,14 @@ let zIdx = 0;
 function openZuschlaege(){
   currentStep='zuschlaege';
   zList = D.zus; zSel = new Set(); zIdx = 0;
-  if(draft.copiedZ){                                        // kopierte / vorhandene Zuschläge vorab ankreuzen
-    Object.keys(draft.copiedZ).forEach(code=>{ const i=zList.findIndex(z=>z.code===code); if(i>=0) zSel.add(i); });
+  const pre = draft._zsel || (draft.copiedZ ? Object.keys(draft.copiedZ) : null);
+  if(pre){                                                  // kopierte / vorhandene / zuletzt gewählte Zuschläge ankreuzen
+    pre.forEach(code=>{ const i=zList.findIndex(z=>z.code===code); if(i>=0) zSel.add(i); });
   }
   ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead"><h2>Zuschläge / Verarbeitungen</h2>${editMode?'':stepper('zuschlaege')}<span class="spacer"></span>
+      <div class="mhead">${backBtn(editMode?'Angebot (ohne Änderung)':'Holzpreis')}<h2>Zuschläge / Verarbeitungen</h2>${editMode?'':stepper('zuschlaege')}<span class="spacer"></span>
         <button class="linkish" data-close title="Ohne Zuschlag ins Angebot (Esc)">✕</button></div>
       <div class="mbody">
         <p style="margin:0 0 12px;font-size:0.84rem;color:var(--ink-2)">Mehrere mit <kbd>Leertaste</kbd> / <kbd>Strg</kbd>+Klick markieren, dann <kbd>Enter</kbd>. Für jeden Zuschlag folgt dasselbe Preis-Menü wie beim Holz.</p>
@@ -847,6 +1040,7 @@ function openZuschlaege(){
       </div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>finalizePosition();
+  wireBack(()=>{ if(editMode) cancelEdit(); else openPreisWood(); });
   el('zGo').onclick = ()=>startZuschlagPrices();
   renderZ();
 }
@@ -869,6 +1063,7 @@ function toggleZ(i){ zSel.has(i)?zSel.delete(i):zSel.add(i); }
 function startZuschlagPrices(){
   if(!zSel.size) return;
   const chosen = [...zSel].sort((a,b)=>a-b).map(i=>zList[i]);
+  draft._zsel = chosen.map(z=>z.code);                     // für den Zurück-Weg merken
   draft.surcharges = [];                                   // Preise werden im Chain neu gesetzt
   chainZ(chosen, 0);
 }
@@ -879,6 +1074,8 @@ function chainZ(list, i){
   openPreis({
     titel:`Preis: ${z.label}`, step:'zuschlaege', einheit:'CBM', std:z.std, hist:z.hist,
     artLabel:`${z.label} – ${draft.cat.a}`, copied:cop,
+    backLabel: i===0 ? 'Zuschlagsauswahl' : `Preis: ${list[i-1].label}`,
+    onBack: ()=>{ if(i===0){ openZuschlaege(); } else { draft.surcharges.pop(); chainZ(list, i-1); } },
     onConfirm:(v)=>{ draft.surcharges.push({code:z.code, label:z.label, price:v}); chainZ(list, i+1); }
   });
 }
@@ -886,6 +1083,7 @@ function chainZ(list, i){
 function finalizePosition(){
   if(editMode){ saveEdit(); return; }                       // Bearbeitung: ersetzen statt anhängen
   if(draft && draft.woodPrice!=null && draft.measures.length){
+    ['_zsel'].forEach(k=>delete draft[k]);
     positions.push(draft);
   }
   draft=null;
@@ -898,9 +1096,11 @@ function cloneDraft(p){ return {...p, cat:p.cat, measures:p.measures.map(m=>({..
 function saveEdit(){
   if(!editMode) return;
   const i=editMode.idx;
-  ['copied','editing','copiedZ','source'].forEach(k=>delete draft[k]);
+  ['copied','editing','copiedZ','source','_zsel'].forEach(k=>delete draft[k]);
   positions[i]=draft; editMode=null; draft=null; closeModal(); renderAll(); flashPos(i);
 }
+// Bearbeitung über „Zurück" verwerfen – die Position bleibt unverändert
+function cancelEdit(){ editMode=null; draft=null; closeModal(); renderAll(); }
 function flashPos(i){ const p=positions[i]; if(p){ p._flash=true; renderPosList(); } }
 
 function editAufmass(i){
@@ -934,17 +1134,6 @@ function tryCommitPending(){
   if(m.stueck>0 && m.laenge>0 && m.staerke>0 && m.breite>0){ m.vol=volOf(m); draft.measures.push(m); return true; }
   return false;
 }
-// Inline-Schnellkorrektur direkt in der Liste (Länge / Preis)
-function inlineEdit(spanEl, cur, onSave){
-  const inp=document.createElement('input');
-  inp.type='number'; inp.step='0.01'; inp.value=cur; inp.className='qinput';
-  spanEl.replaceWith(inp); inp.focus(); inp.select();
-  let done=false;
-  const finish=(commit)=>{ if(done) return; done=true; if(commit){ const v=parseFloat(inp.value); if(v>0) onSave(v); } renderAll(); };
-  inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); finish(true); } else if(e.key==='Escape'){ e.preventDefault(); finish(false); } });
-  inp.addEventListener('blur', ()=>finish(true));
-}
-
 // ══════════ Position anlegen: Neu / Aus altem Angebot kopieren ══════════
 const zByCode = c => D.zus.find(z=>z.code===c) || {code:c,label:c,std:0};
 function buildDummyOrders(){
@@ -954,15 +1143,15 @@ function buildDummyOrders(){
       zus: codes.map(cd=>({code:cd, label:zByCode(cd).label, price:zByCode(cd).std})) });
   return [
     {nr:'AN-2025-0412', datum:'12.11.2025', lines:[
-      L('SH-HOLZ','F/T',100,100,4,60,322.56,['TRO','HOB']),
-      L('SH-HOLZ','L/D',80,160,5,40,520,['TRO']),
+      L('SH-HOLZ','F/T',100,100,400,60,322.56,['TRO','HOB']),
+      L('SH-HOLZ','L/D',80,160,500,40,520,['TRO']),
     ]},
     {nr:'AN-2025-0188', datum:'03.06.2025', lines:[
-      L('SH-HOLZ','F/T',60,120,4,100,300,[]),
-      L('SH-HOLZ','NH',40,60,3,200,280,['KAP PAK']),
+      L('SH-HOLZ','F/T',60,120,400,100,300,[]),
+      L('SH-HOLZ','NH',40,60,300,200,280,['KAP PAK']),
     ]},
     {nr:'AN-2024-0631', datum:'21.10.2024', lines:[
-      L('SH-HOLZ','L/D',100,200,6,25,505,['TRO','HOB','IMP BS3']),
+      L('SH-HOLZ','L/D',100,200,600,25,505,['TRO','HOB','IMP BS3']),
     ]},
   ];
 }
@@ -975,12 +1164,13 @@ function openPositionChoice(){
   currentStep='choice'; draft=null; choiceIdx=0; ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead"><h2>Neue Position anlegen</h2><span class="spacer"></span>
+      <div class="mhead">${backBtn('Angebot')}<h2>Neue Position anlegen</h2><span class="spacer"></span>
         <button class="linkish" data-close title="Abbrechen (Esc)">✕</button></div>
       <div class="mbody"><div class="choice" id="choiceCards"></div></div>
       <div class="mfoot"><div class="khints"><span><kbd>1</kbd>/<kbd>2</kbd> oder <kbd>←</kbd><kbd>→</kbd></span><span><kbd>Enter</kbd> wählen</span><span><kbd>Esc</kbd> abbrechen</span></div></div>
     </div>`;
   ov.querySelector('[data-close]').onclick = closeModal;
+  wireBack(()=>closeModal());
   renderChoice();
 }
 function renderChoice(){
@@ -1002,20 +1192,21 @@ function openCopyPicker(){
   currentStep='copy'; copyAll=flattenOrders(); copyRows=copyAll.slice(); copyIdx=0; ov.hidden=false;
   ov.innerHTML = `
     <div class="modal">
-      <div class="mhead"><h2>Aus altem Angebot kopieren</h2><span class="spacer"></span>
+      <div class="mhead">${backBtn('Neue Position anlegen')}<h2>Aus altem Angebot kopieren</h2><span class="spacer"></span>
         <button class="linkish" data-close title="Zurück (Esc)">✕</button></div>
       <div class="mbody">
         <div class="searchbar"><span class="ico">🔎</span>
           <input id="copyQ" placeholder="Suchen … Angebot-Nr., Artikel, Holzart, Zuschlag – z. B. „SH", „L/D", „AN-2025", „TRO"" autocomplete="off"></div>
-        <p style="margin:0 0 12px;font-size:0.86rem;color:var(--ink-2)">Alle bisherigen Bestellungen von <b>${KUNDE}</b>. Tippen filtert, <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> wählt (oder Klick). Danach im Aufmaß nur noch die Länge anpassen.</p>
+        <p style="margin:0 0 12px;font-size:0.86rem;color:var(--ink-2)">Alle bisherigen Bestellungen von <b>${KUNDE}</b>. Tippen filtert, <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> wählt (oder Klick). Danach im Aufmaß nur noch die Länge anpassen (<kbd>Strg</kbd>+<kbd>Enter</kbd> übernimmt die Zeile sofort).</p>
         <div class="restable"><div class="scroll"><table class="res">
-          <thead><tr><th>Angebot</th><th>Datum</th><th>Artikel</th><th>Holz/Qual.</th><th class="n">Maß</th><th class="n">Länge</th><th class="n">Preis</th><th>Zuschläge</th></tr></thead>
+          <thead><tr><th>Angebot</th><th>Datum</th><th>Artikel</th><th>Holz/Qual.</th><th class="n">Maß</th><th class="n">Länge cm</th><th class="n">Preis</th><th>Zuschläge</th></tr></thead>
           <tbody id="copyBody"></tbody></table></div></div>
       </div>
       <div class="mfoot"><div class="khints"><span><kbd>Tippen</kbd> filtern</span><span><kbd>↑</kbd><kbd>↓</kbd> wählen</span><span><kbd>Enter</kbd> kopieren</span><span><kbd>Esc</kbd> zurück</span></div>
         <span class="spacer"></span><button class="primary" id="copyGo">Übernehmen <kbd>Enter</kbd></button></div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>openPositionChoice();
+  wireBack(()=>openPositionChoice());
   el('copyGo').onclick = ()=>chooseCopy();
   el('copyQ').addEventListener('input', filterCopy);
   renderCopy();
@@ -1039,7 +1230,7 @@ function renderCopy(){
     return `<tr class="row ${i===copyIdx?'active':''}" data-i="${i}">
       <td><b>${r.nr}</b></td><td>${r.datum}</td>
       <td>${c.a}</td><td>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')||'–'}</td>
-      <td class="n">${num(ln.s)}×${num(ln.b)}</td><td class="n">${num(ln.laenge)} m</td>
+      <td class="n">${num(ln.s)}×${num(ln.b)}</td><td class="n">${num(ln.laenge,0)} cm</td>
       <td class="n">${eur(ln.preis)}/${einhName(c.e)}</td><td style="color:var(--ink-2)">${z}</td></tr>`;
   }).join('');
   el('copyBody').querySelectorAll('tr.row').forEach(tr=>{
@@ -1061,7 +1252,7 @@ function openCopyPrompt(){
   currentStep='copyprompt'; promptIdx=0; ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead"><h2>Kopierte Position</h2><span class="spacer"></span>
+      <div class="mhead">${backBtn('Aufmaß')}<h2>Kopierte Position</h2><span class="spacer"></span>
         <button class="linkish" data-close title="Nein (Esc)">✕</button></div>
       <div class="mbody"><div class="cprompt">
         <div class="big">📋</div>
@@ -1072,6 +1263,7 @@ function openCopyPrompt(){
       <div class="mfoot"><div class="khints"><span><kbd>←</kbd><kbd>→</kbd> wählen</span><span><kbd>N</kbd>/<kbd>J</kbd></span><span><kbd>Enter</kbd> bestätigen</span></div></div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>{ promptIdx=0; confirmPrompt(); };
+  wireBack(()=>reopenAufmass());
   renderPrompt();
 }
 function renderPrompt(){
@@ -1093,37 +1285,146 @@ function renderPosList(){
   wrap.innerHTML = positions.map((p,i)=>{
     const c=p.cat, vol=posVol(p), ai=allIn(p);
     const fl=p._flash; delete p._flash;
-    const woodLine = `<div class="r wood editrow" data-edit="preis" data-i="${i}" title="Klick: Holzpreis ändern (mit Historie)"><span>Holz (${c.a})</span><span class="qedit" data-q="wood" data-i="${i}" title="Doppelklick: Preis schnell ändern">${eur2(p.woodPrice)} /${einhName(c.e)}</span></div>`;
-    const surLines = p.surcharges.map(z=>`<div class="r editrow" data-edit="sur" data-i="${i}" data-code="${z.code}" title="Klick: Preis „${z.label}" ändern"><span>+ ${z.label}</span><span>${eur2(z.price)} /m³</span></div>`).join('');
-    const allinLine = `<div class="allin editrow" data-edit="zus" data-i="${i}" title="Klick: Zuschläge hinzufügen/entfernen"><span>Verkaufspreis (all-in)</span><span>${eur2(ai)} /${einhName(c.e)}</span></div>`;
-    const meas = p.measures.map((m,j)=>{
-      return `<div class="m editrow" data-edit="auf" data-i="${i}" title="Klick: Aufmaß bearbeiten"><span>${m.pakete>0?m.pakete+' Pak × ':''}${num(m.stueck,0)} Stk · <span class="qedit" data-q="len" data-i="${i}" data-mi="${j}" title="Doppelklick: Länge schnell ändern">${num(m.laenge)} m</span> · ${num(m.staerke)}×${num(m.breite)} mm</span><span>${num3(m.vol)} m³ · ${eur2(m.vol*ai)}</span></div>`;
-    }).join('');
+    // ── Aufmaß-Raster: jede Zelle ist per Klick änderbar (wie in Excel) ──
+    const cell = (mi,f,val)=>`<td class="cell" data-key="${i}|${f}|${mi}" data-i="${i}" data-mi="${mi}" data-f="${f}" title="Klick: ${AUF_LABEL[f]||f} ändern"><span class="v">${val}</span></td>`;
+    const mrows = p.measures.map((m,j)=>`<tr>
+        <td class="rn">${j+1}</td>
+        ${cell(j,'pakete', m.pakete>0?num(m.pakete,0):'–')}
+        ${cell(j,'reihen', m.reihen>0?num(m.reihen,0):'–')}
+        ${cell(j,'lagen',  m.lagen>0?num(m.lagen,0):'–')}
+        ${cell(j,'stueck', num(m.stueck,0))}
+        ${cell(j,'laenge', num(m.laenge,0))}
+        ${cell(j,'staerke',num(m.staerke,0))}
+        ${cell(j,'breite', num(m.breite,0))}
+        <td class="ro">${num(totOf(m),0)}</td>
+        <td class="calc">${num3(m.vol)}</td>
+        <td class="calc">${eur2(m.vol*ai)}</td>
+        <td class="act"><button class="menubtn" data-delm="${j}" data-i="${i}" title="Aufmaßzeile löschen">✕</button></td>
+      </tr>`).join('');
+    const measTable = `<table class="pgrid">
+      <thead><tr><th class="rn"></th><th>Pakete</th><th>Reihen</th><th>Lagen</th><th>Stück${p.measures.some(m=>m.pakete>0)?'/Pak':''}</th><th>Länge cm</th><th>Stärke</th><th>Breite</th><th>Stück ges.</th><th>m³</th><th>Betrag</th><th></th></tr></thead>
+      <tbody>${mrows}
+        <tr class="sum"><td colspan="9" class="l">Summe Position ${i+1}</td><td>${num3(vol)}</td><td>${eur2(vol*ai)}</td><td class="act"></td></tr>
+      </tbody></table>`;
+    // ── Preisaufbau: Holz + je Zuschlag, ebenfalls direkt in der Zelle änderbar ──
+    const pcell = (f,val,code)=>`<td class="cell" data-key="${i}|${f}|${code||''}" data-i="${i}" data-f="${f}" ${code?`data-code="${code}"`:''} title="Klick: Preis ändern"><span class="v">${val}</span></td>`;
+    const surRows = p.surcharges.map(z=>`<tr>
+        <td class="l ro">+ ${z.label} <span class="lbl">(${z.code})</span></td>
+        ${pcell('sur', eur2(z.price), z.code)}
+        <td class="ro unit">/ m³</td>
+        <td class="act"><button class="menubtn" data-edit="sur" data-i="${i}" data-code="${z.code}" title="Preis-Menü mit Historie">✎ Menü</button></td>
+      </tr>`).join('');
+    const priceTable = `<table class="pgrid">
+      <thead><tr><th class="l">Preisaufbau</th><th>Preis</th><th class="l">Einheit</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="l ro"><b>Holz</b> (${c.a})</td>${pcell('wood', eur2(p.woodPrice))}<td class="ro unit">/ m³</td>
+          <td class="act"><button class="menubtn" data-edit="preis" data-i="${i}" title="Preis-Menü mit Historie">✎ Menü</button></td></tr>
+        ${surRows}
+        <tr class="allinrow"><td class="l">Verkaufspreis (all-in)</td><td class="calc">${eur2(ai)}</td><td class="unit">/ m³</td>
+          <td class="act"><button class="menubtn" data-edit="zus" data-i="${i}" title="Zuschläge hinzufügen/entfernen">✎ Zuschläge</button></td></tr>
+      </tbody></table>`;
     return `<div class="posblock ${fl?'posflash':''}">
       <div class="head"><span class="no">${i+1}</span><b>${c.a}</b>
         <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${num3(vol)} m³</small>
         <span class="spacer"></span><b>${eur(posSum(p))}</b>
         <button class="linkish" data-del="${i}" title="Position löschen">✕</button></div>
-      <div class="body"><div class="breakdown">${woodLine}${surLines}${allinLine}</div><div class="measures">${meas}</div>
-        <div class="edithint">✎ Bereich anklicken zum Bearbeiten · Zahl doppelklicken zum schnell Ändern</div></div>
+      <div class="body">
+        <div class="gridlbl">Aufmaß <button class="menubtn" data-edit="auf" data-i="${i}" title="Aufmaß-Menü öffnen (neue Zeilen erfassen)">✎ Menü</button></div>
+        <div class="gridwrap">${measTable}</div>
+        <div class="gridlbl">Preisaufbau (intern)</div>
+        <div class="gridwrap">${priceTable}</div>
+        <div class="edithint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert überschreiben · <kbd>Enter</kbd> Zelle darunter · <kbd>Tab</kbd> Zelle rechts · <kbd>Esc</kbd> abbrechen · „✎ Menü" öffnet den vollen Dialog (mit Preishistorie).</div>
+      </div>
     </div>`;
   }).join('');
   wrap.querySelectorAll('[data-del]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation(); positions.splice(+b.dataset.del,1); renderAll(); });
-  wrap.querySelectorAll('.editrow').forEach(row=> row.onclick=(e)=>{
-    if(e.target.closest('.qedit')) return;
-    const i=+row.dataset.i, w=row.dataset.edit;
+  wrap.querySelectorAll('[data-delm]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation();
+    const p=positions[+b.dataset.i]; p.measures.splice(+b.dataset.delm,1);
+    if(!p.measures.length) positions.splice(+b.dataset.i,1);
+    renderAll(); });
+  wrap.querySelectorAll('[data-edit]').forEach(b=> b.onclick=(e)=>{
+    e.stopPropagation();
+    const i=+b.dataset.i, w=b.dataset.edit;
     if(w==='preis') editPreisWood(i);
-    else if(w==='sur') editSurcharge(i, row.dataset.code);
+    else if(w==='sur') editSurcharge(i, b.dataset.code);
     else if(w==='zus') editZuschlaege(i);
     else if(w==='auf') editAufmass(i);
   });
-  wrap.querySelectorAll('.qedit').forEach(q=>{
-    q.onclick=(e)=>e.stopPropagation();
-    q.ondblclick=(e)=>{ e.stopPropagation(); const i=+q.dataset.i;
-      if(q.dataset.q==='wood') inlineEdit(q, positions[i].woodPrice, v=>{ positions[i].woodPrice=v; });
-      else if(q.dataset.q==='len'){ const j=+q.dataset.mi; inlineEdit(q, positions[i].measures[j].laenge, v=>{ const m=positions[i].measures[j]; m.laenge=v; m.vol=volOf(m); }); }
-    };
+  wireCells(wrap);
+}
+
+// ══════════ Excel-artiges Bearbeiten direkt in der Positionstabelle ══════════
+let pendingCell = null;   // Zelle, die per Mausklick als Nächstes geöffnet werden soll
+// Klick auf eine Zelle öffnet sie. mousedown merkt sich das Ziel, damit ein Klick aus einer
+// offenen Zelle heraus nicht verloren geht (der blur rendert die Tabelle vorher neu).
+function wireCells(root){
+  root.querySelectorAll('td.cell').forEach(td=>{
+    td.onmousedown = ()=>{ pendingCell = td.dataset.key; };
+    td.onclick = ()=>{ if(!td.querySelector('input')) startCellEdit(td); };
   });
+}
+function openCellByKey(k){ if(!k) return; const t=document.querySelector(`td.cell[data-key="${k}"]`); if(t) startCellEdit(t); }
+function startCellEdit(td){
+  if(!td || td.classList.contains('editing')) return;
+  pendingCell = null;
+  const drafted = td.dataset.src==='draft';                 // Zeile im Aufmaß-Dialog
+  const f=td.dataset.f;
+  const p = drafted ? draft : positions[+td.dataset.i];
+  if(!p) return;
+  let cur, step='1';
+  if(f==='wood'){ cur=p.woodPrice; step='0.01'; }
+  else if(f==='sur'){ const z=p.surcharges.find(s=>s.code===td.dataset.code); if(!z) return; cur=z.price; step='0.01'; }
+  else { const m=p.measures[+td.dataset.mi]; if(!m) return; cur=m[f]||''; }
+  const nextKey = k => cellNeighbour(td, k);
+  td.classList.add('editing');
+  // Wert-Span bleibt stehen (unsichtbar) → Spaltenbreite ändert sich nicht
+  td.insertAdjacentHTML('beforeend', `<input type="number" size="1" min="0" step="${step}" value="${cur}">`);
+  const inp = td.querySelector('input'); inp.focus(); inp.select();
+  // Grafik rechts folgt der angeklickten Zeile (nur im Aufmaß-Dialog)
+  if(drafted) setFocusRow(+td.dataset.mi);
+  let done=false;
+  const finish=(commit, moveKey)=>{
+    if(done) return; done=true;
+    const v = parseFloat(inp.value);
+    if(commit && !isNaN(v) && v>=0) applyCellEdit(p, td, f, v);
+    const click = pendingCell; pendingCell = null;
+    if(drafted){ renderComm(); updateAufMode(); } else { renderAll(); }
+    openCellByKey(moveKey || click);
+  };
+  inp.addEventListener('keydown', e=>{
+    e.stopPropagation();
+    if(e.key==='Enter'){ e.preventDefault(); finish(true, nextKey('down')); }
+    else if(e.key==='Tab'){ e.preventDefault(); finish(true, nextKey(e.shiftKey?'left':'right')); }
+    else if(e.key==='Escape'){ e.preventDefault(); e.stopPropagation(); done=true; pendingCell=null;
+      if(drafted){ renderComm(); } else { renderAll(); } }
+  });
+  // Während des Tippens zeigt die Grafik rechts sofort das geänderte Objekt
+  if(drafted) inp.addEventListener('input', ()=>{
+    const m = draft.measures[+td.dataset.mi]; if(!m) return;
+    const v = parseFloat(inp.value);
+    const prev = {...m}; if(!isNaN(v) && v>=0) prev[f]=v;
+    updateAufGraphics(prev, prev.reihen>0 && prev.lagen>0);
+  });
+  inp.addEventListener('blur', ()=>finish(true));
+}
+// Nachbarzelle bestimmen (vor dem Neu-Rendern, solange die alte Tabelle noch steht)
+function cellNeighbour(td, dir){
+  const t=td.closest('table');
+  const all= t ? [...t.querySelectorAll('td.cell')] : [];
+  const idx=all.indexOf(td);
+  if(idx<0) return null;
+  if(dir==='right') return all[idx+1] ? all[idx+1].dataset.key : null;
+  if(dir==='left')  return all[idx-1] ? all[idx-1].dataset.key : null;
+  for(let k=idx+1;k<all.length;k++) if(all[k].dataset.f===td.dataset.f) return all[k].dataset.key;   // gleiche Spalte, nächste Zeile
+  return null;
+}
+function applyCellEdit(p, td, f, v){
+  if(f==='wood'){ p.woodPrice=v; return; }
+  if(f==='sur'){ const z=p.surcharges.find(s=>s.code===td.dataset.code); if(z) z.price=v; return; }
+  const m=p.measures[+td.dataset.mi]; if(!m) return;
+  m[f]=v;
+  if(f==='stueck'){ m.reihen=0; m.lagen=0; }              // Stückzahl direkt → Reihen/Lagen entfallen
+  m.stueck = stkJe(m); m.total = stkOf(m); m.vol = volOf(m);
 }
 
 function renderSheet(){
@@ -1135,7 +1436,7 @@ function renderSheet(){
     rows += `<tr class="art"><td>${i+1}</td><td>${c.a}<small>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')}</small></td>
       <td class="n">${num3(vol)} m³</td><td class="n">${eur2(ai)}</td><td class="n">${eur2(posSum(p))}</td></tr>`;
     p.measures.forEach(m=>{
-      rows += `<tr class="meas"><td></td><td>${m.pakete>0?m.pakete+' Pakete × ':''}${num(m.stueck,0)} Stk, Länge ${num(m.laenge)} m, ${num(m.staerke)}×${num(m.breite)} mm</td><td class="n">${num3(m.vol)} m³</td><td></td><td></td></tr>`;
+      rows += `<tr class="meas"><td></td><td>${m.pakete>0?m.pakete+' Pakete × ':''}${num(totOf(m),0)} Stk, Länge ${num(m.laenge,0)} cm, ${num(m.staerke)}×${num(m.breite)} mm</td><td class="n">${num3(m.vol)} m³</td><td></td><td></td></tr>`;
     });
     p.surcharges.forEach(z=>{
       rows += `<tr class="zus"><td></td><td>${z.label} (im Preis enthalten)</td><td></td><td></td><td></td></tr>`;
@@ -1164,6 +1465,14 @@ document.addEventListener('keydown', e=>{
   // F3 / global
   if(e.key==='F3'){ e.preventDefault(); if(!currentStep) openPositionChoice(); return; }
   if(!currentStep){ return; }
+
+  // Zurück: Alt+← immer, Rücktaste nur außerhalb von Eingabefeldern
+  const inField = /^(INPUT|TEXTAREA|SELECT)$/.test((e.target.tagName||''));
+  if((e.key==='ArrowLeft' && e.altKey) || (e.key==='Backspace' && !inField)){
+    e.preventDefault(); goBack(); return;
+  }
+  // Strg+Enter im Aufmaß: Zeile direkt übernehmen (auch außerhalb der Felder)
+  if(currentStep==='aufmass' && e.key==='Enter' && (e.ctrlKey||e.metaKey)){ e.preventDefault(); commitAuf(); return; }
 
   if(currentStep==='choice'){
     if(e.key==='Escape'){ e.preventDefault(); closeModal(); return; }
@@ -1229,9 +1538,9 @@ function demoPick(){
   pickIdx = i>=0?i:0; renderRes();
 }
 function demoAuf(){
-  el('f_pakete').value=0; el('f_stueck').value=60; el('f_laenge').value=4; el('f_staerke').value=100; el('f_breite').value=100;
+  el('f_pakete').value=0; el('f_stueck').value=60; el('f_laenge').value=400; el('f_staerke').value=100; el('f_breite').value=100;
   updateAufMode(); commitAuf();
-  el('f_laenge').value=5; commitAuf();
+  el('f_laenge').value=500; commitAuf();
 }
 function demoFinalize(){
   if(draft && draft.woodPrice==null) draft.woodPrice = draft.cat.hist.length ? draft.cat.hist[draft.cat.hist.length-1].preis : draft.cat.std;
@@ -1239,13 +1548,16 @@ function demoFinalize(){
   finalizePosition();
 }
 
-function demoCopyAuf(){ const lf=el('f_laenge'); if(lf) lf.value='5'; updateAufMode(); aufmassDone(); }
+function demoCopyAuf(){ const lf=el('f_laenge'); if(lf) lf.value='500'; updateAufMode(); aufmassDone(); }
 
 const TOUR = [
   { target:'#btnNew', title:'Willkommen 👋',
     body:`Diese Tour führt einmal komplett durch die Angebotserfassung und zeigt, welche Taste wann hilft. <b>Alles geht auch mit der Maus.</b><br><br>Eine neue Position startest du mit <kbd>F3</kbd> oder diesem Knopf. Weiter mit <kbd>Enter</kbd> / <kbd>→</kbd>.` },
   { setup:()=>openPositionChoice(), target:'.choice', title:'Zwei Wege',
     body:`Beim Anlegen fragt das Tool: <b>1 · Neue Position</b> (frisch erfassen) oder <b>2 · Aus altem Angebot kopieren</b> (frühere Bestellung des Kunden übernehmen).<br><br>Wählbar mit <kbd>1</kbd>/<kbd>2</kbd>, <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd> oder Klick. <b>Wir gehen zuerst „Neu".</b>` },
+
+  { target:'.backbtn', title:'Immer ein Weg zurück',
+    body:`In <b>jedem</b> Menü sitzt oben links ein <b>Zurück</b>-Knopf – er führt genau ein Menü zurück, ohne etwas zu verlieren.<br><br>Tastatur: <kbd>⌫</kbd> (Rücktaste, wenn der Cursor nicht in einem Eingabefeld steht) oder <kbd>Alt</kbd>+<kbd>←</kbd>.` },
 
   // ── Weg 1: Neue Position ──
   { setup:()=>{ choiceIdx=0; confirmChoice(); }, target:'#q', title:'Weg 1 · Artikel suchen',
@@ -1257,11 +1569,15 @@ const TOUR = [
   { setup:()=>demoPick(), target:'.restable', title:'Weg 1 · Treffer auswählen',
     body:`Die <b>erste Zeile ist automatisch markiert</b>. Mit <kbd>↑</kbd><kbd>↓</kbd> wandern, mit <kbd>Enter</kbd> übernehmen. Mit der Maus: Zeile anklicken (Doppelklick wählt direkt).` },
   { setup:()=>chooseArtikel(), target:'table.aufmass', title:'Weg 1 · Aufmaß eingeben',
-    body:`Jetzt die Maße. <kbd>Enter</kbd> springt Feld für Feld: <b>Pakete → Reihen → Lagen → Länge → (Stärke/Breite einmalig)</b>.<br><br><b>Pakete = 0</b> = kein Paket, dann direkt Stück. Ein Paket = <b>Reihen × Lagen</b> Bretter (z. B. 10 × 10 = 100).` },
+    body:`Jetzt die Maße. <kbd>Enter</kbd> springt Feld für Feld nach rechts, <kbd>Strg</kbd>+<kbd>Enter</kbd> übernimmt die Zeile sofort. Die <b>Länge wird in Zentimetern</b> erfasst – also <b>300</b> für 3 Meter.<br><br><b>Pakete = 0</b> = kein Paket. Ein Paket = <b>Reihen × Lagen</b> Bretter (z. B. 10 × 10 = 100).` },
+  { target:'#aufHead', title:'Weg 1 · Reihen/Lagen ⇄ Stückzahl',
+    body:`Die Felder sperren sich gegenseitig, damit nichts doppelt gerechnet wird:<br><br>· <b>Reihen + Lagen</b> ausgefüllt → <b>Stück</b> wird berechnet und gesperrt.<br>· <b>Stück</b> direkt eingetippt (z. B. „3 Pakete à 80 Stück", Aufbau unbekannt) → <b>Reihen/Lagen</b> werden gesperrt. Einfach mit <kbd>Enter</kbd> überspringen.<br>· Reihen/Lagen wieder leeren gibt die Stückzahl frei.` },
+  { target:'#aufHead th[data-col=\'laenge\']', title:'Weg 1 · Startspalte selbst festlegen',
+    body:`Nach jeder übernommenen Zeile springt der Cursor zurück in die <b>📌 markierte Spalte</b> – ab Werk die <b>Länge</b>.<br><br><b>Rechtsklick</b> auf einen anderen Spaltenkopf macht ihn zur neuen Startspalte (er wird farbig markiert). Wer z. B. immer die Stückzahl variiert, pinnt einfach „Stück".` },
   { target:'.aufright', title:'Weg 1 · Live-Grafik',
     body:`Querschnitt und Paket zeichnen sich live mit – beim Paket mit Maßketten für <b>Breite</b> und <b>Höhe</b>.` },
   { setup:()=>demoAuf(), target:'#commWrap', title:'Weg 1 · Mehrere Längen',
-    body:`Am Zeilenende landet das Aufmaß hier in der Tabelle. Für weitere Längen einfach <b>nur die Länge ändern</b> und <kbd>Enter</kbd> – Stärke/Breite bleiben stehen. Fertig? <kbd>Esc</kbd> führt zum Preis.` },
+    body:`Am Zeilenende landet das Aufmaß hier in der Tabelle. Für weitere Längen einfach <b>nur die Länge ändern</b> und <kbd>Strg</kbd>+<kbd>Enter</kbd> – Stärke/Breite bleiben stehen.<br><br>Diese Tabelle ist ebenfalls <b>wie in Excel</b>: in jede weiße Zelle klicken und den Wert ändern – auch Stärke und Breite nachträglich. Die <b>Grafiken rechts zeigen dabei immer die angeklickte Zeile</b> (Klick auf die Zeilennummer links genügt). Fertig? <kbd>Esc</kbd> führt zum Preis.` },
   { setup:()=>aufmassDone(), target:'.histtable', title:'Weg 1 · Preis bestimmen',
     body:`Vorbelegt ist der <b>letzte Preis dieses Kunden</b> (oberste Zeile). Mit <kbd>↑</kbd><kbd>↓</kbd> eine ältere Rechnung übernehmen oder einfach neuen Preis tippen.<br><br>Spalten: <b>Δ Vorwert</b> und <b>Δ Standard</b>. Ganz unten der Standardpreis – bei Neukunden steht er dadurch oben. Weiter mit <kbd>Enter</kbd> / <kbd>Esc</kbd>.` },
   { setup:()=>confirmPreis(), target:'.zustable', title:'Weg 1 · Zuschläge wählen',
@@ -1277,7 +1593,7 @@ const TOUR = [
   { setup:()=>{ choiceIdx=1; confirmChoice(); }, target:'.restable', title:'Weg 2 · Frühere Bestellung wählen',
     body:`Hier stehen <b>alle bisherigen Bestellungen des Kunden</b> (Angebot-Nr, Datum, Artikel, Maß, Länge, Preis, Zuschläge). Zeile mit <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> (oder Klick) übernehmen.` },
   { setup:()=>{ copyIdx=0; chooseCopy(); }, target:'table.aufmass', title:'Weg 2 · Nur die Länge',
-    body:`Du landest direkt im Aufmaß – <b>Länge ist markiert</b>, Stärke/Breite/Stück kommen aus der Kopie. Länge ändern, <kbd>Enter</kbd> (weitere Längen) oder <kbd>Esc</kbd>.` },
+    body:`Du landest direkt im Aufmaß – <b>Länge ist markiert</b>, Stärke/Breite/Stück kommen aus der Kopie. Länge ändern, dann <kbd>Strg</kbd>+<kbd>Enter</kbd> für weitere Längen oder gleich <kbd>Esc</kbd>.` },
   { setup:()=>demoCopyAuf(), target:'.cprompt', title:'Weg 2 · Preise nachbearbeiten?',
     body:`Preis <b>und</b> Zuschläge sind aus dem alten Angebot übernommen. Die Abfrage: <b>Nein</b> (Vorauswahl) = so übernehmen, <b>Ja</b> = Preise durchgehen (dann vorbelegt mit dem kopierten Wert). Wählbar mit <kbd>N</kbd>/<kbd>J</kbd> bzw. <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd>.` },
   { setup:()=>{ promptIdx=0; confirmPrompt(); }, target:'#posList', title:'Weg 2 · fertig ✔',
@@ -1285,11 +1601,11 @@ const TOUR = [
 
   // ── Nachträglich bearbeiten ──
   { target:'.posblock .edithint', title:'Bearbeiten · zwei Wege',
-    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen: <b>Bereich anklicken</b> öffnet das passende Menü, <b>Zahl doppelklicken</b> ändert direkt in der Liste.` },
+    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen: die Tabellen arbeiten <b>wie in Excel</b> – jede weiße Zelle ist direkt überschreibbar. Und „<b>✎ Menü</b>" öffnet den vollen Dialog inklusive Preishistorie.` },
   { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Bereich anklicken',
     body:`Klick z. B. auf den <b>Holzpreis</b> einer Position → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position (kein Durchklicken). Genauso für Zuschläge und Aufmaß.` },
-  { setup:()=>confirmPreis(), target:'.qedit', title:'Bearbeiten · Doppelklick',
-    body:`Noch schneller: <b>Länge</b> oder <b>Preis</b> (gepunktet unterstrichen) <b>doppelklicken</b> und direkt überschreiben – Mengen und Summen rechnen sofort mit.<br><br>Das war die Tour! Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b>, und los. Viel Erfolg!` },
+  { setup:()=>confirmPreis(), target:'#posList table.pgrid', title:'Bearbeiten · wie in Excel',
+    body:`Noch schneller: <b>in eine Zelle klicken</b> und den Wert überschreiben – Stückzahl, Länge, Stärke, Breite, Pakete, aber auch Holz- und Zuschlagspreise.<br><br><kbd>Enter</kbd> springt in die Zelle darunter, <kbd>Tab</kbd> nach rechts, <kbd>Umschalt</kbd>+<kbd>Tab</kbd> nach links, <kbd>Esc</kbd> bricht ab. Mengen, m³ und Summen rechnen sofort mit.<br><br>Das war die Tour! Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b>, und los. Viel Erfolg!` },
 ];
 
 function startTour(){
