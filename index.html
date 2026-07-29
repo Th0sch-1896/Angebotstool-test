@@ -46,8 +46,8 @@
   header.app kbd { background: oklch(0.34 0.04 265); color: oklch(0.95 0.01 265); border-color: oklch(0.42 0.04 265); }
 
   main {
-    display: grid; grid-template-columns: minmax(440px, 1fr) minmax(400px, 620px);
-    gap: 20px; padding: 20px 24px 48px; max-width: 1500px; margin: 0 auto; align-items: start;
+    display: grid; grid-template-columns: minmax(440px, 1.5fr) minmax(340px, 500px);
+    gap: 20px; padding: 20px 24px 48px; max-width: 1620px; margin: 0 auto; align-items: start;
   }
   @media (max-width: 1040px) { main { grid-template-columns: 1fr; } }
 
@@ -84,16 +84,19 @@
   /* ── Positionsliste als Excel-artige Tabelle ── */
   .gridwrap { margin-top: 4px; overflow-x: auto; }
   .gridlbl { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-2); margin: 10px 0 4px; }
+  .gridlbl select, .panel h2 select { font: inherit; font-size: 0.76rem; font-weight: 600; color: var(--ink-2); padding: 3px 6px;
+    border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; text-transform: none; letter-spacing: 0; }
+  .gridlbl select:hover, .panel h2 select:hover { border-color: var(--accent); color: var(--accent); }
   /* Excel-Gefühl: durchgehend gleiche, dünne Gitterlinien; jede Zelle exakt gleich hoch.
      --cellpy/--cellpx/--celllh gelten für die Anzeige UND das Eingabefeld, damit beim
      Hineinklicken nichts größer wird. */
-  table.pgrid { --cellpy: 5px; --cellpx: 8px; --celllh: 18px; --grid: oklch(0.885 0.006 250);
-                width: 100%; border-collapse: collapse; font-size: 0.79rem; font-variant-numeric: tabular-nums;
+  table.pgrid { --cellpy: 5px; --cellpx: 5px; --celllh: 18px; --grid: oklch(0.885 0.006 250);
+                width: 100%; border-collapse: collapse; font-size: 0.76rem; font-variant-numeric: tabular-nums;
                 background: white; border: 1px solid oklch(0.8 0.008 250); }
-  table.pgrid th { font-size: 0.66rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-2);
+  table.pgrid th { font-size: 0.63rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-2);
                    background: oklch(0.955 0.003 250); border: 1px solid var(--grid); border-bottom-color: oklch(0.8 0.008 250);
-                   padding: var(--cellpy) var(--cellpx); line-height: var(--celllh); text-align: right; white-space: nowrap; }
-  table.pgrid th.l { text-align: left; }
+                   padding: var(--cellpy) var(--cellpx); line-height: var(--celllh); text-align: right; white-space: normal; }
+  table.pgrid th.l { text-align: left; white-space: nowrap; }
   table.pgrid td { border: 1px solid var(--grid); padding: 0; text-align: right; white-space: nowrap;
                    line-height: var(--celllh); background: white; }
   table.pgrid td.l { text-align: left; }
@@ -120,6 +123,17 @@
   table.pgrid th.rn, table.pgrid td.rn { width: 26px; min-width: 26px; text-align: center; padding: var(--cellpy) 4px;
                                          background: oklch(0.955 0.003 250); color: var(--ink-2); font-size: 0.7rem;
                                          font-weight: 600; user-select: none; }
+  /* Sortierbare Spaltenköpfe: Rechtsklick schaltet ein, Dreieck dreht die Richtung */
+  table.pgrid th.sortable { cursor: pointer; user-select: none; position: relative; }
+  table.pgrid th.sortable:hover { background: var(--accent-soft); color: var(--accent); }
+  table.pgrid th.sorted, table.pgrid th.sorted:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  table.pgrid th.sorted.moff, table.pgrid th.sorted.mon { color: white; }
+  table.pgrid th.sorted.mon { box-shadow: inset 0 -3px 0 oklch(1 0 0 / 0.75); }
+  .sortar { border: none; background: oklch(1 0 0 / 0.22); color: white; cursor: pointer; font-size: 0.7rem; line-height: 1;
+            border-radius: 4px; padding: 2px 3px; margin-left: 4px; vertical-align: middle; }
+  .sortar:hover { background: oklch(1 0 0 / 0.45); }
+  .sortrank { display: inline-block; min-width: 12px; margin-left: 4px; padding: 0 3px; border-radius: 999px;
+              background: oklch(1 0 0 / 0.28); font-size: 0.6rem; line-height: 1.35; vertical-align: middle; }
   table.pgrid.comm td.rn { cursor: pointer; }
   table.pgrid.comm td.rn:hover { background: var(--accent-soft); color: var(--accent); }
   table.pgrid tr.rowsel td.rn { background: var(--accent); color: white; }
@@ -130,34 +144,80 @@
   .menubtn:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
 
   /* ── Angebotsviewer (A4) ── */
+  .viewtabs { display: flex; gap: 6px; margin: 0 0 8px; }
+  .vtab { background: var(--panel); border: 1px solid var(--line); color: var(--ink-2); font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 7px; }
+  .vtab:hover { border-color: var(--accent); color: var(--accent); }
+  .vtab.on { background: var(--accent); border-color: var(--accent); color: white; }
   .viewerwrap { background: oklch(0.9 0.005 250); border-radius: var(--radius); padding: 18px; border: 1px solid var(--line); }
   .sheet { background: white; box-shadow: 0 8px 30px oklch(0.4 0.02 260 / 0.14); border-radius: 3px; padding: 30px 34px; font-size: 0.8rem; color: oklch(0.28 0.01 260); min-height: 620px; }
+  /* Echte A4-Vorschau: jede Seite im Verhältnis 210:297, Inhalt wird per JS umbrochen */
+  .sheetstack { position: relative; display: grid; gap: 16px; }
+  .sheet.page { aspect-ratio: 210 / 297; min-height: 0; overflow: hidden; position: relative; padding-bottom: 44px; }
+  .sheet.pagemeasure { position: absolute; left: 0; top: 0; width: 100%; visibility: hidden; pointer-events: none; z-index: -1; min-height: 0; box-shadow: none; }
+  .sheet .pgnum { position: absolute; left: 0; right: 0; bottom: 12px; text-align: center; font-size: 0.6rem; color: var(--ink-2); }
   .sheet .brand { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid var(--wood); padding-bottom: 12px; }
-  .sheet .brand .logo { font-weight: 800; font-size: 1.1rem; color: var(--wood); letter-spacing: -0.02em; }
-  .sheet .brand .logo span { display: block; font-size: 0.62rem; font-weight: 500; color: var(--ink-2); letter-spacing: 0.02em; }
-  .sheet .brand .co { text-align: right; font-size: 0.66rem; color: var(--ink-2); line-height: 1.5; }
-  .sheet .to { margin: 20px 0 6px; font-size: 0.78rem; }
+  .sheet .brand .logo { font-weight: 800; font-size: 0.98rem; color: var(--wood); letter-spacing: -0.02em; }
+  .sheet .brand .logo span { display: block; font-size: 0.56rem; font-weight: 500; color: var(--ink-2); letter-spacing: 0.02em; }
+  .sheet .brand .co { text-align: right; font-size: 0.58rem; color: var(--ink-2); line-height: 1.45; }
+  .sheet .to { margin: 14px 0 5px; font-size: 0.68rem; }
   .sheet .to b { display: block; }
-  .sheet h3 { font-size: 1.05rem; margin: 16px 0 3px; }
-  .sheet .meta { font-size: 0.68rem; color: var(--ink-2); margin-bottom: 12px; }
-  table.doc { width: 100%; border-collapse: collapse; font-size: 0.73rem; }
-  table.doc th { text-align: left; font-size: 0.63rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); border-bottom: 1.5px solid oklch(0.8 0.01 260); padding: 5px 6px; }
+  .sheet h3 { font-size: 0.92rem; margin: 12px 0 2px; }
+  .sheet .meta { font-size: 0.6rem; color: var(--ink-2); margin-bottom: 9px; }
+  table.doc { width: 100%; border-collapse: collapse; font-size: 0.62rem; }
+  table.doc th { text-align: left; font-size: 0.54rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); border-bottom: 1.5px solid oklch(0.8 0.01 260); padding: 3px 5px; }
   table.doc th.n, table.doc td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
-  table.doc td { padding: 6px; border-bottom: 1px solid oklch(0.92 0.005 260); vertical-align: top; }
+  table.doc td { padding: 3px 5px; border-bottom: 1px solid oklch(0.92 0.005 260); vertical-align: top; }
   table.doc tr.art td { font-weight: 600; }
   table.doc tr.art td small { display: block; font-weight: 400; color: var(--ink-2); }
-  table.doc tr.zus td { color: var(--ink-2); font-style: italic; padding-left: 18px; padding-top: 2px; padding-bottom: 2px; border-bottom: none; }
-  table.doc tr.meas td { color: var(--ink-2); padding-left: 18px; padding-top: 2px; padding-bottom: 2px; border-bottom: none; }
-  .docsum { margin-top: 14px; margin-left: auto; width: 62%; font-size: 0.75rem; font-variant-numeric: tabular-nums; }
-  .docsum .r { display: flex; justify-content: space-between; padding: 2px 0; }
+  table.doc tr.zus td { color: var(--ink-2); font-style: italic; font-size: 0.56rem; padding-left: 16px; padding-top: 1px; padding-bottom: 1px; border-bottom: none; }
+  table.doc tr.meas td { color: var(--ink-2); font-size: 0.56rem; padding-left: 16px; padding-top: 1px; padding-bottom: 1px; border-bottom: none; }
+  table.doc tr.meas td .cuts { display: block; font-size: 0.52rem; color: var(--ink-2); opacity: 0.85; }
+  .docsum { margin-top: 11px; margin-left: auto; width: 62%; font-size: 0.64rem; font-variant-numeric: tabular-nums; }
+  .docsum .r { display: flex; justify-content: space-between; padding: 1px 0; }
   .docsum .r.muted { color: var(--ink-2); }
-  .docsum .r.grand { border-top: 1.5px solid var(--ink); margin-top: 4px; padding-top: 6px; font-weight: 700; font-size: 0.9rem; }
-  .sheet .foot { margin-top: 20px; padding-top: 8px; border-top: 1px solid oklch(0.92 0.005 260); font-size: 0.6rem; color: var(--ink-2); }
+  .docsum .r.grand { border-top: 1.5px solid var(--ink); margin-top: 3px; padding-top: 4px; font-weight: 700; font-size: 0.76rem; }
+  .sheet .foot { margin-top: 14px; padding-top: 6px; border-top: 1px solid oklch(0.92 0.005 260); font-size: 0.52rem; color: var(--ink-2); }
+  /* ── Werksauftrag (PDF 2, intern fürs Werk) – kompakt wie der echte Beleg ── */
+  .sheet .wshead { display: flex; justify-content: space-between; align-items: flex-start; }
+  .sheet .wsnr { font-size: 0.88rem; font-weight: 800; letter-spacing: -0.01em; }
+  .sheet .wsbarcode { height: 20px; width: 156px; margin-top: 3px;
+    background: repeating-linear-gradient(90deg, oklch(0.2 0 0) 0 2px, transparent 2px 4px, oklch(0.2 0 0) 4px 5px,
+      transparent 5px 9px, oklch(0.2 0 0) 9px 12px, transparent 12px 14px, oklch(0.2 0 0) 14px 15px, transparent 15px 19px); }
+  .sheet .wsterm { font-size: 0.58rem; text-align: right; color: var(--ink-2); line-height: 1.5; }
+  .sheet .wsterm b { font-size: 0.68rem; color: var(--ink); }
+  .sheet .wschecks { display: grid; grid-template-columns: 1.1fr 1.2fr 0.9fr 0.9fr; gap: 10px; font-size: 0.56rem; margin: 7px 0 5px; }
+  .sheet .wschecks > div > b { display: block; font-size: 0.58rem; margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.03em; }
+  .sheet .wsc { display: flex; align-items: center; gap: 4px; margin: 1.5px 0; white-space: nowrap; }
+  .sheet .wsc .box { width: 8px; height: 8px; border: 1px solid var(--ink); flex: none; }
+  .sheet .wsline { border-bottom: 1px solid oklch(0.7 0.01 260); height: 10px; }
+  table.doc tr.wssort td { font-weight: 700; font-size: 0.58rem; font-style: normal; color: var(--ink);
+    background: oklch(0.965 0.003 250); border-bottom: 1px solid oklch(0.8 0.01 260); padding: 3px 5px; }
+  .sheet .wsdim { font-weight: 400; color: var(--ink-2); font-size: 0.92em; }
+  table.doc td.wscut { font-style: italic; color: var(--ink-2); }
+  .sheet .wsagg { font-size: 0.56rem; margin: 1px 0; font-variant-numeric: tabular-nums; }
+  .sheet .wsagg span { color: var(--ink-2); }
+  .sheet .wsh { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); margin: 11px 0 5px; }
+  .sheet .wspos { margin: 8px 0 3px; padding-top: 6px; border-top: 1px solid oklch(0.92 0.005 260); }
+  .sheet .wsph { display: flex; gap: 8px; align-items: baseline; font-size: 0.68rem; flex-wrap: wrap; }
+  .sheet .wsph span { color: var(--ink-2); font-size: 0.6rem; }
+  .sheet .wsph .wsv { margin-left: auto; font-style: italic; }
+  .sheet .wsgt { font-size: 0.6rem; font-weight: 700; margin: 6px 0 2px; }
+  .sheet .wsgt .wsem { font-weight: 500; color: var(--ink-2); }
+  .sheet .wsrow { display: flex; align-items: center; gap: 7px; margin: 2px 0; }
+  .sheet .wsn { flex: 0 0 32px; text-align: right; font-weight: 700; font-size: 0.62rem; font-variant-numeric: tabular-nums; }
+  .sheet .wslen { flex: 0 0 48px; font-size: 0.62rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .sheet .wsbarwrap { flex: 1 1 auto; min-width: 0; }
+  .sheet .wsbar { display: flex; height: 16px; border: 1.2px solid oklch(0.5 0.09 60); border-radius: 3px; overflow: hidden; background: white; }
+  .sheet .wsseg { display: inline-flex; align-items: center; justify-content: center; background: var(--wood-soft); border-right: 1px solid oklch(0.5 0.09 60); font-size: 0.54rem; font-weight: 700; color: oklch(0.35 0.07 65); overflow: hidden; white-space: nowrap; min-width: 0; }
+  .sheet .wsseg:last-child { border-right: none; }
+  .sheet .wsseg.wsrest { background: repeating-linear-gradient(45deg, oklch(0.96 0.035 85), oklch(0.96 0.035 85) 5px, white 5px, white 10px); }
+  .sheet .wsrest-lbl { flex: 0 0 62px; text-align: right; font-size: 0.56rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .sheet .wsplain { font-size: 0.62rem; color: var(--ink-2); display: grid; gap: 1px; margin: 3px 0; font-variant-numeric: tabular-nums; }
   .viewernote { font-size: 0.76rem; color: var(--ink-2); margin: 0 4px 12px; display: flex; gap: 6px; align-items: baseline; }
 
   /* ── Modal ── */
   #overlay { position: fixed; inset: 0; background: oklch(0.2 0.02 260 / 0.5); backdrop-filter: blur(2px); display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 100; }
-  .modal { background: var(--panel); border-radius: 12px; box-shadow: 0 20px 60px oklch(0.2 0.02 260 / 0.35); width: 100%; max-width: 1240px; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+  .modal { background: var(--panel); border-radius: 12px; box-shadow: 0 20px 60px oklch(0.2 0.02 260 / 0.35); width: 100%; max-width: 1520px; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
   .modal.narrow { max-width: 640px; }
   .modal .mhead { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-bottom: 1px solid var(--line); }
   .modal .mhead h2 { margin: 0; font-size: 1rem; font-weight: 700; }
@@ -190,7 +250,10 @@
   .pickgrid { display: grid; grid-template-columns: 1fr 540px; gap: 18px; align-items: start; }
   @media (max-width: 900px) { .pickgrid { grid-template-columns: 1fr; } }
   /* Aufmaß: Felder/Tabelle links, Grafiken rechts */
-  .aufgrid { display: grid; grid-template-columns: 1fr 330px; gap: 18px; align-items: start; }
+  /* Grafiken rechts dürfen NIE aus dem Modal gedrängt werden: linke Spalte darf schrumpfen
+     (minmax(0,1fr)) und scrollt zur Not horizontal in sich selbst. */
+  .aufgrid { display: grid; grid-template-columns: minmax(0,1fr) 330px; gap: 18px; align-items: start; }
+  .aufleft { min-width: 0; overflow-x: auto; }
   @media (max-width: 900px) { .aufgrid { grid-template-columns: 1fr; } }
   .aufright .gcard.sm svg { height: 172px; }
   .aufright .gcard.sm .empty { height: 172px; }
@@ -237,17 +300,56 @@
   table.aufmass th.pinnable:hover { background: var(--accent-soft); color: var(--accent); }
   table.aufmass th.pincol, table.aufmass th.pinnable.pincol:hover { background: var(--accent); color: white; border-color: var(--accent); }
   table.aufmass th.pincol::after { content: '📌'; margin-left: 5px; font-size: 0.8em; }
-  table.aufmass td { padding: 4px 3px; }
+  table.aufmass td { padding: 4px 2px; }
   table.aufmass td.pincol input { border-color: var(--accent); background: oklch(0.985 0.012 265); }
-  table.aufmass input { width: 100%; font: inherit; font-size: 0.88rem; text-align: right; padding: 7px 7px; border: 1px solid var(--line); border-radius: 6px; font-variant-numeric: tabular-nums; }
+  table.aufmass input { width: 100%; min-width: 52px; font: inherit; font-size: 0.86rem; text-align: right; padding: 7px 5px; border: 1px solid var(--line); border-radius: 6px; font-variant-numeric: tabular-nums; }
   table.aufmass input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); background: white; }
   table.aufmass input:disabled { background: var(--panel-2); color: var(--ink-2); }
+  table.aufmass select { width: 100%; font: inherit; font-size: 0.82rem; padding: 7px 4px; border: 1px solid var(--line); border-radius: 6px; background: white; cursor: pointer; }
+  table.aufmass select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   .pinnote { font-size: 0.74rem; color: var(--ink-2); margin: 8px 2px 0; }
   .pinnote b { color: var(--accent); }
   .pinflash { animation: pinpop 700ms ease-out; }
   @keyframes pinpop { 0% { box-shadow: 0 0 0 0 var(--accent); } 60% { box-shadow: 0 0 0 6px transparent; } 100% { box-shadow: 0 0 0 0 transparent; } }
   table.aufmass .vol { text-align: right; font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; padding-right: 4px; color: var(--accent); }
   .aufhint { font-size: 0.76rem; color: var(--ink-2); margin: 6px 2px 0; }
+
+  /* ── Einschnittmaß: Gruppenkopf über Stärke/Breite und EM Stärke/EM Breite ──
+     Der Pill-Slider entscheidet, welches Maßpaar in die cbm-Rechnung geht.
+     Das aktive Paar bekommt eine Akzentlinie + „cbm"-Marke, das andere wird blass. */
+  .basisbar { display: flex; align-items: center; gap: 14px; padding: 2px 2px 6px; text-transform: none; letter-spacing: 0; }
+  .basisbar .bl { font-size: 0.68rem; font-weight: 600; color: var(--ink-2); white-space: nowrap; }
+  .pillsl { position: relative; display: inline-flex; background: oklch(0.925 0.006 250); border-radius: 999px; padding: 2px; }
+  .pillsl .thumb { position: absolute; top: 2px; bottom: 2px; left: 2px; width: calc(50% - 2px); border-radius: 999px;
+                   background: var(--accent); box-shadow: 0 1px 3px oklch(0.5 0.05 265 / 0.35); transition: left .18s ease; }
+  .pillsl.isem .thumb { left: 50%; }
+  .pillsl button { position: relative; z-index: 1; flex: 1 1 0; min-width: 82px; border: none; background: none; cursor: pointer;
+                   font: inherit; font-size: 0.68rem; font-weight: 700; text-transform: none; letter-spacing: 0;
+                   padding: 4px 12px; border-radius: 999px; color: var(--ink-2); transition: color .18s; white-space: nowrap; }
+  .pillsl button.on { color: white; }
+  .pillsl button:not(.on):hover { color: var(--accent); }
+  .emctl { display: inline-flex; align-items: center; gap: 5px; font-size: 0.68rem; font-weight: 600; color: var(--ink-2);
+           text-transform: none; letter-spacing: 0; white-space: nowrap; margin-left: auto; }
+  .emctl select, .emctl input { font: inherit; font-size: 0.7rem; font-weight: 600; padding: 3px 4px; border: 1px solid var(--line);
+                                border-radius: 5px; background: white; color: var(--ink); }
+  .emctl input { width: 58px; flex: 0 0 58px; text-align: right; font-variant-numeric: tabular-nums; }
+  .emctl select { cursor: pointer; flex: 0 0 auto; }
+  .emctl select:focus, .emctl input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
+  /* aktives Maßpaar (geht in die cbm) / blasses Maßpaar */
+  table.aufmass th.grp { background: none; border: none; cursor: default; padding: 0 4px; }
+  table.aufmass th.mon { color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+  table.aufmass th.mon::before { content: 'cbm'; float: left; font-size: 0.62rem; background: var(--accent); color: white;
+                                 border-radius: 4px; padding: 0 4px; margin-right: 5px; }
+  table.aufmass th.moff { color: oklch(0.68 0.01 250); }
+  table.aufmass td.moff input { color: var(--ink-2); background: oklch(0.978 0.002 250); }
+  table.pgrid th.mon { color: var(--accent); box-shadow: inset 0 -3px 0 var(--accent); }
+  table.pgrid th.moff { color: oklch(0.7 0.01 250); }
+  table.pgrid td.moff, table.pgrid td.moff .v { color: oklch(0.62 0.012 250); }
+  table.pgrid td.moff { background: oklch(0.982 0.002 250); }
+  table.pgrid th.grp { background: white; border: none; padding: 2px 8px; text-align: left; }
+  /* sortierte Spalten bleiben auch im Körper der Tabelle erkennbar */
+  table.pgrid td.sortcol, table.pgrid td.moff.sortcol { background: oklch(0.965 0.016 265); }
+  table.pgrid td.cell.sortcol:hover .v { background: var(--accent-soft); }
 
   .committed { margin-top: 18px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
   .committed .gridwrap { margin-top: 0; }
@@ -339,6 +441,81 @@
   table.hist tr.copiedrow td { background: var(--accent-soft); }
   table.hist tr.copiedrow .tag { background: oklch(0.88 0.06 265); color: var(--accent); }
 
+  /* ── Schnittaufteilung (Schritt 3) ── */
+  .schcards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+  .schcard.off { opacity: 0.55; cursor: default; }
+  .schcard.off:hover { border-color: var(--line); }
+  .schcard { border: 1.5px solid var(--line); border-radius: 9px; padding: 10px 12px; cursor: pointer; background: var(--panel); text-align: left; font: inherit; transition: border-color .15s, background .15s; }
+  .schcard b { display: block; font-size: 0.86rem; }
+  .schcard span { display: block; font-size: 0.75rem; color: var(--ink-2); margin-top: 3px; font-weight: 400; }
+  .schcard:hover { border-color: var(--accent); }
+  .schcard.on { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .schman { grid-column: 1 / -1; font-size: 0.76rem; color: var(--accent); font-weight: 600; }
+  .schgroup { border: 1px solid var(--line); border-radius: 8px; margin-bottom: 12px; overflow: hidden; }
+  .schgt { display: flex; align-items: center; gap: 8px; padding: 7px 12px; background: var(--panel-2); font-size: 0.8rem; font-weight: 700; }
+  .schgt .lbl { font-weight: 500; color: var(--ink-2); }
+  .schgt .spacer { flex: 1; }
+  .schrow { display: flex; align-items: center; gap: 10px; padding: 5px 12px; border-top: 1px solid var(--line); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .schrow:hover { background: oklch(0.96 0.015 265); }
+  .schrow.sel { background: var(--accent-soft); box-shadow: inset 3px 0 0 var(--accent); }
+  .schrow.locked { cursor: default; }
+  .schrow.locked .schbar { opacity: 0.8; }
+  .schrow.tgt { outline: 1.5px dashed var(--accent); outline-offset: -3px; }
+  .schrow.tgtsel { background: var(--ok-soft); box-shadow: inset 3px 0 0 var(--ok); }
+  .schrow.schrej { animation: schrej 500ms ease-out; }
+  @keyframes schrej { 0% { background: oklch(0.93 0.06 25); } 100% { background: transparent; } }
+  .schn { flex: 0 0 44px; text-align: right; font-weight: 700; font-size: 0.84rem; }
+  .schlen { flex: 0 0 128px; font-size: 0.84rem; font-weight: 600; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; }
+  .schar { border: 1px solid var(--line); background: white; border-radius: 5px; cursor: pointer; font-size: 0.78rem; line-height: 1; padding: 2px 6px; color: var(--ink-2); }
+  .schar:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+  .schbarwrap { flex: 1 1 auto; min-width: 0; }
+  .schbar { display: flex; height: 24px; border: 1px solid oklch(0.55 0.1 60); border-radius: 4px; overflow: hidden; background: white; position: relative; }
+  /* Drag-Vorschau: zeigt beim Drüberhalten, wie viel Platz das Maß im Zielbrett einnimmt */
+  .schghost { position: absolute; top: 0; bottom: 0; display: inline-flex; align-items: center; justify-content: center;
+              background: oklch(0.55 0.13 265 / 0.55); border-left: 2px dashed var(--accent); border-right: 2px dashed var(--accent);
+              color: white; font-size: 0.72rem; font-weight: 700; pointer-events: none; overflow: hidden; white-space: nowrap; }
+  .schseg { display: inline-flex; align-items: center; justify-content: center; background: var(--wood-soft); color: oklch(0.35 0.07 65); font-size: 0.72rem; font-weight: 700; border-right: 1px solid oklch(0.55 0.1 60); overflow: hidden; white-space: nowrap; cursor: pointer; min-width: 0; }
+  .schseg:last-child { border-right: none; }
+  .schseg:hover { background: oklch(0.84 0.07 75); }
+  .schseg[draggable="true"] { cursor: grab; }
+  .schseg.dragging { opacity: 0.45; }
+  .schseg.mvsrc { background: var(--accent); color: white; }
+  .schbar.empty { border: 1.5px dashed var(--accent);
+                  background: repeating-linear-gradient(45deg, oklch(0.97 0.012 265), oklch(0.97 0.012 265) 8px, white 8px, white 16px); }
+  .schseg.emptyseg { background: none; border: none; color: var(--accent); font-weight: 600; cursor: default; }
+  .schseg.rest { background: repeating-linear-gradient(45deg, var(--warn-soft), var(--warn-soft) 6px, oklch(0.99 0.01 85) 6px, oklch(0.99 0.01 85) 12px); cursor: default; }
+  .schrest { flex: 0 0 96px; text-align: right; font-size: 0.78rem; color: var(--ink-2); }
+  .schrest.warn { color: var(--warn); font-weight: 600; }
+  .schrow.schnew { justify-content: center; gap: 8px; margin: 8px 10px 10px; padding: 8px 12px; border: 1.5px dashed var(--accent);
+                   border-radius: 8px; background: oklch(0.975 0.012 265); color: var(--accent); font-size: 0.8rem; font-weight: 700; }
+  .schrow.schnew:hover { background: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .schrow.schnew .lbl { font-weight: 500; color: var(--ink-2); }
+  .schstats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 4px; }
+  .schstat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; }
+  .schstat .k { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-2); }
+  .schstat .v { font-size: 1.15rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .schstat .s { font-size: 0.72rem; color: var(--ink-2); }
+  /* Verschnitt grafisch: Ausnutzungs-Balken + farbcodierter Prozentwert (grün/gelb/rot) */
+  .schstat .pctbig { font-size: 1.3rem; }
+  .schstat.ok .pctbig { color: var(--ok); }
+  .schstat.mid .pctbig { color: var(--warn); }
+  .schstat.bad .pctbig { color: oklch(0.55 0.18 25); }
+  .schstat.mid { border-color: var(--warn); background: var(--warn-soft); }
+  .schstat.bad { border-color: oklch(0.7 0.12 25); background: oklch(0.97 0.02 25); }
+  .schmeter { display: flex; height: 11px; border-radius: 99px; overflow: hidden; margin: 6px 0 4px; border: 1px solid var(--line); background: white; }
+  .schmeter .use { background: var(--ok); }
+  .schmeter .lost { background: repeating-linear-gradient(45deg, var(--warn), var(--warn) 4px, oklch(0.98 0.02 85) 4px, oklch(0.98 0.02 85) 8px); }
+  .schstat.bad .schmeter .lost { background: repeating-linear-gradient(45deg, oklch(0.6 0.17 25), oklch(0.6 0.17 25) 4px, oklch(0.97 0.02 25) 4px, oklch(0.97 0.02 25) 8px); }
+  .schcard .cpct { font-weight: 700; }
+  .schcard .cpct.ok { color: var(--ok); }
+  .schcard .cpct.mid { color: var(--warn); }
+  .schcard .cpct.bad { color: oklch(0.55 0.18 25); }
+
+  /* ── Kopfleiste: Angebot speichern / laden ── */
+  header.app .hdrbtn { background: oklch(0.34 0.04 265); color: oklch(0.95 0.01 265); border: 1px solid oklch(0.42 0.04 265);
+                       font-size: 0.8rem; font-weight: 600; padding: 7px 12px; border-radius: 7px; }
+  header.app .hdrbtn:hover { background: oklch(0.4 0.05 265); border-color: oklch(0.5 0.05 265); }
+
   /* ── Geführte Tour ── */
   .tourbtn { background: oklch(0.7 0.14 90); color: oklch(0.28 0.06 90); border: 1px solid oklch(0.62 0.13 90); font-size: 0.8rem; font-weight: 700; padding: 7px 13px; border-radius: 7px; }
   .tourbtn:hover { background: oklch(0.76 0.14 90); }
@@ -366,14 +543,22 @@
   <h1>Angebotstool</h1>
   <span class="tag">Workflow-Mockup · Tastatur + Maus</span>
   <span class="spacer"></span>
+  <button id="btnSave" class="hdrbtn" title="Angebot als JSON-Datei speichern (Download)">💾 Speichern</button>
+  <button id="btnLoad" class="hdrbtn" title="Angebot aus JSON-Datei laden">📂 Laden</button>
   <span class="khint">Neue Position: <kbd>F3</kbd> · im Modal: <kbd>↑ ↓</kbd> <kbd>Enter</kbd> <kbd>Esc</kbd></span>
   <button id="btnTour" class="tourbtn" title="Geführte Tour starten">🧭 Tour starten</button>
 </header>
+<input type="file" id="fileLoad" accept="application/json,.json" hidden>
 
 <main>
   <!-- LINKS: Angebot (Arbeitsansicht, interne Aufschlüsselung) -->
   <section class="panel">
     <h2>Angebot – Positionen <span class="spacer"></span>
+      <select id="beinhAll" title="Berechnungseinheit für ALLE Positionen auf einmal umstellen">
+        <option value="">Einheit für alle …</option>
+        <option value="cbm">alle → cbm</option><option value="qm">alle → m²</option><option value="lfdm">alle → lfdm</option>
+        <option value="stk">alle → Stück</option><option value="fm">alle → fm</option><option value="rm">alle → RM</option>
+      </select>
       <button class="ghost" id="btnReset" title="Angebot leeren">leeren</button>
     </h2>
     <div class="newpos">
@@ -383,11 +568,15 @@
     <div id="posList"></div>
   </section>
 
-  <!-- RECHTS: Angebotsviewer (Kundenansicht / PDF) -->
+  <!-- RECHTS: Angebotsviewer (Kundenansicht / PDF) + Werksauftrag (PDF 2, intern) -->
   <div>
-    <div class="viewernote">📄 <span>Angebots-Viewer – so sieht der Kunde das PDF. Verarbeitungen erscheinen als Positionen <b>ohne</b> Einzelpreis; der Zuschlag steckt im Artikelpreis.</span></div>
+    <div class="viewtabs">
+      <button class="vtab on" data-view="angebot" title="PDF 1 – geht an den Kunden">📄 Angebot (Kunde)</button>
+      <button class="vtab" data-view="werk" title="PDF 2 – interner Beleg fürs Werk mit Brettliste und Schnittbildern">🏭 Werksauftrag</button>
+    </div>
+    <div class="viewernote">📄 <span id="viewerNote">Angebots-Viewer – so sieht der Kunde das PDF. Verarbeitungen erscheinen als Positionen <b>ohne</b> Einzelpreis; der Zuschlag steckt im Artikelpreis.</span></div>
     <div class="viewerwrap">
-      <div class="sheet" id="sheet"></div>
+      <div class="sheetstack" id="sheet"></div>
     </div>
   </div>
 </main>
@@ -410,7 +599,7 @@ const eur2 = n => n.toLocaleString('de-DE', {minimumFractionDigits:2, maximumFra
 const num = (n,d=2) => n.toLocaleString('de-DE', {minimumFractionDigits:0, maximumFractionDigits:d});
 const num3 = n => n.toLocaleString('de-DE', {minimumFractionDigits:3, maximumFractionDigits:3});
 const el = id => document.getElementById(id);
-const einhName = e => { const n = (D.einh[e]||e); return n==='m3'?'m³':n==='m2'?'m²':n; };
+const einhName = e => { const n = (D.einh[e]||e); return n==='m3'?'cbm':n==='m2'?'m²':n; };
 const holzName = h => h ? (D.holz[h]||h) : '';
 const qualName = q => q ? (D.qual[q]||q) : '';
 const MWST = 0.19;
@@ -420,7 +609,8 @@ const KUNDE = 'Zimmerei Müller GmbH';
 let positions = [];   // {cat, desc, woodPrice, surcharges:[{code,label,price}], measures:[{pakete,stueck,laenge,s,b,vol}]}
 
 function allIn(pos){ return pos.woodPrice + pos.surcharges.reduce((s,z)=>s+z.price,0); }
-function posVol(pos){ return pos.measures.reduce((s,m)=>s+m.vol,0); }
+// Mit aktiver Schnittaufteilung werden die GELIEFERTEN Volllängen berechnet, nicht die bestellten Maße
+function posVol(pos){ return (pos.schnitt && pos.schnitt.groups.length) ? schnittVol(pos) : pos.measures.reduce((s,m)=>s+m.vol,0); }
 function posSum(pos){ return posVol(pos) * allIn(pos); }
 
 // ══════════ Warengruppen-Navigation ══════════
@@ -454,12 +644,12 @@ function wireBack(fn){
 // Rücktaste / Alt+← überall: löst den Zurück-Knopf des offenen Menüs aus
 function goBack(){ const b = ov.querySelector('[data-back]'); if(b) b.click(); }
 function stepper(active){
-  const steps = [['1','Artikel'],['2','Aufmaß'],['3','Preis'],['4','Zuschläge']];
-  const order = ['artikel','aufmass','preis','zuschlaege'];
+  const steps = [['1','Artikel'],['2','Aufmaß'],['3','Schnitt'],['4','Preis'],['5','Zuschläge']];
+  const order = ['artikel','aufmass','schnitt','preis','zuschlaege'];
   const ai = order.indexOf(active);
   return '<div class="stepper">' + steps.map(([n,l],i)=>{
     const cls = i===ai ? 'on' : (i<ai ? 'done' : '');
-    return `<div class="st ${cls}"><span class="dot">${i<ai?'✓':n}</span>${l}</div>` + (i<3?'<span class="sep">›</span>':'');
+    return `<div class="st ${cls}"><span class="dot">${i<ai?'✓':n}</span>${l}</div>` + (i<steps.length-1?'<span class="sep">›</span>':'');
   }).join('') + '</div>';
 }
 
@@ -577,20 +767,31 @@ function updateGraphics(c){
   el('gxs').innerHTML = c ? crossSVG(c.s||100, c.b||100) : `<div class="empty">–</div>`;
   el('gpak').innerHTML = `<div class="empty">kein Paket hinterlegt</div>`;
 }
-function crossSVG(s,b){
-  // Querschnitt füllt die Box weitgehend aus; Maßketten für Breite (unten) und Stärke (links)
+function crossSVG(s,b,em){
+  // Querschnitt füllt die Box weitgehend aus; Maßketten für Breite (unten) und Stärke (links).
+  // Liegt ein Einschnittmaß vor, wird es als gestrichelter Rahmen um das Fertigmaß gezeichnet.
   const W=360,H=210;
   const LB=52, RB=346, TB=14, BOT=150;            // Zeichenbereich (Rest = Maßketten/Beschriftung)
   const maxw=RB-LB, maxh=BOT-TB;
-  const ratio=b/(s||1); let rw=maxw, rh=rw/ratio;
-  if(rh>maxh){ rh=maxh; rw=rh*ratio; }
-  if(rw>maxw){ rw=maxw; rh=rw/ratio; }
-  const x=LB+(maxw-rw)/2, y=TB+(maxh-rh)/2;
+  const hasEm = em && em.s>0 && em.b>0 && (em.s>s+0.01 || em.b>b+0.01);
+  const os = hasEm?em.s:s, ob = hasEm?em.b:b;     // Außenmaß = Einschnittmaß
+  const ratio=ob/(os||1); let ow=maxw, oh=ow/ratio;
+  if(oh>maxh){ oh=maxh; ow=oh*ratio; }
+  if(ow>maxw){ ow=maxw; oh=ow/ratio; }
+  const ox=LB+(maxw-ow)/2, oy=TB+(maxh-oh)/2;
+  const rw=ow*(b/ob), rh=oh*(s/os);               // innen: Fertig-/Kundenmaß
+  const x=ox+(ow-rw)/2, y=oy+(oh-rh)/2;
   const c1='oklch(0.66 0.09 65)', c2='oklch(0.55 0.1 60)', ink='var(--ink)', in2='var(--ink-2)';
-  const yb=y+rh+18, xl=x-16;
+  const acc='var(--accent)';
+  const emOn = hasEm && em.basis!=='roh';
+  const yb=oy+oh+18, xl=ox-16;
   return `<svg viewBox="0 0 ${W} ${H}">
     <defs><marker id="arh" markerWidth="11" markerHeight="11" refX="5.5" refY="4" orient="auto">
       <path d="M2,1 L8.5,4 L2,7" fill="none" stroke="${in2}" stroke-width="1.5"/></marker></defs>
+    ${hasEm?`<rect x="${ox}" y="${oy}" width="${ow}" height="${oh}" fill="none" rx="3"
+        stroke="${emOn?acc:in2}" stroke-width="${emOn?2:1.4}" stroke-dasharray="6 4" opacity="${emOn?0.95:0.55}"/>
+      <text x="${ox+ow}" y="${Math.max(11,oy-5)}" text-anchor="end" font-size="12" font-weight="700"
+        fill="${emOn?acc:in2}">EM ${num(em.s,1)} × ${num(em.b,1)} mm${emOn?' → cbm':''}</text>`:''}
     <rect x="${x}" y="${y}" width="${rw}" height="${rh}" fill="${c1}" stroke="${c2}" stroke-width="2.5" rx="3"/>
     ${[...Array(5)].map((_,i)=>`<line x1="${x}" y1="${y+rh*(i+1)/6}" x2="${x+rw}" y2="${y+rh*(i+1)/6}" stroke="${c2}" stroke-width="0.7" opacity="0.4"/>`).join('')}
     <line x1="${x}" y1="${yb}" x2="${x+rw}" y2="${yb}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arh)" marker-end="url(#arh)"/>
@@ -604,33 +805,72 @@ function crossSVG(s,b){
   </svg>`;
 }
 function packGridSVG(reihen, lagen, staerke, breite){
+  // Paket mit echtem Aufbau: ganz unten 2 Unterleger (100 mm), zwischen den Lagen
+  // 20-mm-Stapelleisten – beides wird gezeichnet UND geht ins Gesamtmaß (Höhe) ein.
   const R=Math.max(0,reihen||0), L=Math.max(0,lagen||0);
   if(!R || !L) return `<div class="empty">Reihen &amp; Lagen<br>eingeben</div>`;
-  const W=360,H=210;
-  const dc=Math.min(R,18), dr=Math.min(L,13);
-  const gx=58, gw=282, gy=14, gh=150;             // großes Raster, füllt die Box
-  const cw=gw/dc, ch=gh/dr;
-  const c1='oklch(0.66 0.09 65)', c2='oklch(0.5 0.1 60)', ink='var(--ink)', in2='var(--ink-2)';
+  const st=staerke>0?staerke:100, br=breite>0?breite:100;
+  const totW = R*br;
+  const totH = L*st + (L-1)*PAK_LEISTE + PAK_UNTERLEGER;
+  const W=360,H=210, gx=58, gy=14, gw=282, gh=150;
+  const sc = Math.min(gw/totW, gh/totH);
+  const pw = totW*sc, ph = totH*sc;
+  const x0 = gx+(gw-pw)/2, y0 = gy+(gh-ph)/2, yBot = y0+ph;
+  const c1='oklch(0.66 0.09 65)', c2='oklch(0.5 0.1 60)', c3='oklch(0.5 0.07 55)', cL='oklch(0.82 0.05 75)';
+  const ink='var(--ink)', in2='var(--ink-2)';
+  const uh = PAK_UNTERLEGER*sc, uw = Math.max(4, Math.min(PAK_UNTERLEGER*sc, pw*0.22));
   let r='';
-  for(let ri=0;ri<dr;ri++) for(let ci=0;ci<dc;ci++)
-    r+=`<rect x="${(gx+ci*cw+0.6).toFixed(1)}" y="${(gy+ri*ch+0.6).toFixed(1)}" width="${(cw-1.2).toFixed(1)}" height="${(ch-1.2).toFixed(1)}" fill="${c1}" stroke="${c2}" stroke-width="0.8"/>`;
-  const pw = breite>0 ? `Breite ${num(R*breite)} mm` : `Breite: ${R} Reihen`;
-  const ph = staerke>0 ? `Höhe ${num(L*staerke)} mm` : `Höhe: ${L} Lagen`;
-  const yb=gy+gh+18, xl=gx-16;
+  // 2 Unterleger (100 × 100 mm) ganz unten
+  r+=`<rect x="${(x0+pw*0.1).toFixed(1)}" y="${(yBot-uh).toFixed(1)}" width="${uw.toFixed(1)}" height="${Math.max(2,uh-0.6).toFixed(1)}" fill="${c3}" stroke="${c2}" stroke-width="1"/>`;
+  r+=`<rect x="${(x0+pw*0.9-uw).toFixed(1)}" y="${(yBot-uh).toFixed(1)}" width="${uw.toFixed(1)}" height="${Math.max(2,uh-0.6).toFixed(1)}" fill="${c3}" stroke="${c2}" stroke-width="1"/>`;
+  // Lagen von unten nach oben, dazwischen die Stapelleisten
+  for(let li=0; li<L; li++){
+    const yTop = yBot - uh - (li+1)*st*sc - li*PAK_LEISTE*sc;
+    for(let ci=0; ci<R; ci++)
+      r+=`<rect x="${(x0+ci*br*sc+0.5).toFixed(1)}" y="${yTop.toFixed(1)}" width="${Math.max(1.5,br*sc-1).toFixed(1)}" height="${Math.max(1.5,st*sc-1).toFixed(1)}" fill="${c1}" stroke="${c2}" stroke-width="0.7"/>`;
+    if(li<L-1)
+      r+=`<rect x="${x0.toFixed(1)}" y="${(yTop-PAK_LEISTE*sc).toFixed(1)}" width="${pw.toFixed(1)}" height="${Math.max(1.2,PAK_LEISTE*sc-0.5).toFixed(1)}" fill="${cL}" stroke="${c2}" stroke-width="0.4"/>`;
+  }
+  const yb=yBot+14, xl=x0-16;
   return `<svg viewBox="0 0 ${W} ${H}">
     <defs><marker id="arp" markerWidth="11" markerHeight="11" refX="5.5" refY="4" orient="auto">
       <path d="M2,1 L8.5,4 L2,7" fill="none" stroke="${in2}" stroke-width="1.5"/></marker></defs>
     ${r}
-    <line x1="${gx}" y1="${yb}" x2="${gx+gw}" y2="${yb}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arp)" marker-end="url(#arp)"/>
-    <line x1="${gx}" y1="${gy+gh+5}" x2="${gx}" y2="${yb+6}" stroke="${in2}" stroke-width="1"/>
-    <line x1="${gx+gw}" y1="${gy+gh+5}" x2="${gx+gw}" y2="${yb+6}" stroke="${in2}" stroke-width="1"/>
-    <text x="${gx+gw/2}" y="${yb+24}" text-anchor="middle" font-size="17" font-weight="700" fill="${ink}">${pw}</text>
-    <line x1="${xl}" y1="${gy}" x2="${xl}" y2="${gy+gh}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arp)" marker-end="url(#arp)"/>
-    <line x1="${xl-6}" y1="${gy}" x2="${gx-5}" y2="${gy}" stroke="${in2}" stroke-width="1"/>
-    <line x1="${xl-6}" y1="${gy+gh}" x2="${gx-5}" y2="${gy+gh}" stroke="${in2}" stroke-width="1"/>
-    <text x="${xl-14}" y="${gy+gh/2}" text-anchor="middle" font-size="17" font-weight="700" fill="${ink}" transform="rotate(-90 ${xl-14} ${gy+gh/2})">${ph}</text>
-    ${(R>dc||L>dr)?`<text x="${gx+gw/2}" y="${gy+8}" text-anchor="middle" font-size="10" fill="var(--ink-2)">${R}×${L} – Darstellung gekürzt</text>`:''}
+    <line x1="${x0}" y1="${yb}" x2="${x0+pw}" y2="${yb}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arp)" marker-end="url(#arp)"/>
+    <line x1="${x0}" y1="${yBot+3}" x2="${x0}" y2="${yb+5}" stroke="${in2}" stroke-width="1"/>
+    <line x1="${x0+pw}" y1="${yBot+3}" x2="${x0+pw}" y2="${yb+5}" stroke="${in2}" stroke-width="1"/>
+    <text x="${x0+pw/2}" y="${yb+21}" text-anchor="middle" font-size="16" font-weight="700" fill="${ink}">Breite ${num(totW)} mm</text>
+    <line x1="${xl}" y1="${y0}" x2="${xl}" y2="${yBot}" stroke="${in2}" stroke-width="1.5" marker-start="url(#arp)" marker-end="url(#arp)"/>
+    <line x1="${xl-6}" y1="${y0}" x2="${x0-4}" y2="${y0}" stroke="${in2}" stroke-width="1"/>
+    <line x1="${xl-6}" y1="${yBot}" x2="${x0-4}" y2="${yBot}" stroke="${in2}" stroke-width="1"/>
+    <text x="${xl-14}" y="${(y0+yBot)/2}" text-anchor="middle" font-size="16" font-weight="700" fill="${ink}" transform="rotate(-90 ${xl-14} ${(y0+yBot)/2})">Höhe ${num(totH)} mm</text>
+    <text x="${x0+pw/2}" y="${Math.max(10,y0-4)}" text-anchor="middle" font-size="9.5" fill="${in2}">inkl. ${L-1} × ${PAK_LEISTE}-mm-Leisten + ${PAK_UNTERLEGER}-mm-Unterleger</text>
   </svg>`;
+}
+// Europalette und Gitterbox: rein schematisch, ohne Maße
+function paletteSVG(anz){
+  const c1='oklch(0.72 0.08 70)', c2='oklch(0.5 0.1 60)', c3='oklch(0.6 0.07 60)', in2='var(--ink-2)';
+  const x=56, w=248, y=76;
+  let s='';
+  for(let i=0;i<5;i++) s+=`<rect x="${x+i*w/5+2}" y="${y}" width="${w/5-4}" height="15" rx="1.5" fill="${c1}" stroke="${c2}" stroke-width="1.2"/>`;
+  [x, x+w/2-19, x+w-38].forEach(bx=> s+=`<rect x="${bx}" y="${y+17}" width="38" height="28" fill="${c3}" stroke="${c2}" stroke-width="1.2"/>`);
+  s+=`<rect x="${x}" y="${y+47}" width="${w}" height="11" rx="1.5" fill="${c1}" stroke="${c2}" stroke-width="1.2"/>`;
+  return `<svg viewBox="0 0 360 210">${s}
+    <text x="180" y="163" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${anz>0?anz+' × ':''}Europalette</text>
+    <text x="180" y="181" text-anchor="middle" font-size="11" fill="${in2}">schematische Darstellung, ohne Maße</text></svg>`;
+}
+function boxSVG(anz){
+  const c2='oklch(0.5 0.1 60)', c3='oklch(0.6 0.07 60)', mesh='oklch(0.55 0.03 260)', in2='var(--ink-2)';
+  const x=84, w=192, y=34, h=96;
+  let m='';
+  for(let i=1;i<8;i++)  m+=`<line x1="${x+i*w/8}" y1="${y}" x2="${x+i*w/8}" y2="${y+h}" stroke="${mesh}" stroke-width="0.9"/>`;
+  for(let j=1;j<4;j++)  m+=`<line x1="${x}" y1="${y+j*h/4}" x2="${x+w}" y2="${y+j*h/4}" stroke="${mesh}" stroke-width="0.9"/>`;
+  return `<svg viewBox="0 0 360 210">
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="oklch(0.97 0.005 260)" stroke="${c2}" stroke-width="2"/>${m}
+    <rect x="${x-4}" y="${y+h}" width="${w+8}" height="10" fill="${c3}" stroke="${c2}" stroke-width="1.2"/>
+    ${[x, x+w/2-16, x+w-32].map(bx=>`<rect x="${bx}" y="${y+h+10}" width="32" height="14" fill="${c3}" stroke="${c2}" stroke-width="1.2"/>`).join('')}
+    <text x="180" y="180" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">${anz>0?anz+' × ':''}Gitterbox</text>
+    <text x="180" y="197" text-anchor="middle" font-size="11" fill="${in2}">schematische Darstellung, ohne Maße</text></svg>`;
 }
 
 function chooseArtikel(){
@@ -646,18 +886,213 @@ function chooseArtikel(){
 function stkJe(m){ return (m.reihen>0 && m.lagen>0) ? m.reihen*m.lagen : (m.stueck||0); }
 // Stück gesamt: Pakete sind ein reiner Multiplikator (0 = kein Paket)
 function stkOf(m){ const je = stkJe(m); return m.pakete>0 ? m.pakete*je : je; }
-// Länge wird in ZENTIMETERN erfasst → für m³ durch 100 teilen
-function volOf(m){ return stkOf(m) * (m.laenge/100) * (m.staerke/1000) * (m.breite/1000); }
+// ── Einschnittmaß (EM) ─────────────────────────────────────────────────────────
+// Das Einschnittmaß ist das Maß, mit dem eingeschnitten wird: es liegt über dem
+// Fertigmaß, das der Kunde bestellt (Trocknungs- und Hobelzugabe). Die cbm werden
+// standardmäßig aus dem EM gerechnet, auf Wunsch aber aus dem Fertig-/Kundenmaß.
+// Zugabe entweder absolut in mm (Standard 10 mm) oder prozentual (Standard 2,4 %).
+const EM_DEF = { mm: 10, pct: 2.4 };
+const rnd1 = v => Math.round(v*10)/10;
+// Fertigmaß → Einschnittmaß
+function emUp(v, mode, val){ v=+v||0; if(!(v>0)) return 0; return rnd1(mode==='pct' ? v*(1+(+val||0)/100) : v+(+val||0)); }
+// Einschnittmaß → Fertigmaß (die beiden Maße hängen zusammen: ändert man eines, folgt das andere)
+function emDown(v, mode, val){ v=+v||0; if(!(v>0)) return 0; const r = mode==='pct' ? v/(1+(+val||0)/100) : v-(+val||0); return rnd1(Math.max(0,r)); }
+function emValOf(t){ const mode=(t&&t.emMode)||'mm'; const v=(t&&t.emV&&t.emV[mode]); return v!=null ? v : EM_DEF[mode]; }
+function emDefaults(t){ if(!t) return; if(!t.emMode) t.emMode='mm'; if(!t.emV) t.emV={...EM_DEF}; if(!t.basis) t.basis='em'; }
+// Welches Maßpaar geht in die cbm? (basis 'em' = Einschnittmaß, 'roh' = Kunden-/Fertigmaß)
+function effS(m){ return (m.basis==='roh') ? (+m.staerke||0) : (+m.emStaerke || +m.staerke || 0); }
+function effB(m){ return (m.basis==='roh') ? (+m.breite||0)  : (+m.emBreite  || +m.breite  || 0); }
+// Länge wird in ZENTIMETERN erfasst → für cbm durch 100 teilen
+function volOf(m){ return stkOf(m) * (m.laenge/100) * (effS(m)/1000) * (effB(m)/1000); }
 // Stück gesamt einer bereits erfassten Zeile (m.total wird beim Übernehmen gesetzt)
 function totOf(m){ return m.total!=null ? m.total : stkOf(m); }
 
+// ── Ladungsträger: (leer) / Paket / Palette / Box ─────────────────────────────
+// Nur beim Paket gibt es Reihen × Lagen; Palette und Box sind reine Multiplikatoren
+// mit schematischer Grafik. Anzahl steht in der bisherigen Pakete-Spalte.
+const TRAEGER = [['',''],['paket','Paket'],['palette','Palette'],['box','Box']];
+const TRAEGER_LABEL = {'':'–', paket:'Paket', palette:'Palette', box:'Box'};
+const TRAEGER_ANZ   = {'':'Anzahl', paket:'Pakete', palette:'Paletten', box:'Boxen'};
+// Paketaufbau: ganz unten immer 2 Unterleger (100 mm), zwischen den Lagen 20-mm-Stapelleisten
+const PAK_UNTERLEGER = 100, PAK_LEISTE = 20;
+
+// ── Berechnungseinheit für den Kunden ─────────────────────────────────────────
+// Intern wird IMMER in cbm gerechnet – bestellt der Kunde aber in qm/lfdm/Stück,
+// wird die Menge aus den Maßen zurückgerechnet und der Preis darauf umgelegt.
+// fm = cbm (Festmeter beim Schnittholz), RM über den Schüttfaktor.
+const BEINH = [['cbm','cbm'],['qm','m²'],['lfdm','lfdm'],['stk','Stück'],['fm','fm'],['rm','RM']];
+const BEINH_LABEL = {cbm:'cbm', qm:'m²', lfdm:'lfdm', stk:'Stk.', fm:'fm', rm:'RM'};
+const RM_FAKTOR = 0.7;                          // 1 RM ≈ 0,7 fm
+function beQtyRow(m, u){
+  const vol = m.vol!=null ? m.vol : volOf(m);
+  if(u==='qm')   return totOf(m)*(m.laenge/100)*((m.breite||0)/1000);
+  if(u==='lfdm') return totOf(m)*m.laenge/100;
+  if(u==='stk')  return totOf(m);
+  if(u==='rm')   return vol/RM_FAKTOR;
+  return vol;                                    // cbm, fm
+}
+function beQty(p){
+  const u = p.beinh||'cbm';
+  if(u==='rm')  return posVol(p)/RM_FAKTOR;
+  if(u==='cbm'||u==='fm') return posVol(p);
+  return p.measures.reduce((s,m)=> s+beQtyRow(m,u), 0);
+}
+function beFmt(q, u){ return (u==='stk'?num(q,0):num3(q))+' '+BEINH_LABEL[u]; }
+
 // Spaltenreihenfolge des Aufmaßkopfes + frei wählbare Startspalte (Rechtsklick auf den Spaltenkopf)
-const AUF_COLS = ['pakete','reihen','lagen','stueck','laenge','staerke','breite'];
-const AUF_LABEL = {pakete:'Pakete', reihen:'Reihen', lagen:'Lagen', stueck:'Stück', laenge:'Länge', staerke:'Stärke', breite:'Breite'};
+const AUF_COLS = ['traeger','pakete','reihen','lagen','stueck','laenge','staerke','breite','emStaerke','emBreite'];
+const AUF_LABEL = {traeger:'Träger', pakete:'Anzahl', reihen:'Reihen', lagen:'Lagen', stueck:'Stück', laenge:'Länge', staerke:'Stärke', breite:'Breite',
+                   emStaerke:'EM Stärke', emBreite:'EM Breite'};
+const EM_PAIR = {staerke:'emStaerke', breite:'emBreite'};        // Fertigmaß → EM-Feld
+const EM_BACK = {emStaerke:'staerke', emBreite:'breite'};        // EM-Feld → Fertigmaß
+
+// ── Sortieren der Aufmaßzeilen ───────────────────────────────────────────────
+// Rechtsklick auf einen Spaltenkopf schaltet die Sortierung ein – absteigend ist
+// der Standard. Ein Klick auf das Dreieck dreht die Richtung, noch ein Rechtsklick
+// schaltet die Spalte wieder ab. Mehrere Spalten gehen gleichzeitig; die Rangfolge
+// ist fest: Länge > Stärke > Breite > EM > Stück > Pakete/Reihen/Lagen > cbm.
+const SORT_PRIO  = ['laenge','staerke','breite','emStaerke','emBreite','stueck','total','pakete','reihen','lagen','vol'];
+const SORT_LABEL = {...AUF_LABEL, total:'Stück ges.', vol:'cbm'};
+function sortVal(m, f){
+  if(f==='stueck') return stkJe(m);
+  if(f==='total')  return totOf(m);
+  if(f==='vol')    return +m.vol||0;
+  return +m[f]||0;
+}
+function sortState(t){ if(!t.sort || typeof t.sort!=='object') t.sort={}; return t.sort; }
+function sortActive(t){ const s=sortState(t); return SORT_PRIO.filter(f=> s[f]==='asc' || s[f]==='desc'); }
+// Rangfolge sichtbar machen: 1 = Hauptsortierung
+function sortRank(t, f){ const a=sortActive(t); const i=a.indexOf(f); return i<0?0:i+1; }
+function sortMeasures(t){
+  if(!t || !Array.isArray(t.measures)) return;
+  const act = sortActive(t); if(!act.length) return;
+  const s = sortState(t);
+  const keep = (t===draft && focusRow!=null) ? t.measures[focusRow] : null;
+  t.measures = t.measures.map((m,i)=>[m,i]).sort((A,B)=>{
+    for(const f of act){
+      const d = sortVal(A[0],f) - sortVal(B[0],f);
+      if(d) return s[f]==='asc' ? d : -d;
+    }
+    return A[1]-B[1];                                  // gleiche Werte → Erfassungsreihenfolge (stabil)
+  }).map(x=>x[0]);
+  if(keep){ const k = t.measures.indexOf(keep); focusRow = k<0 ? null : k; }
+}
+function toggleSort(t, f){
+  const s = sortState(t);
+  if(!s[f]) s[f]='desc';        // Rechtsklick: absteigend ist immer der Standard
+  else delete s[f];             // noch ein Rechtsklick: Sortierung dieser Spalte wieder aus
+  sortMeasures(t);
+}
+function flipSort(t, f){ const s=sortState(t); s[f] = (s[f]==='asc') ? 'desc' : 'asc'; sortMeasures(t); }
+// <th> für eine sortierbare Spalte
+function sortTh(t, f, label, cls){
+  const d = sortState(t)[f], rank = sortRank(t, f), multi = sortActive(t).length>1;
+  const c = ['sortable', cls||'', d?'sorted':''].filter(Boolean).join(' ');
+  const tip = d ? `${SORT_LABEL[f]||f} ${d==='asc'?'aufsteigend':'absteigend'} – Klick auf das Dreieck dreht die Richtung, Rechtsklick schaltet aus`
+                : `Rechtsklick (oder Klick): nach ${SORT_LABEL[f]||f} sortieren – absteigend`;
+  const ar = d ? `<button class="sortar" data-sortdir="${f}" tabindex="-1" title="Richtung umdrehen">${d==='asc'?'▲':'▼'}</button>` : '';
+  const rk = (d && multi) ? `<span class="sortrank">${rank}</span>` : '';
+  return `<th class="${c}" data-sort="${f}" title="${tip}">${label}${rk}${ar}</th>`;
+}
+// Klick/Rechtsklick auf die Köpfe verdrahten – Maus und Tastatur gleichwertig
+function wireSort(root, t, redraw){
+  root.querySelectorAll('th.sortable').forEach(th=>{
+    const f = th.dataset.sort;
+    th.addEventListener('contextmenu', e=>{ e.preventDefault(); e.stopPropagation(); toggleSort(t,f); redraw(); });
+    th.addEventListener('click', e=>{
+      if(e.target.closest('.sortar')){ e.stopPropagation(); flipSort(t,f); }
+      else toggleSort(t,f);
+      redraw();
+    });
+  });
+}
+
+// Pill-Slider im Spaltenkopf: entscheidet, welches Maßpaar in die cbm-Rechnung geht.
+// scope = 'd' (Aufmaß-Dialog) oder der Positionsindex.
+function pillHTML(scope, basis){
+  return `<span class="pillsl ${basis==='roh'?'':'isem'}" data-scope="${scope}" title="Womit werden die cbm gerechnet?">
+      <span class="thumb"></span>
+      <button type="button" data-basis="roh" class="${basis==='roh'?'on':''}">Fertigmaß</button>
+      <button type="button" data-basis="em"  class="${basis==='roh'?'':'on'}">EM-Maß</button>
+    </span>`;
+}
+// Zwei Felder über dem EM: Zugabe in mm oder %, jeweils überschreibbar
+function emCtlHTML(scope, t){
+  const mode = t.emMode||'mm', val = emValOf(t);
+  return `<span class="emctl" data-scope="${scope}">EM = Maß +
+      <select data-em="mode"><option value="mm"${mode==='mm'?' selected':''}>mm</option><option value="pct"${mode==='pct'?' selected':''}>%</option></select>
+      <input type="number" step="0.1" min="0" data-em="val" value="${val}">
+      <span>${mode==='mm'?'mm':'%'}</span></span>`;
+}
+function basisBar(scope, t){
+  return `<div class="basisbar"><span class="bl">cbm aus:</span>${pillHTML(scope,t.basis)}${emCtlHTML(scope,t)}</div>`;
+}
+// Ziel eines Pill-/EM-Bedienelements: der Entwurf oder eine fertige Position
+function scopeTarget(scope){ return scope==='d' ? draft : positions[+scope]; }
+// Alle Zeilen eines Ziels an die aktuellen EM-Einstellungen anpassen
+function applyEmToRows(t){
+  const mode=t.emMode, val=emValOf(t);
+  t.measures.forEach(m=>{
+    m.emMode=mode; m.emVal=val; m.basis=t.basis;
+    m.emStaerke = emUp(m.staerke, mode, val);
+    m.emBreite  = emUp(m.breite,  mode, val);
+    m.vol = volOf(m);
+  });
+}
+function setBasis(scope, basis){
+  const t = scopeTarget(scope); if(!t) return;
+  emDefaults(t); t.basis = basis;
+  t.measures.forEach(m=>{ m.basis=basis; m.vol=volOf(m); });
+  schnittRefresh(t);                                  // cbm-Basis geändert → Aufteilung nachziehen
+  if(scope==='d'){ renderComm(); updateAufMode(); } else renderAll();
+}
+let emForceVal = false;                  // nach mm/%-Wechsel den gemerkten Wert ins Feld zurückschreiben
+function setEm(scope, mode, val){
+  const t = scopeTarget(scope); if(!t) return;
+  emDefaults(t);
+  if(mode && mode!==t.emMode) emForceVal = true;
+  if(mode) t.emMode = mode;
+  if(val!=null && val!=='' && !isNaN(+val)) t.emV[t.emMode] = +val;
+  applyEmToRows(t);
+  schnittRefresh(t);                                  // EM geändert → Aufteilung nachziehen
+  if(scope==='d'){ syncEmFields('*'); renderComm(); updateAufMode(); }
+  else renderAll();
+}
+// Bedienleiste im Aufmaßkopf nachziehen, ohne sie neu zu bauen (Fokus bleibt im Feld)
+function refreshEmBar(){
+  const bar = el('emBar'); if(!bar || !draft) return;
+  const pill = bar.querySelector('.pillsl');
+  if(pill){ pill.classList.toggle('isem', draft.basis!=='roh');
+    pill.querySelectorAll('button').forEach(b=> b.classList.toggle('on', b.dataset.basis===draft.basis)); }
+  const ctl = bar.querySelector('.emctl'); if(!ctl) return;
+  ctl.querySelector('[data-em="mode"]').value = draft.emMode;
+  const vi = ctl.querySelector('[data-em="val"]');
+  if(emForceVal || document.activeElement!==vi) vi.value = emValOf(draft);
+  emForceVal = false;
+  const u = ctl.querySelector('span:last-child'); if(u) u.textContent = draft.emMode==='mm' ? 'mm' : '%';
+}
+// Maus- und Tastaturbedienung für Pill-Slider + EM-Felder
+function wireEmBar(root){
+  root.querySelectorAll('.pillsl button').forEach(b=> b.onclick = e=>{
+    e.stopPropagation(); e.preventDefault();
+    setBasis(b.closest('.pillsl').dataset.scope, b.dataset.basis);
+  });
+  root.querySelectorAll('.emctl [data-em]').forEach(inp=>{
+    const scope = inp.closest('.emctl').dataset.scope;
+    inp.onmousedown = e=> e.stopPropagation();
+    if(inp.dataset.em==='mode') inp.onchange = ()=> setEm(scope, inp.value, null);
+    else {
+      inp.onkeydown = e=>{ e.stopPropagation(); if(e.key==='Enter'){ e.preventDefault(); inp.blur(); } };
+      inp.onchange = ()=> setEm(scope, null, inp.value);
+    }
+  });
+}
 let returnCol = 'laenge';   // hier landet der Cursor nach jeder übernommenen Zeile
 
 function openAufmass(prefill){
   currentStep = 'aufmass';
+  emDefaults(draft);                       // EM-Einstellungen (mm/%, Zugabe, cbm-Basis)
+  if(!draft.beinh) draft.beinh = 'cbm';    // Berechnungseinheit für den Kunden
   const c = draft.cat;
   const P = prefill || {};
   const pv = (k,def)=> (P[k]!=null && P[k]!=='' ? P[k] : def);
@@ -665,7 +1100,8 @@ function openAufmass(prefill){
   ov.innerHTML = `
     <div class="modal">
       <div class="mhead">${backBtn(editMode?'Angebot (ohne Änderung)':(draft.copied?'altes Angebot wählen':'Artikelauswahl'))}<h2>${editMode?'Aufmaß ändern':'Aufmaß erfassen'}</h2>${editMode?'':stepper('aufmass')}<span class="spacer"></span>
-        <button class="linkish" data-close title="${editMode?'Speichern':'Weiter zum Preis'} (Esc)">✕</button></div>
+        <button class="ghost" id="btnTestAuf" style="padding:5px 11px;font-size:0.78rem" title="Typische Kundenbestellung (Abbundliste, 59 Zeilen / 5 Querschnitte) als erfasste Aufmaße einfüllen – zum Testen der Schnittaufteilung">🧪 Testbestellung</button>
+        <button class="linkish" data-close title="${editMode?'Speichern':'Weiter'} (Esc)">✕</button></div>
       <div class="mbody">
         <div class="aufgrid">
           <div class="aufleft">
@@ -673,17 +1109,29 @@ function openAufmass(prefill){
               ${draft.copied?`<span class="copytag">kopiert aus ${draft.source.nr}</span>`:''}
               <span class="dims">Std.-Maß: ${c.s&&c.b?num(c.s)+' × '+num(c.b)+' mm':'frei'}</span></div>
             <table class="aufmass">
-              <thead><tr id="aufHead">
-                <th class="pinnable" data-col="pakete" title="Rechtsklick: hier nach jeder Zeile starten">Pakete</th>
-                <th class="pinnable" data-col="reihen" title="Rechtsklick: hier nach jeder Zeile starten">Reihen</th>
-                <th class="pinnable" data-col="lagen" title="Rechtsklick: hier nach jeder Zeile starten">Lagen</th>
+              <thead>
+              <tr class="grprow">
+                <th class="grp" colspan="6" id="grpLead"></th>
+                <th class="grp" colspan="4" id="emBar">${basisBar('d', draft)}</th>
+                <th class="grp" colspan="3"></th>
+              </tr>
+              <tr id="aufHead">
+                <th class="pinnable" data-col="traeger" title="Ladungsträger: Paket (Reihen × Lagen), Palette oder Box – leer = ohne">Träger</th>
+                <th class="pinnable" data-col="pakete" id="thPak" title="Anzahl der Ladungsträger – Rechtsklick: hier nach jeder Zeile starten">Anzahl</th>
+                <th class="pinnable" data-col="reihen" title="nur beim Paket – Rechtsklick: hier nach jeder Zeile starten">Reihen</th>
+                <th class="pinnable" data-col="lagen" title="nur beim Paket – Rechtsklick: hier nach jeder Zeile starten">Lagen</th>
                 <th class="pinnable" data-col="stueck" id="thStueck" title="Rechtsklick: hier nach jeder Zeile starten">Stück ges.</th>
                 <th class="pinnable" data-col="laenge" title="Rechtsklick: hier nach jeder Zeile starten">Länge (cm)</th>
                 <th class="pinnable" data-col="staerke" title="Rechtsklick: hier nach jeder Zeile starten">Stärke</th>
                 <th class="pinnable" data-col="breite" title="Rechtsklick: hier nach jeder Zeile starten">Breite</th>
-                <th>= m³</th>
+                <th class="pinnable" data-col="emStaerke" title="Einschnittmaß – wird aus der Stärke berechnet, kann aber überschrieben werden">EM Stärke</th>
+                <th class="pinnable" data-col="emBreite" title="Einschnittmaß – wird aus der Breite berechnet, kann aber überschrieben werden">EM Breite</th>
+                <th id="thVol">= cbm</th>
+                <th title="Berechnungseinheit für den Kunden – der Preis wird darauf umgerechnet">Berechnungseinheit</th>
+                <th id="thBQ">= Menge</th>
               </tr></thead>
               <tbody><tr id="aufRow">
+                <td data-col="traeger"><select id="f_traeger">${TRAEGER.map(([v,t])=>`<option value="${v}"${pv('traeger','')===v?' selected':''}>${t||'– ohne –'}</option>`).join('')}</select></td>
                 <td data-col="pakete"><input id="f_pakete" type="number" min="0" step="1" value="${pv('pakete',0)}"></td>
                 <td data-col="reihen"><input id="f_reihen" type="number" min="0" step="1" value="${pv('reihen','')}"></td>
                 <td data-col="lagen"><input id="f_lagen" type="number" min="0" step="1" value="${pv('lagen','')}"></td>
@@ -691,7 +1139,11 @@ function openAufmass(prefill){
                 <td data-col="laenge"><input id="f_laenge" type="number" min="0" step="1" value="${pv('laenge','')}"></td>
                 <td data-col="staerke"><input id="f_staerke" type="number" min="0" step="1" value="${pv('staerke', c.s||'')}"></td>
                 <td data-col="breite"><input id="f_breite" type="number" min="0" step="1" value="${pv('breite', c.b||'')}"></td>
-                <td class="vol"><span id="liveVol">0,000</span> m³</td>
+                <td data-col="emStaerke"><input id="f_emStaerke" type="number" min="0" step="0.1" value=""></td>
+                <td data-col="emBreite"><input id="f_emBreite" type="number" min="0" step="0.1" value=""></td>
+                <td class="vol"><span id="liveVol">0,000</span> cbm</td>
+                <td><select id="f_beinh">${BEINH.map(([v,t])=>`<option value="${v}"${(draft.beinh||'cbm')===v?' selected':''}>${t}</option>`).join('')}</select></td>
+                <td class="vol"><span id="liveBQ">–</span></td>
               </tr></tbody>
             </table>
             <div class="pinnote" id="pinNote"></div>
@@ -701,7 +1153,7 @@ function openAufmass(prefill){
               <div class="gridwrap"><table class="pgrid comm">
                 <thead id="commHead"></thead><tbody id="commBody"></tbody>
               </table></div>
-              <div class="commhint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert ändern · <kbd>Enter</kbd> / <kbd>Tab</kbd> Zelle rechts · <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Zelle wechseln · <kbd>Esc</kbd> abbrechen. Die <b>Grafiken rechts zeigen immer die angeklickte Zeile</b> – Klick auf die Zeilennummer genügt.</div>
+              <div class="commhint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert ändern · <kbd>Enter</kbd> / <kbd>Tab</kbd> Zelle rechts · <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Zelle wechseln · <kbd>Esc</kbd> abbrechen. <b>Fertigmaß und EM ziehen sich gegenseitig nach</b> – egal welches der beiden man ändert. Die <b>Grafiken rechts zeigen immer die angeklickte Zeile</b> – Klick auf die Zeilennummer genügt.<br><b>Sortieren:</b> <kbd>Rechtsklick</kbd> auf einen Spaltenkopf – er wird blau und sortiert <b>absteigend</b>. Klick auf das Dreieck ▼/▲ dreht die Richtung, noch ein Rechtsklick schaltet die Spalte wieder aus. Mehrere Spalten gehen gleichzeitig, die Rangfolge ist fest: <b>Länge → Stärke → Breite</b>.</div>
             </div>
           </div>
           <div class="aufright">
@@ -711,10 +1163,10 @@ function openAufmass(prefill){
         </div>
       </div>
       <div class="mfoot">
-        <div class="khints"><span><kbd>Enter</kbd> nächstes Feld</span><span><kbd>Strg</kbd>+<kbd>Enter</kbd> Zeile übernehmen</span><span><kbd>Rechtsklick</kbd> auf Spaltenkopf = Startspalte</span><span><kbd>Esc</kbd> fertig → Preis</span></div>
+        <div class="khints"><span><kbd>Enter</kbd> nächstes Feld</span><span><kbd>Strg</kbd>+<kbd>Enter</kbd> Zeile übernehmen</span><span><kbd>Rechtsklick</kbd> oben = Startspalte</span><span><kbd>Rechtsklick</kbd> in der Liste = sortieren</span><span><kbd>Esc</kbd> fertig → weiter</span></div>
         <span class="spacer"></span>
         <button class="ghost" id="btnCommit">Zeile übernehmen <kbd>Strg</kbd>+<kbd>Enter</kbd></button>
-        <button class="primary" id="btnAufDone">${editMode?'Speichern':'Weiter zum Preis'} <kbd>Esc</kbd></button>
+        <button class="primary" id="btnAufDone">${editMode?'Speichern':'Weiter'} <kbd>Esc</kbd></button>
       </div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>aufmassDone();
@@ -725,16 +1177,19 @@ function openAufmass(prefill){
   });
   el('btnAufDone').onclick = ()=>aufmassDone();
   el('btnCommit').onclick = ()=>commitAuf();
+  el('btnTestAuf').onclick = ()=>fillTestAufmass();
   // Rechtsklick auf einen Spaltenkopf → Startspalte nach jeder übernommenen Zeile
   el('aufHead').querySelectorAll('th.pinnable').forEach(th=>{
     th.addEventListener('contextmenu', e=>{ e.preventDefault(); setReturnCol(th.dataset.col); });
   });
-  ['pakete','reihen','lagen','stueck','laenge','staerke','breite'].forEach(f=>{
+  wireEmBar(el('emBar'));
+  AUF_COLS.forEach(f=>{
     const inp = el('f_'+f);
+    const isSel = inp.tagName==='SELECT';
     let caret = false;                                           // Mausklick ins Feld → ←/→ bewegen die Schreibmarke
     inp.addEventListener('focus', ()=>{ setFocusRow(null); caret=false; });   // oben = Grafik zeigt wieder die neue Zeile
     inp.addEventListener('mouseup', ()=>{ caret = true; });
-    inp.addEventListener('input', ()=>{ updateAufMode(); });
+    inp.addEventListener('input', ()=>{ syncEmFields(f); updateAufMode(); });
     inp.addEventListener('keydown', e=>{
       if(e.key==='Enter'){
         e.preventDefault(); e.stopPropagation();
@@ -743,17 +1198,22 @@ function openAufmass(prefill){
       }
       // Pfeiltasten wandern durch die Felder – ↓ steigt in die erfassten Zeilen darunter
       if(e.key==='ArrowRight' || e.key==='ArrowLeft'){
-        if(caret) return;
+        if(caret || isSel) return;
         e.preventDefault(); e.stopPropagation();
         return stepAufField(f, e.key==='ArrowRight' ? 1 : -1);
       }
       if(e.key==='ArrowDown' || e.key==='ArrowUp'){
+        if(isSel) return;                                        // im Dropdown wählen ↑/↓ den Eintrag
         e.preventDefault(); e.stopPropagation();                 // nie die Zahl hoch-/runterzählen
         if(e.key==='ArrowDown') openCellByKey(`d|${f}|0`);        // in die erste erfasste Zeile
       }
     });
   });
+  // Berechnungseinheit gilt für die ganze Position – Preis wird darauf umgerechnet
+  el('f_beinh').addEventListener('change', ()=>{ draft.beinh = el('f_beinh').value; renderComm(); updateAufMode(); });
+  el('f_beinh').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); e.stopPropagation(); commitAuf(); } });
   focusRow = null;
+  syncEmFields('*');                        // EM-Maße aus Stärke/Breite vorbelegen
   renderComm();
   updateAufMode();
   setTimeout(()=>{ const id = P.focusLaenge ? 'f_laenge' : 'f_pakete'; const p=el(id); if(p){ p.focus(); p.select(); } }, 30);
@@ -771,7 +1231,7 @@ function renderPinCol(flash){
   if(row) row.querySelectorAll('td').forEach(td=> td.classList.toggle('pincol', td.dataset.col===returnCol));
   const note = el('pinNote');
   if(note){
-    note.innerHTML = `📌 Startspalte nach jeder übernommenen Zeile: <b>${AUF_LABEL[returnCol]}</b> · Rechtsklick auf einen anderen Spaltenkopf ändert das. <kbd>Enter</kbd> = ein Feld nach rechts (auch Stärke/Breite), <kbd>Strg</kbd>+<kbd>Enter</kbd> = Zeile sofort übernehmen.`;
+    note.innerHTML = `📌 Startspalte nach jeder übernommenen Zeile: <b>${AUF_LABEL[returnCol]}</b> · Rechtsklick auf einen anderen Spaltenkopf ändert das. <kbd>Enter</kbd> = ein Feld nach rechts (auch Stärke/Breite/EM), <kbd>Strg</kbd>+<kbd>Enter</kbd> = Zeile sofort übernehmen.`;
   }
   if(flash){ const th = head.querySelector('th.pincol'); if(th){ th.classList.remove('pinflash'); void th.offsetWidth; th.classList.add('pinflash'); } }
 }
@@ -783,7 +1243,7 @@ function nextAufField(from){
   for(let i=start+1;i<AUF_COLS.length;i++){
     const n = el('f_'+AUF_COLS[i]);
     if(!n || n.disabled) continue;           // nur gesperrte Felder werden übersprungen
-    n.focus(); n.select(); return;
+    n.focus(); if(n.select) n.select(); return;
   }
   commitAuf();
 }
@@ -792,49 +1252,114 @@ function stepAufField(from, dir){
   for(let i=AUF_COLS.indexOf(from)+dir; i>=0 && i<AUF_COLS.length; i+=dir){
     const n = el('f_'+AUF_COLS[i]);
     if(!n || n.disabled) continue;
-    n.focus(); n.select(); return;
+    n.focus(); if(n.select) n.select(); return;
   }
 }
-function readAuf(){
-  return { pakete:+el('f_pakete').value||0, reihen:+el('f_reihen').value||0, lagen:+el('f_lagen').value||0,
-           stueck:+el('f_stueck').value||0, laenge:+el('f_laenge').value||0,
-           staerke:+el('f_staerke').value||0, breite:+el('f_breite').value||0 };
+// Fertigmaß und Einschnittmaß hängen zusammen: ändert man eines, zieht das andere mit.
+// changed = das gerade geänderte Feld, '*' = beide EM-Felder neu aus Stärke/Breite ableiten.
+function syncEmFields(changed){
+  if(!draft) return;
+  const mode = draft.emMode, val = emValOf(draft);
+  Object.entries(EM_PAIR).forEach(([roh, em])=>{
+    const R = el('f_'+roh), E = el('f_'+em);
+    if(!R || !E) return;
+    if(changed===em){                                   // EM getippt → Fertigmaß rückwärts rechnen
+      const v = +E.value; R.value = v>0 ? emDown(v, mode, val) : '';
+    } else if(changed===roh || changed==='*'){          // Fertigmaß getippt → EM vorwärts rechnen
+      const v = +R.value; E.value = v>0 ? emUp(v, mode, val) : '';
+    }
+  });
 }
-// Feld-Sperren + Live-Anzeigen (m³, Stück, Grafiken, Hinweis)
+function readAuf(){
+  const m = { traeger:el('f_traeger').value||'',
+              pakete:+el('f_pakete').value||0, reihen:+el('f_reihen').value||0, lagen:+el('f_lagen').value||0,
+              stueck:+el('f_stueck').value||0, laenge:+el('f_laenge').value||0,
+              staerke:+el('f_staerke').value||0, breite:+el('f_breite').value||0,
+              emStaerke:+el('f_emStaerke').value||0, emBreite:+el('f_emBreite').value||0,
+              emMode:draft.emMode, emVal:emValOf(draft), basis:draft.basis };
+  if(!m.emStaerke) m.emStaerke = emUp(m.staerke, m.emMode, m.emVal);
+  if(!m.emBreite)  m.emBreite  = emUp(m.breite,  m.emMode, m.emVal);
+  return m;
+}
+// Aktives Maßpaar hervorheben, inaktives ausbleichen – im Kopf und in der Eingabezeile
+function paintBasis(){
+  const em = (draft && draft.basis!=='roh');
+  const head = el('aufHead'), row = el('aufRow');
+  if(head) head.querySelectorAll('th[data-col]').forEach(th=>{
+    const c = th.dataset.col, isRoh = (c==='staerke'||c==='breite'), isEm = (c==='emStaerke'||c==='emBreite');
+    if(!isRoh && !isEm) return;                    // Träger/Anzahl haben ihre eigene Grau-Logik
+    th.classList.toggle('mon', (isRoh && !em) || (isEm && em));
+    th.classList.toggle('moff', (isRoh && em) || (isEm && !em));
+  });
+  if(row) row.querySelectorAll('td[data-col]').forEach(td=>{
+    const c = td.dataset.col;
+    if(!(c==='staerke'||c==='breite'||c==='emStaerke'||c==='emBreite')) return;
+    td.classList.toggle('moff', em ? (c==='staerke'||c==='breite') : (c==='emStaerke'||c==='emBreite'));
+  });
+  const tv = el('thVol'); if(tv) tv.textContent = em ? '= cbm (EM)' : '= cbm (Fertig)';
+}
+// Feld-Sperren + Live-Anzeigen (cbm, Stück, Grafiken, Hinweis)
 // Regel: Reihen/Lagen gefüllt → Stück wird berechnet und gesperrt.
 //        Stück direkt gefüllt → Reihen/Lagen bleiben leer und werden gesperrt.
 //        Beides leer → alles offen.
 function updateAufMode(){
-  const st = el('f_stueck'), rh = el('f_reihen'), lg = el('f_lagen');
-  const pak = +el('f_pakete').value||0;
-  const r = +rh.value||0, l = +lg.value||0;
+  const st = el('f_stueck'), rh = el('f_reihen'), lg = el('f_lagen'), cnt = el('f_pakete');
+  const tr = el('f_traeger').value;               // '' | 'paket' | 'palette' | 'box'
+  const isPaket = tr==='paket';
+  cnt.disabled = !tr;                              // ohne Träger keine Anzahl
+  if(!tr && +cnt.value) cnt.value='';
+  if(!isPaket && (+rh.value || +lg.value)){ rh.value=''; lg.value=''; }   // Reihen/Lagen nur beim Paket
+  const pak = +cnt.value||0;
+  const r = isPaket ? (+rh.value||0) : 0, l = isPaket ? (+lg.value||0) : 0;
   let mode;
   if(r>0 || l>0) mode='rl';
   else {
     if(st.dataset.computed){ st.value=''; delete st.dataset.computed; }   // Reihen/Lagen geleert → Stück wieder freigeben
     mode = (+st.value||0)>0 ? 'stk' : 'open';
   }
-  rh.disabled = (mode==='stk');
-  lg.disabled = (mode==='stk');
+  rh.disabled = !isPaket || (mode==='stk');
+  lg.disabled = !isPaket || (mode==='stk');
   st.disabled = (mode==='rl');
   if(mode==='rl'){ st.value = (r*l)||''; st.dataset.computed='1'; }
   const m = readAuf();
   const je = stkJe(m), ges = stkOf(m);
-  el('thStueck').firstChild.nodeValue = pak>0 ? 'Stück/Paket' : 'Stück ges.';
+  // Spalten folgen dem Ladungsträger: ohne Träger verschwinden Anzahl/Reihen/Lagen komplett,
+  // bei Palette/Box bleibt nur die Anzahl. Die Gruppenzeile überspannt dynamisch mit.
+  const thP = el('thPak');
+  thP.firstChild.nodeValue = TRAEGER_ANZ[tr]||'Anzahl';
+  const showRL = isPaket;
+  [['pakete',!!tr],['reihen',showRL],['lagen',showRL]].forEach(([c,show])=>{
+    const th = el('aufHead').querySelector(`th[data-col="${c}"]`);
+    const td = el('aufRow').querySelector(`td[data-col="${c}"]`);
+    if(th) th.hidden = !show;
+    if(td) td.hidden = !show;
+  });
+  const lead = el('grpLead'); if(lead) lead.colSpan = 3 + (tr?1:0) + (showRL?2:0);
+  const kurz = {paket:'Pak', palette:'Pal', box:'Box'}[tr];
+  el('thStueck').firstChild.nodeValue = (tr && pak>0) ? 'Stück/'+kurz : 'Stück ges.';
   const vol = volOf(m);
   el('liveVol').textContent = num3(vol);
+  // Berechnungseinheit: Menge dieser Zeile in der Kundeneinheit
+  const u = draft.beinh||'cbm';
+  el('thBQ').textContent = '= '+BEINH_LABEL[u];
+  el('liveBQ').textContent = (ges>0 && m.laenge>0) ? (u==='stk'?num(beQtyRow(m,u),0):num3(beQtyRow(m,u))) : '–';
   el('aufHint').innerHTML =
-      mode==='rl'
+      !tr
+        ? `<b>Ohne Ladungsträger:</b> Stückzahl direkt eingeben. Links im <b>Träger</b>-Dropdown: <b>Paket</b> (mit Reihen × Lagen), <b>Palette</b> oder <b>Box</b> – die Anzahl wirkt als Multiplikator.`
+      : !isPaket
+        ? `<b>${TRAEGER_LABEL[tr]}:</b> ${pak>0?`${pak} ${TRAEGER_ANZ[tr]}`:'Anzahl eingeben'} × ${je||'–'} Stück je ${TRAEGER_LABEL[tr]} = <b>${ges||'–'}</b> Stück gesamt. Reihen/Lagen gibt es nur beim Paket – die Grafik rechts zeigt den Träger schematisch.`
+      : mode==='rl'
         ? `<b>Reihen × Lagen:</b> ${r||'–'} × ${l||'–'} = <b>${je||0}</b> Stück je Paket – die Stückzahl wird daraus berechnet und ist gesperrt.${pak>0?` × ${pak} Paket${pak>1?'e':''} = <b>${ges}</b> Stück gesamt.`:''} Reihen/Lagen leeren gibt die Stückzahl wieder frei.`
       : mode==='stk'
         ? `<b>Stückzahl direkt:</b> ${pak>0?`${pak} Paket${pak>1?'e':''} × ${je} Stück = <b>${ges}</b> Stück gesamt`:`<b>${ges}</b> Stück`} – Reihen/Lagen sind gesperrt (werden nicht gebraucht). Stückzahl leeren gibt sie wieder frei.`
-        : `<b>Zwei Wege:</b> entweder <b>Reihen × Lagen</b> eingeben (Stückzahl wird berechnet) oder die <b>Stückzahl</b> direkt – das jeweils andere wird gesperrt. Pakete = Multiplikator, 0 = kein Paket.`;
+        : `<b>Paket:</b> entweder <b>Reihen × Lagen</b> eingeben (Stückzahl wird berechnet) oder die <b>Stückzahl</b> direkt. Unten liegen immer 2 Unterleger (${PAK_UNTERLEGER} mm), zwischen den Lagen ${PAK_LEISTE}-mm-Stapelleisten – die Grafik rechts zeigt das Gesamtmaß.`;
   // Grafik rechts: normalerweise die Zeile, die oben gerade eingegeben wird.
   // Klickt man unten in eine erfasste Zeile, zeigt sie genau dieses Objekt (focusRow).
   const fr = (focusRow!=null) ? draft.measures[focusRow] : null;
-  if(fr) updateAufGraphics(fr, fr.reihen>0 && fr.lagen>0);
-  else   updateAufGraphics(m, r>0&&l>0);
+  if(fr) updateAufGraphics(fr, fr.traeger==='paket' && fr.reihen>0 && fr.lagen>0);
+  else   updateAufGraphics(m, isPaket && r>0 && l>0);
   renderPinCol();
+  paintBasis(); refreshEmBar();
 }
 // Welche erfasste Zeile die Grafiken rechts steuert (null = die Eingabezeile oben)
 let focusRow = null;
@@ -850,12 +1375,18 @@ function markFocusRow(){
 }
 function updateAufGraphics(m, paketMode){
   const s = m.staerke||draft.cat.s||100, b = m.breite||draft.cat.b||100;
-  el('agxs').innerHTML = crossSVG(s, b);
-  el('agpak').innerHTML = paketMode
-    ? packGridSVG(m.reihen, m.lagen, s, b)
-    : (m.pakete>0
-        ? `<div class="empty">${m.pakete} Paket${m.pakete>1?'e':''}${m.stueck>0?` à ${num(m.stueck,0)} Stück`:''}<br>Aufbau (Reihen × Lagen) nicht angegeben</div>`
-        : `<div class="empty">kein Paket<br>(Pakete = 0)</div>`);
+  const mode = m.emMode || draft.emMode, val = (m.emVal!=null?m.emVal:emValOf(draft));
+  const em = { s: m.emStaerke || emUp(s, mode, val), b: m.emBreite || emUp(b, mode, val), basis: m.basis || draft.basis };
+  el('agxs').innerHTML = crossSVG(s, b, em);
+  const tr = m.traeger||'';
+  el('agpak').innerHTML =
+      tr==='box'     ? boxSVG(m.pakete)
+    : tr==='palette' ? paletteSVG(m.pakete)
+    : tr==='paket'
+      ? (paketMode
+          ? packGridSVG(m.reihen, m.lagen, s, b)
+          : `<div class="empty">${m.pakete>0?`${m.pakete} Paket${m.pakete>1?'e':''}${m.stueck>0?` à ${num(m.stueck,0)} Stück`:''}<br>Aufbau (Reihen × Lagen) nicht angegeben`:`Paket gewählt –<br>Reihen × Lagen eingeben`}</div>`)
+    : `<div class="empty">kein Ladungsträger<br>(Träger-Dropdown links)</div>`;
 }
 function commitAuf(){
   const m = readAuf();
@@ -873,7 +1404,7 @@ function commitAuf(){
   let rc = returnCol, f = el('f_'+rc);
   if(!f || f.disabled){ rc='laenge'; f=el('f_laenge'); }
   if(['pakete','reihen','lagen','stueck','laenge'].includes(rc)) f.value='';   // leeren → keine Doppel-Erfassung
-  f.focus(); f.select();
+  f.focus(); if(f.select) f.select();
   updateAufMode();
 }
 function renderComm(blink){
@@ -881,44 +1412,577 @@ function renderComm(blink){
   if(!draft.measures.length){ wrap.hidden=true; return; }
   wrap.hidden=false;
   if(focusRow!=null && !draft.measures[focusRow]) focusRow=null;
+  const blinkM = blink ? draft.measures[draft.measures.length-1] : null;   // vor dem Sortieren merken
+  sortMeasures(draft);
   const anyPak = draft.measures.some(m=>m.pakete>0);
+  const anyTr  = draft.measures.some(m=>m.traeger);          // ohne Ladungsträger: Träger-Spalten ausblenden
+  const uC = draft.beinh||'cbm', beCol = uC!=='cbm';         // Berechnungseinheit als eigene Spalte
+  const em = draft.basis!=='roh';
+  const rohC = em?'moff':'mon', emC = em?'mon':'moff';
+  const S = sortState(draft);
   el('commHead').innerHTML = `<tr>
     <th class="rn"></th>
-    <th>Pakete</th><th>Reihen</th><th>Lagen</th><th>Stück${anyPak?'/Pak':''}</th>
-    <th>Länge cm</th><th>Stärke</th><th>Breite</th><th>Stück ges.</th><th>m³</th><th></th></tr>`;
+    ${anyTr?`<th class="l">Träger</th>
+    ${sortTh(draft,'pakete','Anzahl')}${sortTh(draft,'reihen','Reihen')}${sortTh(draft,'lagen','Lagen')}
+    ${sortTh(draft,'stueck','Stück'+(anyPak?'/Trg':''))}`:''}
+    ${sortTh(draft,'laenge','Länge cm')}${sortTh(draft,'staerke','Stärke',rohC)}${sortTh(draft,'breite','Breite',rohC)}
+    ${sortTh(draft,'emStaerke','EM Stärke',emC)}${sortTh(draft,'emBreite','EM Breite',emC)}
+    ${sortTh(draft,'total','Stück ges.')}${sortTh(draft,'vol','cbm '+(em?'(EM)':'(Fertig)'))}${beCol?`<th>= ${BEINH_LABEL[uC]}</th>`:''}<th></th></tr>`;
   // jede weiße Zelle ist einzeln änderbar – genau wie in der Positionsliste
-  const dcell = (mi,f,val)=>`<td class="cell" data-src="draft" data-key="d|${f}|${mi}" data-mi="${mi}" data-f="${f}"
+  const dcell = (mi,f,val,cls)=>`<td class="cell ${cls||''}${S[f]?' sortcol':''}" data-src="draft" data-key="d|${f}|${mi}" data-mi="${mi}" data-f="${f}"
       title="Klick: ${AUF_LABEL[f]||f} ändern"><span class="v">${val}</span></td>`;
   el('commBody').innerHTML = draft.measures.map((m,i)=>`
-    <tr class="${blink&&i===draft.measures.length-1?'blink':''}">
+    <tr class="${blinkM&&m===blinkM?'blink':''}">
       <td class="rn">${i+1}</td>
+      ${anyTr?`<td class="ro l">${TRAEGER_LABEL[m.traeger||'']}</td>
       ${dcell(i,'pakete', m.pakete>0?num(m.pakete,0):'–')}
       ${dcell(i,'reihen', m.reihen>0?num(m.reihen,0):'–')}
       ${dcell(i,'lagen',  m.lagen>0?num(m.lagen,0):'–')}
-      ${dcell(i,'stueck', num(stkJe(m),0))}
+      ${dcell(i,'stueck', num(stkJe(m),0))}`:''}
       ${dcell(i,'laenge', num(m.laenge,0))}
-      ${dcell(i,'staerke',num(m.staerke,0))}
-      ${dcell(i,'breite', num(m.breite,0))}
-      <td class="calc">${num(totOf(m),0)}</td>
-      <td class="calc">${num3(m.vol)}</td>
+      ${dcell(i,'staerke',num(m.staerke,0), em?'moff':'')}
+      ${dcell(i,'breite', num(m.breite,0),  em?'moff':'')}
+      ${dcell(i,'emStaerke', num(m.emStaerke||0,1), em?'':'moff')}
+      ${dcell(i,'emBreite',  num(m.emBreite||0,1),  em?'':'moff')}
+      <td class="calc${S.total?' sortcol':''}">${num(totOf(m),0)}</td>
+      <td class="calc${S.vol?' sortcol':''}">${num3(m.vol)}</td>
+      ${beCol?`<td class="calc">${uC==='stk'?num(beQtyRow(m,uC),0):num3(beQtyRow(m,uC))}</td>`:''}
       <td class="act"><button class="menubtn" data-del="${i}" title="Zeile löschen">✕</button></td>
     </tr>`).join('');
-  el('commSum').textContent = num3(draft.measures.reduce((s,m)=>s+m.vol,0)) + ' m³ gesamt';
+  const uS = draft.beinh||'cbm';
+  el('commSum').textContent = num3(draft.measures.reduce((s,m)=>s+m.vol,0)) + ' cbm gesamt'
+    + (uS!=='cbm' && uS!=='fm' ? ' · '+beFmt(draft.measures.reduce((s,m)=>s+beQtyRow(m,uS),0), uS)+' (Kundeneinheit)' : '');
   el('commBody').querySelectorAll('[data-del]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation();
-    draft.measures.splice(+b.dataset.del,1); focusRow=null; renderComm(); updateAufMode(); });
+    draft.measures.splice(+b.dataset.del,1); focusRow=null; schnittRefresh(draft); renderComm(); updateAufMode(); });
   // Klick auf die Zeilennummer wählt die Zeile aus → Grafiken rechts zeigen dieses Objekt
   el('commBody').querySelectorAll('td.rn').forEach((td,i)=> td.onclick = ()=> setFocusRow(i));
+  wireSort(el('commHead'), draft, ()=>{ renderComm(); updateAufMode(); });
   wireCells(el('commBody'));
   markFocusRow();
 }
 function aufmassDone(){
   if(editMode){ tryCommitPending(); if(!draft.measures.length) return; saveEdit(); return; }   // Bearbeitung: speichern
   if(!draft.measures.length){ commitAuf(); if(!draft.measures.length) return; }
+  gotoSchnitt();                                    // Schritt 3: Schnittaufteilung (fragt nur, wenn es etwas aufzuteilen gibt)
+}
+
+// ══════════ SCHRITT 3: Schnittaufteilung ══════════
+// Nicht gekapptes Holz wird auf Volllängen aufgeteilt: der Kunde bekommt z. B. ein
+// 5,00-m-Brett und schneidet sich 3,80 m + 0,70 m selbst heraus – berechnet wird das
+// gelieferte Vollmaß. Vorratslängen 300–500 cm (2,50 m nur von Hand wählbar),
+// bestellte Überlängen (> 5 m) werden ungeteilt geliefert und stehen zusätzlich als
+// Vorratslänge zur Verfügung. Je geteiltem Brett bleiben mindestens 10 cm Luft
+// (Sägeblatt-Reserve) – bestellte Maße werden NIE gekürzt.
+const SCH_STD = [300,350,400,450,500];   // automatische Vorratslängen (cm)
+const SCH_MIN = 250;                     // Notlänge, nur von Hand wählbar
+const SCH_RES = 10;                      // Reserve je geteiltem Brett (cm)
+const SCH_MAX = 500;
+const SCH_UNIREST = 100;                 // ab so viel Rest wird auch bei „Einheitlich" geschrumpft
+const schAsIs = len => SCH_STD.includes(len) || len===SCH_MIN || len > SCH_MAX - SCH_RES;
+const schUsed = b => b.pieces.reduce((s,p)=>s+p.len,0);
+const schSorted = b => [...b.pieces].sort((a,c)=>c.len-a.len);
+
+// Stäbe je Querschnitt einsammeln: jede Aufmaßzeile × Stückzahl, Z = Zeilennummer.
+// Aufgeteilt wird nur innerhalb gleicher Stärke × Breite (und gleicher cbm-Basis).
+function schGroups(t){
+  const map = new Map();
+  t.measures.forEach((m,mi)=>{
+    const n = totOf(m);
+    if(!(n>0 && m.laenge>0 && m.staerke>0 && m.breite>0)) return;
+    const key = `${m.staerke}|${m.breite}|${effS(m)}|${effB(m)}`;
+    if(!map.has(key)) map.set(key, {key, s:m.staerke, b:m.breite, es:effS(m), eb:effB(m), pieces:[]});
+    const g = map.get(key);
+    for(let k=0;k<n;k++) g.pieces.push({len:m.laenge, ref:mi+1});
+  });
+  return [...map.values()];
+}
+// Fingerabdruck der Stäbe: nur wenn er sich ändert, wird eine bestehende Aufteilung neu gerechnet
+function schFp(groups){ return groups.map(g=> g.key+':'+g.pieces.map(p=>p.len).sort((a,b)=>a-b).join(',')).sort().join(';'); }
+function schnittSplittable(t){ return !!t && Array.isArray(t.measures) && schGroups(t).some(g=> g.pieces.some(p=>!schAsIs(p.len))); }
+
+// Best-Fit-Decreasing: jeden Stab in das Brett mit dem knappsten Restplatz
+function schBFD(pieces, cap){
+  const bins=[];
+  [...pieces].sort((a,b)=>b.len-a.len).forEach(p=>{
+    let best=null;
+    for(const bn of bins){ const r=cap-bn.used; if(p.len<=r && (!best || r < cap-best.used)) best=bn; }
+    if(best){ best.pieces.push(p); best.used+=p.len; }
+    else bins.push({used:p.len, pieces:[p]});
+  });
+  return bins;
+}
+function schShrinkLen(used, stocks, L){
+  const fit = stocks.filter(x=> x>=used+SCH_RES).sort((a,b)=>a-b)[0];
+  return fit || L;
+}
+// Eine Gruppe packen. Strategien: 'uni' = möglichst wenige verschiedene Längen,
+// 'waste' = wenigster Verschnitt, 'boards' = wenigste Bretter.
+function schPackGroup(g, strat){
+  const over=[], std=[], rest=[];
+  g.pieces.forEach(p=> p.len>SCH_MAX ? over.push(p) : (schAsIs(p.len) ? std.push(p) : rest.push(p)));
+  const boards = over.map(p=>({len:p.len, cut:false, pieces:[p]}));   // Überlängen: immer ungeteilt liefern
+  const overs=[...new Set(over.map(p=>p.len))];
+  const stocks=[...SCH_STD, ...overs];
+  // Überlängen-Regel des Kunden: auf Überlängen wird NUR aufgeteilt, wenn ein Stab mit
+  // „5 glatt oder mehr" (≥ 5,00 m) hineinkommt – Beispiel: 8,00 bestellt + 5,00 + 2,80
+  // → 2 × 8,00 liefern. Kleinere Maße (1,30 / 2,50 …) wandern NIE auf Überlängen,
+  // sondern immer auf die Standard-Vorratslängen (4,80 + 2,80 → 5,00 und 3,00).
+  const std5 = std.filter(p=> p.len>=SCH_MAX);                        // „5 glatt"
+  std.filter(p=> p.len<SCH_MAX).forEach(p=> boards.push({len:p.len, cut:false, pieces:[p]}));
+  if(rest.length || (std5.length && overs.length)){
+    const score = c => strat==='waste'  ? [c.waste,c.distinct,c.count]
+                     : strat==='boards' ? [c.count,c.waste,c.distinct]
+                     :                    [c.distinct,c.waste,c.count];
+    const evalCand = L => {
+      const isOver = L > SCH_MAX;
+      const pool = isOver ? [...rest, ...std5] : rest;                // 5,00er dürfen mit in die Überlänge
+      if(!pool.length) return null;
+      if(!isOver && rest.length && Math.max(...rest.map(p=>p.len)) > L-SCH_RES) return null;
+      let bins = schBFD(pool, L-SCH_RES).map(bn=>({...bn, L}));
+      if(isOver){
+        // Bretter ohne 5-glatt-Stab dürfen keine Überlänge sein → zurück auf Standardlängen
+        const back = bins.filter(bn=> !bn.pieces.some(p=>p.len>=SCH_MAX)).flatMap(bn=>bn.pieces);
+        bins = bins.filter(bn=> bn.pieces.some(p=>p.len>=SCH_MAX));
+        if(back.length) bins.push(...schBFD(back, SCH_MAX-SCH_RES).map(bn=>({...bn, L:SCH_MAX})));
+      }
+      const list = bins.map(bn=> (bn.pieces.length===1 && schAsIs(bn.pieces[0].len))
+        ? {len:bn.pieces[0].len, cut:false, pieces:bn.pieces, used:bn.used}
+        : {len:(strat==='waste' || bn.L-bn.used>SCH_UNIREST) ? schShrinkLen(bn.used, stocks, bn.L) : bn.L,
+           cut:true, pieces:bn.pieces, used:bn.used});
+      if(!isOver) std5.forEach(p=> list.push({len:p.len, cut:false, pieces:[p], used:p.len}));   // 5,00er ungeteilt
+      const waste = list.reduce((s,b)=> s+b.len-b.used, 0);
+      return {list, waste, count:list.length,
+              distinct:new Set([...boards.map(b=>b.len), ...list.map(b=>b.len)]).size};
+    };
+    let best=null;
+    for(const L of [...SCH_STD, ...(std5.length?overs:[])]){
+      const c = evalCand(L); if(!c) continue;
+      if(!best){ best=c; continue; }
+      const a=score(c), b2=score(best);
+      for(let i2=0;i2<3;i2++){ if(a[i2]<b2[i2]){ best=c; break; } if(a[i2]>b2[i2]) break; }
+    }
+    if(best) best.list.forEach(b=> boards.push({len:b.len, cut:b.cut, pieces:b.pieces}));
+    else std5.forEach(p=> boards.push({len:p.len, cut:false, pieces:[p]}));
+  } else {
+    std5.forEach(p=> boards.push({len:p.len, cut:false, pieces:[p]}));   // nichts zu packen
+  }
+  boards.sort((a,b)=> b.len-a.len || (a.cut?1:0)-(b.cut?1:0) || schUsed(b)-schUsed(a));
+  return boards;
+}
+function schnittAuto(t, strat){
+  const groups = schGroups(t);
+  return { strat: strat||'uni', manual:false, fp: schFp(groups),
+           groups: groups.map(g=>({key:g.key, s:g.s, b:g.b, es:g.es, eb:g.eb,
+                                   overs:[...new Set(g.pieces.filter(p=>p.len>SCH_MAX).map(p=>p.len))],
+                                   boards: schPackGroup(g, strat||'uni')})) };
+}
+// Aufmaße oder EM haben sich geändert → Aufteilung nachziehen. Manuelle Anpassungen
+// bleiben nur erhalten, wenn sich die Stäbe nicht wirklich geändert haben.
+function schnittRefresh(t){
+  if(!t || !t.schnitt) return;
+  if(!schnittSplittable(t)){ delete t.schnitt; return; }
+  if(schFp(schGroups(t)) !== t.schnitt.fp)
+    t.schnitt = schnittAuto(t, t.schnitt.strat==='custom' ? 'uni' : t.schnitt.strat);   // Handarbeit passt nicht mehr → neu
+}
+function schnittStats(sch){
+  let n=0, lfm=0, ordered=0, cbm=0; const lens=new Set();
+  sch.groups.forEach(g=> g.boards.forEach(b=>{
+    if(!b.pieces.length) return;                        // leere (gerade eingefügte) Bretter zählen nicht
+    n++; lens.add(b.len); lfm += b.len; ordered += schUsed(b);
+    cbm += b.len/100 * g.es/1000 * g.eb/1000;
+  }));
+  return {boards:n, distinct:lens.size, lfm:lfm/100, ordered:ordered/100, waste:(lfm-ordered)/100,
+          pct: lfm>0 ? (lfm-ordered)/lfm*100 : 0, cbm};
+}
+function schnittVol(p){
+  return p.schnitt.groups.reduce((s,g)=> s + g.boards.reduce((x,b)=> x + (b.pieces.length?b.len:0), 0)/100 * g.es/1000 * g.eb/1000, 0);
+}
+// Gleiche Bretter (Länge + gleiche Zuschnitte) zu einem Schnittmuster zusammenfassen
+function schPatterns(g){
+  const map=new Map();
+  g.boards.forEach(b=>{
+    const k = b.len+'|'+(b.cut?1:0)+'|'+schSorted(b).map(p=>p.len).join(',');
+    if(!map.has(k)) map.set(k,{key:k, len:b.len, cut:b.cut, boards:[]});
+    map.get(k).boards.push(b);
+  });
+  return [...map.values()];
+}
+// Zuschnitt-Text ohne Zeilennummern – für das Kunden-PDF („Abschnitte kundenseits")
+function schSegPlain(pat){
+  const counts=new Map();
+  schSorted(pat.boards[0]).forEach(p=> counts.set(p.len,(counts.get(p.len)||0)+1));
+  return [...counts.entries()].map(([len,n])=>`${n>1?n+'× ':''}${num(len,0)} cm`).join(' + ');
+}
+// Zuschnitt-Text eines Musters, mit Verweis auf die Aufmaßzeilen (Z 1, Z 2 …) – interne Ansicht
+function schSegText(pat){
+  const refsByLen={}, counts=new Map();
+  schSorted(pat.boards[0]).forEach(p=> counts.set(p.len,(counts.get(p.len)||0)+1));
+  pat.boards.forEach(b=> b.pieces.forEach(p=>{ (refsByLen[p.len]=refsByLen[p.len]||new Set()).add(p.ref); }));
+  return [...counts.entries()].map(([len,n])=>`${n>1?n+'× ':''}${num(len,0)} cm (Z ${[...refsByLen[len]].sort((a,b)=>a-b).join(', ')})`).join(' + ');
+}
+
+// ── Ablaufsteuerung um Schritt 3 herum ──
+function gotoSchnitt(){
+  schnittRefresh(draft);
+  if(!schnittSplittable(draft)){ delete draft.schnitt; afterSchnitt(); return; }   // alles Volllängen → nichts zu tun
+  if(draft.schnitt){ openSchnitt(); return; }        // beim erneuten Durchlauf direkt ins Modal, ohne Frage
+  openSchnittFrage();
+}
+function afterSchnitt(){
+  if(editMode){ saveEdit(); return; }
   if(draft.copied && !draft.editing){ openCopyPrompt(); return; }   // kopiert → erst fragen, ob Preise bearbeiten
   openPreisWood();
 }
+// Zurück-Weg aus Preis bzw. Kopier-Frage: in die Schnittaufteilung, sonst ins Aufmaß
+function backToSchnitt(){
+  if(draft.schnitt) openSchnitt();
+  else if(schnittSplittable(draft)) openSchnittFrage();
+  else reopenAufmass();
+}
 
-// ══════════ SCHRITT 3: Preis (wiederverwendbar für Holz + jeden Zuschlag) ══════════
+// ── Zwischenfrage (Optik wie „Preise nachbearbeiten?") ──
+let schFrageIdx=0;
+function openSchnittFrage(){
+  currentStep='schnittfrage'; schFrageIdx=0; ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal narrow">
+      <div class="mhead">${backBtn('Aufmaß')}<h2>Schnittaufteilung</h2>${editMode?'':stepper('schnitt')}<span class="spacer"></span>
+        <button class="linkish" data-close title="Nein – weiter zum Preis (Esc)">✕</button></div>
+      <div class="mbody"><div class="cprompt">
+        <div class="big">🪚</div>
+        <h3>Sollen Maße auf Schnittmaße aufgeteilt werden?</h3>
+        <p>Nicht gekapptes Holz wird in <b>Volllängen</b> (3,00–5,00&nbsp;m, Überlängen ungeteilt) geliefert – der Kunde schneidet seine Maße selbst heraus, <b>berechnet wird das gelieferte Vollmaß</b>. Je geteiltem Brett bleiben mindestens ${SCH_RES}&nbsp;cm Luft fürs Sägeblatt.</p>
+        <div class="promptopts" id="schFrageOpts"></div>
+      </div></div>
+      <div class="mfoot"><div class="khints"><span><kbd>←</kbd><kbd>→</kbd> wählen</span><span><kbd>N</kbd>/<kbd>J</kbd></span><span><kbd>Enter</kbd> bestätigen</span><span><kbd>Esc</kbd> = Nein</span></div></div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>{ schFrageIdx=0; confirmSchnittFrage(); };
+  wireBack(()=>reopenAufmass());
+  renderSchnittFrage();
+}
+function renderSchnittFrage(){
+  const opts=[{t:'Nein',d:'weiter zum Preis'},{t:'Ja',d:'auf Volllängen aufteilen'}];
+  el('schFrageOpts').innerHTML = opts.map((o,i)=>`<button type="button" class="promptopt ${i===schFrageIdx?'on':''}" data-i="${i}">${o.t}<small>${o.d}</small></button>`).join('');
+  el('schFrageOpts').querySelectorAll('.promptopt').forEach(bn=>{ bn.onclick=()=>{ schFrageIdx=+bn.dataset.i; renderSchnittFrage(); }; bn.ondblclick=()=>confirmSchnittFrage(); });
+}
+function confirmSchnittFrage(){
+  if(schFrageIdx===0){ delete draft.schnitt; afterSchnitt(); }
+  else openSchnitt();
+}
+
+// ── Das Aufteilungs-Modal ──
+const SCH_STRATS = [['uni','1 · Einheitliche Längen'],['waste','2 · Wenigster Verschnitt'],['boards','3 · Wenigste Bretter']];
+let schIdx=0, schMove=null, schProps=null, schPats=[], schSelKey=null, schDrag=null;
+
+function openSchnitt(){
+  currentStep='schnitt'; schMove=null; schIdx=0; schSelKey=null;
+  schnittRefresh(draft);
+  if(!draft.schnitt) draft.schnitt = schnittAuto(draft,'uni');
+  schProps = { uni:schnittAuto(draft,'uni'), waste:schnittAuto(draft,'waste'), boards:schnittAuto(draft,'boards'),
+               custom: (draft.schnitt.strat==='custom') ? JSON.parse(JSON.stringify(draft.schnitt)) : null };
+  const c=draft.cat;
+  ov.hidden=false;
+  ov.innerHTML = `
+    <div class="modal">
+      <div class="mhead">${backBtn('Aufmaß')}<h2>Schnittaufteilung</h2>${editMode?'':stepper('schnitt')}<span class="spacer"></span>
+        <button class="linkish" data-close title="${editMode?'Speichern':'Übernehmen → Preis'} (Esc)">✕</button></div>
+      <div class="mbody">
+        <div class="arthead">🪚 <b>${c.a}</b> <span>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')||'&nbsp;'}</span>
+          <span class="dims">berechnet werden die gelieferten Volllängen · bestellte Maße werden nie gekürzt</span></div>
+        <div class="schcards" id="schCards"></div>
+        <div id="schGroups"></div>
+        <div class="schstats" id="schStats"></div>
+        <div class="aufhint" id="schHint"></div>
+      </div>
+      <div class="mfoot">
+        <div class="khints" id="schKeys"></div>
+        <span class="spacer"></span>
+        <button class="ghost" id="schDrop" title="Aufteilung verwerfen – bestellte Maße werden normal berechnet">Aufteilung entfernen</button>
+        <button class="ghost" id="schAuto">Automatisch neu aufteilen <kbd>A</kbd></button>
+        <button class="primary" id="schGo">${editMode?'Speichern':'Übernehmen → Preis'} <kbd>Esc</kbd></button>
+      </div>
+    </div>`;
+  ov.querySelector('[data-close]').onclick = ()=>schnittDone();
+  wireBack(()=>{ if(editMode){ cancelEdit(); return; } reopenAufmass(); });
+  el('schGo').onclick = ()=>schnittDone();
+  el('schAuto').onclick = ()=>schAutoNew();
+  el('schDrop').onclick = ()=>{ delete draft.schnitt; schnittDone(); };
+  renderSchnitt();
+}
+function schnittDone(){
+  // Übrig gebliebene leere Bretter (eingefügt, aber nichts hineingelegt) verwerfen
+  if(draft && draft.schnitt) draft.schnitt.groups.forEach(g=> g.boards = g.boards.filter(b=> b.pieces.length));
+  if(editMode){ saveEdit(); return; }
+  afterSchnitt();
+}
+
+function renderSchnitt(){
+  const sch = draft.schnitt;
+  // Vier Modus-Karten: drei Vorschläge + „Angepasst" (springt bei jeder Handänderung an
+  // und rechnet Rest & Verschnitt live mit). Klick oder 1/2/3/4 wechselt den Modus,
+  // die Handarbeit bleibt dabei erhalten und ist über Karte 4 jederzeit zurückholbar.
+  const pctCls = p => p<=5 ? 'ok' : p<=12 ? 'mid' : 'bad';
+  const cardTxt = st => `${st.boards} Bretter · ${st.distinct} Länge${st.distinct===1?'':'n'} · Rest ${num(st.waste,2)} lfm (<b class="cpct ${pctCls(st.pct)}">${num(st.pct,1)} %</b>)`;
+  const customSrc = sch.strat==='custom' ? sch : schProps.custom;
+  el('schCards').innerHTML = SCH_STRATS.map(([k,t])=>{
+    return `<button type="button" class="schcard ${sch.strat===k?'on':''}" data-strat="${k}">
+      <b>${t}</b><span>${cardTxt(schnittStats(schProps[k]))}</span></button>`;
+  }).join('') + `<button type="button" class="schcard ${sch.strat==='custom'?'on':''} ${customSrc?'':'off'}" data-strat="custom"
+      title="${customSrc?'Ihre von Hand angepasste Aufteilung':'entsteht automatisch, sobald Sie von Hand etwas ändern'}">
+      <b>4 · Angepasst ✎</b><span>${customSrc ? cardTxt(schnittStats(customSrc)) : 'noch nichts von Hand geändert'}</span></button>`;
+  el('schCards').querySelectorAll('.schcard').forEach(b=> b.onclick=()=> schSetMode(b.dataset.strat));
+
+  // Muster je Querschnittsgruppe
+  schPats = [];
+  let html='';
+  sch.groups.forEach((g,gi)=>{
+    const pats = schPatterns(g);
+    const maxL = Math.max(...g.boards.map(b=>b.len));
+    html += `<div class="schgroup"><div class="schgt">${num(g.s)} × ${num(g.b)} mm
+      ${(g.es!==g.s||g.eb!==g.b)?`<span class="lbl">· cbm auf EM ${num(g.es,1)} × ${num(g.eb,1)} mm</span>`:''}
+      <span class="spacer"></span><span class="lbl">${g.boards.length} Liefereinheit${g.boards.length===1?'':'en'}</span></div>`;
+    pats.forEach(pat=>{
+      const pi = schPats.length; schPats.push(Object.assign(pat,{gi}));
+      if(schSelKey && schSelKey.gi===gi && schSelKey.key===pat.key){ schIdx=pi; schSelKey=null; }
+      const rep = schSorted(pat.boards[0]);
+      const used = schUsed(pat.boards[0]);
+      const rest = pat.len-used;
+      const refsByLen={};
+      pat.boards.forEach(b=> b.pieces.forEach(p=>{ (refsByLen[p.len]=refsByLen[p.len]||new Set()).add(p.ref); }));
+      const segs = rep.length ? rep.map((p,si)=>{
+        const mv = schMove && schMove.gi===gi && schMove.patKey===pat.key && schMove.seg===si;
+        return `<span class="schseg ${mv?'mvsrc':''}" data-seg="${si}" style="width:${(p.len/pat.len*100).toFixed(2)}%"
+          title="${num(p.len,0)} cm · aus Aufmaßzeile ${[...refsByLen[p.len]].sort((a,b)=>a-b).join(', ')}${pat.cut?' · ziehen oder klicken: auf ein anderes Brett verschieben':''}">${num(p.len,0)}</span>`;
+      }).join('') : `<span class="schseg emptyseg" style="width:100%">leer – Maße hierher ziehen</span>`;
+      const restSeg = (pat.cut && rep.length && rest>0) ? `<span class="schseg rest" style="width:${(rest/pat.len*100).toFixed(2)}%" title="Rest ${num(rest,0)} cm (inkl. Sägeblatt-Reserve)"></span>` : '';
+      html += `<div class="schrow ${pi===schIdx&&!schMove?'sel':''} ${pat.cut?'':'locked'}" data-pi="${pi}">
+        <span class="schn">${pat.boards.length} ×</span>
+        <span class="schlen">${pi===schIdx&&pat.cut&&!schMove?`<button class="schar" data-lc="-1" title="kleinere Vorratslänge">‹</button>`:''}${num(pat.len/100,2)} m${pi===schIdx&&pat.cut&&!schMove?`<button class="schar" data-lc="1" title="größere Vorratslänge">›</button>`:''}${pat.cut?'':' 🔒'}</span>
+        <span class="schbarwrap"><span class="schbar ${rep.length?'':'empty'}" style="width:${(pat.len/maxL*100).toFixed(1)}%"
+          title="${pat.cut?'':'bestellte Volllänge – wird ungeteilt geliefert'}">${segs}${restSeg}</span></span>
+        <span class="schrest ${pat.cut&&rep.length&&rest>0?'warn':''}">${pat.cut?(rep.length?(rest>0?'Rest '+num(rest,0)+' cm':'—'):`<button class="menubtn" data-delboard="${pi}" title="Leeres Brett entfernen (Entf)">✕ leer</button>`):'ungeteilt'}</span>
+      </div>`;
+    });
+    html += `<div class="schrow schnew" data-new="${gi}" title="Klick: leeres Brett einfügen – dann Länge mit ‹ › wählen und Maße hineinziehen">＋ Brett einfügen <span class="lbl">· Länge wählen, Maße hineinziehen – oder Maß direkt hier ablegen</span></div></div>`;
+  });
+  el('schGroups').innerHTML = html;
+
+  // Verschiebe-Ziele markieren (gleiche Gruppe, geteilte Bretter, nicht die Quelle)
+  if(schMove){
+    const tg = schTargets();
+    tg.forEach((t,ti)=>{
+      const r = t.type==='pat' ? ov.querySelector(`.schrow[data-pi="${t.pi}"]`) : ov.querySelector(`.schrow[data-new="${t.gi}"]`);
+      if(r){ r.classList.add('tgt'); if(ti===schMove.tgt) r.classList.add('tgtsel'); }
+    });
+  }
+
+  // Kennzahlen: sofort sichtbar, ob eine Änderung besser oder schlechter ist
+  const st = schnittStats(sch);
+  const ordered = draft.measures.reduce((s,m)=>s+(m.vol||0),0);
+  el('schStats').innerHTML = `
+    <div class="schstat"><div class="k">Bretter</div><div class="v">${st.boards}</div><div class="s">${num(st.lfm,2)} lfm geliefert</div></div>
+    <div class="schstat"><div class="k">Verschiedene Längen</div><div class="v">${st.distinct}</div><div class="s">je weniger, desto besser fürs Sägewerk</div></div>
+    <div class="schstat"><div class="k">cbm berechnet</div><div class="v">${num3(st.cbm)}</div><div class="s">bestellt: ${num3(ordered)} cbm</div></div>
+    <div class="schstat ${pctCls(st.pct)}"><div class="k">Rest / Verschnitt</div>
+      <div class="v">${num(st.waste,2)} lfm · <span class="pctbig">${num(st.pct,1)} %</span></div>
+      <div class="schmeter" title="grün = genutztes Holz, schraffiert = Verschnitt">
+        <span class="use" style="width:${Math.max(0,100-st.pct).toFixed(1)}%"></span>
+        <span class="lost" style="width:${Math.min(100,st.pct).toFixed(1)}%"></span></div>
+      <div class="s">Ausnutzung ${num(100-st.pct,1)} %</div></div>`;
+
+  el('schHint').innerHTML = schMove
+    ? `<b>Maß verschieben:</b> Ziel-Zeile (gestrichelt) mit <kbd>↑</kbd><kbd>↓</kbd> oder Klick wählen – auch „＋ Brett einfügen". <kbd>Enter</kbd> verschiebt, <kbd>Esc</kbd> bricht ab. <kbd>←</kbd><kbd>→</kbd> wechselt das Maß.`
+    : `<b>Maße einfach ziehen:</b> ein Maß mit der Maus anfassen und auf ein anderes Brett fallen lassen (oder <kbd>M</kbd>). <b>＋ Brett einfügen</b> (Klick oder <kbd>N</kbd>) legt ein leeres Brett an – Länge mit ‹ › bzw. <kbd>←</kbd><kbd>→</kbd> wählen (2,50 m nur von Hand), dann Maße hineinziehen. <b>Leergeräumte Bretter verschwinden automatisch</b> (leer eingefügte per ✕ oder <kbd>Entf</kbd>). 🔒 bestellte Volllängen/Überlängen sind fest · je geteiltem Brett bleiben mindestens ${SCH_RES} cm Luft.`;
+  el('schKeys').innerHTML = schMove
+    ? `<span><kbd>↑</kbd><kbd>↓</kbd> Ziel</span><span><kbd>←</kbd><kbd>→</kbd> Maß</span><span><kbd>Enter</kbd> verschieben</span><span><kbd>Esc</kbd> abbrechen</span>`
+    : `<span><kbd>1</kbd>–<kbd>4</kbd> Modus</span><span><kbd>↑</kbd><kbd>↓</kbd> Zeile</span><span><kbd>←</kbd><kbd>→</kbd> Länge</span><span>Ziehen/<kbd>M</kbd> verschieben</span><span><kbd>N</kbd> Brett</span><span><kbd>Esc</kbd> ${editMode?'speichern':'übernehmen → Preis'}</span>`;
+
+  // Maus: Zeile wählen / Ziel wählen / Maß ziehen oder anfassen / Länge ändern / Brett einfügen
+  const wireDrop = (elm, tgt)=>{
+    elm.addEventListener('dragover', e=>{
+      if(!(schDrag && schDropValid(tgt))) return;
+      e.preventDefault(); elm.classList.add('tgtsel');
+      const piece = schDragPiece(); if(!piece) return;
+      if(tgt.type==='pat'){
+        // Ghost-Vorschau: zeigt live, wie viel Platz das Maß im Zielbrett einnehmen würde
+        const pat = schPats[tgt.pi], bar = elm.querySelector('.schbar');
+        if(bar && !bar.querySelector('.schghost')){
+          const g = document.createElement('span'); g.className='schghost';
+          g.style.left  = (schUsed(pat.boards[0])/pat.len*100).toFixed(2)+'%';
+          g.style.width = (piece.len/pat.len*100).toFixed(2)+'%';
+          g.textContent = num(piece.len,0);
+          bar.appendChild(g);
+        }
+      } else if(!elm.dataset.orig){
+        elm.dataset.orig = elm.innerHTML;
+        const L = SCH_STD.find(x=> piece.len+SCH_RES <= x);
+        elm.innerHTML = `＋ ${num(piece.len,0)} cm hier ablegen → neues ${L?num(L/100,2):'–'}-m-Brett`;
+      }
+    });
+    const clearDrop = ()=>{
+      elm.classList.remove('tgtsel');
+      const g = elm.querySelector('.schghost'); if(g) g.remove();
+      if(elm.dataset.orig){ elm.innerHTML = elm.dataset.orig; delete elm.dataset.orig; }
+    };
+    elm.addEventListener('dragleave', clearDrop);
+    elm.addEventListener('drop', e=>{ e.preventDefault(); clearDrop(); const s=schDrag; schDrag=null; if(s) schMoveTo(tgt, s); });
+  };
+  el('schGroups').querySelectorAll('.schrow[data-pi]').forEach(r=>{
+    const pi=+r.dataset.pi;
+    r.onclick = ()=>{
+      if(schMove){ schMoveTo({type:'pat', pi}); return; }
+      schIdx=pi; renderSchnitt();
+    };
+    if(schPats[pi] && schPats[pi].cut) wireDrop(r, {type:'pat', pi});
+  });
+  el('schGroups').querySelectorAll('.schrow[data-new]').forEach(r=>{
+    const gi=+r.dataset.new;
+    r.onclick = ()=>{ if(schMove) schMoveTo({type:'new', gi}); else schAddBoard(gi); };
+    wireDrop(r, {type:'new', gi});
+  });
+  el('schGroups').querySelectorAll('.schseg[data-seg]').forEach(sg=>{
+    const row = sg.closest('.schrow'), pi=+row.dataset.pi, pat=schPats[pi];
+    sg.onclick = e=>{
+      e.stopPropagation();
+      if(schMove){ schMoveTo({type:'pat', pi}); return; }
+      if(!pat.cut){ schReject(pi); return; }
+      schIdx=pi; schMove={gi:pat.gi, patKey:pat.key, seg:+sg.dataset.seg, tgt:0}; renderSchnitt();
+    };
+    if(pat && pat.cut){                                   // Drag & Drop: Maß direkt aufs Zielbrett ziehen
+      sg.draggable = true;
+      sg.addEventListener('dragstart', e=>{
+        schDrag = {gi:pat.gi, patKey:pat.key, seg:+sg.dataset.seg};
+        sg.classList.add('dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        try{ e.dataTransfer.setData('text/plain', sg.textContent); }catch(_){}
+      });
+      sg.addEventListener('dragend', ()=>{ schDrag=null; renderSchnitt(); });
+    }
+  });
+  el('schGroups').querySelectorAll('[data-delboard]').forEach(b=> b.onclick=e=>{
+    e.stopPropagation(); schRemoveEmpty(+b.dataset.delboard);
+  });
+  el('schGroups').querySelectorAll('.schar').forEach(b=> b.onclick=e=>{ e.stopPropagation(); schLenChange(+b.dataset.lc); });
+}
+function schTargets(){
+  const t=[];
+  schPats.forEach((p,pi)=>{ if(p.gi===schMove.gi && p.key!==schMove.patKey && p.cut) t.push({type:'pat', pi}); });
+  t.push({type:'new', gi:schMove.gi});
+  return t;
+}
+function schReject(pi){
+  const r = ov.querySelector(`.schrow[data-pi="${pi!=null?pi:schIdx}"]`);
+  if(r){ r.classList.remove('schrej'); void r.offsetWidth; r.classList.add('schrej'); }
+}
+function schLensAvail(g){ return [...new Set([SCH_MIN, ...SCH_STD, ...(g.overs||[])])].sort((a,b)=>a-b); }
+// Vorratslänge der gewählten Musterzeile ändern – kleiner nur, wenn Zuschnitte + Reserve passen
+function schLenChange(dir){
+  const pat = schPats[schIdx]; if(!pat) return;
+  if(!pat.cut){ schReject(schIdx); return; }
+  const g = draft.schnitt.groups[pat.gi];
+  const lens = schLensAvail(g);
+  if(!lens.includes(pat.len)){ lens.push(pat.len); lens.sort((a,b)=>a-b); }
+  const used = schUsed(pat.boards[0]);
+  let j = lens.indexOf(pat.len) + dir;
+  if(j<0 || j>=lens.length || lens[j] < used+SCH_RES){ schReject(schIdx); return; }
+  pat.boards.forEach(b=> b.len=lens[j]);
+  schMarkCustom();
+  schSelKey = {gi:pat.gi, key: lens[j]+'|1|'+schSorted(pat.boards[0]).map(p=>p.len).join(',')};
+  renderSchnitt();
+}
+// Ein Maß auf ein anderes Brett (oder ein neues) verschieben – per Tastatur (M),
+// Klick oder Drag & Drop (srcInfo). Leergeräumte Bretter verschwinden automatisch.
+function schMoveTo(tgt, srcInfo){
+  const info = srcInfo || schMove; if(!info) return;
+  const sch = draft.schnitt;
+  const src = schPats.find(p=> p.gi===info.gi && p.key===info.patKey);
+  if(!src){ schMove=null; renderSchnitt(); return; }
+  const board = src.boards[0];
+  const piece = schSorted(board)[info.seg];
+  if(!piece){ schMove=null; renderSchnitt(); return; }
+  const g = sch.groups[info.gi];
+  if(tgt.type==='pat'){
+    const tp = schPats[tgt.pi];
+    if(!tp || tp.gi!==info.gi){ schReject(tgt.pi); return; }
+    if(tp.key===info.patKey){ schMove=null; renderSchnitt(); return; }      // Quelle = abbrechen
+    if(!tp.cut){ schReject(tgt.pi); return; }
+    const tb = tp.boards.find(b=> schUsed(b)+piece.len+SCH_RES <= b.len);
+    if(!tb){ schReject(tgt.pi); return; }                                   // passt nicht (inkl. Reserve)
+    board.pieces.splice(board.pieces.indexOf(piece),1);
+    tb.pieces.push(piece);
+  } else {
+    if(tgt.gi!==info.gi){ schReject(schIdx); return; }
+    const L = SCH_STD.find(x=> piece.len+SCH_RES <= x);
+    if(!L){ schReject(schIdx); return; }
+    board.pieces.splice(board.pieces.indexOf(piece),1);
+    g.boards.push({len:L, cut:true, pieces:[piece]});
+  }
+  if(!board.pieces.length) g.boards.splice(g.boards.indexOf(board),1);      // altes Brett ohne Schnitte → weg
+  schMarkCustom();
+  schMove = null;
+  renderSchnitt();
+}
+// Das gerade gezogene Maß (für Gültigkeitsprüfung und Ghost-Vorschau)
+function schDragPiece(){
+  if(!schDrag) return null;
+  const src = schPats.find(p=> p.gi===schDrag.gi && p.key===schDrag.patKey);
+  return src ? schSorted(src.boards[0])[schDrag.seg] : null;
+}
+// Darf das gerade gezogene Maß hier abgelegt werden? (gleiche Gruppe, passt inkl. Reserve)
+function schDropValid(tgt){
+  if(!schDrag) return false;
+  if(tgt.type==='new') return tgt.gi===schDrag.gi;
+  const tp = schPats[tgt.pi];
+  if(!tp || tp.gi!==schDrag.gi || !tp.cut || tp.key===schDrag.patKey) return false;
+  const src = schPats.find(p=> p.gi===schDrag.gi && p.key===schDrag.patKey);
+  if(!src) return false;
+  const piece = schSorted(src.boards[0])[schDrag.seg];
+  return !!piece && tp.boards.some(b=> schUsed(b)+piece.len+SCH_RES <= b.len);
+}
+// Jede Handänderung schaltet in Modus 4 „Angepasst" – Rest und Verschnitt rechnen live mit
+function schMarkCustom(){ draft.schnitt.manual = true; draft.schnitt.strat = 'custom'; }
+// Modus wechseln (Karten 1–4 bzw. Tasten 1/2/3/4). Beim Verlassen von „Angepasst"
+// wird die Handarbeit gemerkt und ist über Karte 4 jederzeit zurückholbar.
+function schSetMode(k){
+  const sch = draft.schnitt;
+  if(k==='custom'){
+    if(sch.strat==='custom') return;
+    if(!schProps.custom) return;                          // noch keine Handänderung vorhanden
+    draft.schnitt = JSON.parse(JSON.stringify(schProps.custom));
+  } else {
+    if(sch.strat==='custom') schProps.custom = JSON.parse(JSON.stringify(sch));
+    draft.schnitt = schnittAuto(draft, k);
+  }
+  schIdx=0; schMove=null; schSelKey=null;
+  renderSchnitt();
+}
+// „Automatisch neu aufteilen": rechnet den aktiven Vorschlag neu (aus „Angepasst" heraus
+// wird der Einheitlich-Vorschlag gerechnet, die Handarbeit bleibt über Karte 4 erhalten)
+function schAutoNew(){
+  const sch = draft.schnitt;
+  if(sch.strat==='custom') schProps.custom = JSON.parse(JSON.stringify(sch));
+  draft.schnitt = schnittAuto(draft, sch.strat==='custom' ? 'uni' : sch.strat);
+  schIdx=0; schMove=null; renderSchnitt();
+}
+// Leeres Brett einfügen: Länge dann mit ‹ › / ←→ wählen, Maße hineinziehen
+function schAddBoard(gi){
+  const g = draft.schnitt.groups[gi]; if(!g) return;
+  g.boards.push({len:SCH_MAX, cut:true, pieces:[]});
+  schMarkCustom();
+  schMove = null;
+  schSelKey = {gi, key: SCH_MAX+'|1|'};
+  renderSchnitt();
+}
+function schRemoveEmpty(pi){
+  const pat = schPats[pi];
+  if(!pat || !pat.cut || pat.boards[0].pieces.length){ schReject(pi); return; }
+  const g = draft.schnitt.groups[pat.gi];
+  pat.boards.forEach(b=>{ const j=g.boards.indexOf(b); if(j>=0) g.boards.splice(j,1); });
+  schIdx = Math.max(0, schIdx-1);
+  renderSchnitt();
+}
+
+// ══════════ SCHRITT 4: Preis (wiederverwendbar für Holz + jeden Zuschlag) ══════════
 let priceCtx = null;  // {titel, einheit, std, hist, onConfirm}
 let histIdx = -1;
 
@@ -1016,21 +2080,21 @@ function closePreisToNext(){ /* Übergang wird vom onConfirm gesteuert */ }
 // Aufmaß erneut öffnen (Zurück-Weg) – erfasste Zeilen bleiben erhalten
 function reopenAufmass(){
   const m0 = draft.measures[draft.measures.length-1] || {};
-  openAufmass({pakete:m0.pakete||0, reihen:m0.reihen||0, lagen:m0.lagen||0, stueck:m0.stueck||'',
+  openAufmass({traeger:m0.traeger||'', pakete:m0.pakete||0, reihen:m0.reihen||0, lagen:m0.lagen||0, stueck:m0.stueck||'',
     laenge:'', staerke:m0.staerke||draft.cat.s||'', breite:m0.breite||draft.cat.b||'', focusLaenge:true});
 }
 function openPreisWood(){
   const c = draft.cat;
   openPreis({
     titel:'Holzpreis bestimmen', step:'preis', einheit:c.e, std:c.std, hist:c.hist,
-    backLabel:'Aufmaß', onBack:()=>reopenAufmass(),
+    backLabel:(draft.schnitt||schnittSplittable(draft))?'Schnittaufteilung':'Aufmaß', onBack:()=>backToSchnitt(),
     artLabel:`${c.a}${c.h?' '+holzName(c.h):''}`,
     copied: (draft.copied ? {preis:draft.woodPrice, nr:draft.source.nr, datum:draft.source.datum} : null),
     onConfirm:(v)=>{ draft.woodPrice = v; openZuschlaege(); }
   });
 }
 
-// ══════════ SCHRITT 4: Zuschläge (Mehrfachauswahl) + Preis je Zuschlag ══════════
+// ══════════ SCHRITT 5: Zuschläge (Mehrfachauswahl) + Preis je Zuschlag ══════════
 let zList = [];       // D.zus
 let zSel = new Set(); // ausgewählte Indizes
 let zIdx = 0;
@@ -1070,13 +2134,15 @@ function renderZ(){
     <tr class="row ${i===zIdx?'active':''} ${zSel.has(i)?'sel':''}" data-i="${i}">
       <td class="chk"><span class="box">${zSel.has(i)?'✓':''}</span></td>
       <td>${z.label} <span style="color:var(--ink-2);font-size:0.78rem">(${z.code})</span></td>
-      <td class="n">${eur(z.std)} /m³</td>
+      <td class="n">${eur(z.std)} /cbm</td>
       <td class="n" style="color:var(--ink-2)">${z.hist.length?z.hist.length+' Belege':'–'}</td></tr>`).join('');
   el('zBody').querySelectorAll('tr.row').forEach(tr=>{
     tr.onclick=(e)=>{ const i=+tr.dataset.i; zIdx=i; if(e.ctrlKey||e.metaKey){ toggleZ(i); } else { toggleZ(i); } renderZ(); };
   });
   const n = zSel.size;
-  el('zProg').textContent = n ? `${n} Zuschlag${n>1?'/Zuschläge':''} markiert – Enter öffnet die Preis-Menüs nacheinander.` : 'Kein Zuschlag markiert – Esc übernimmt die Position ohne Verarbeitung.';
+  const kap = draft && draft.schnitt && [...zSel].some(i=>zList[i].code.startsWith('KAP'));
+  el('zProg').innerHTML = (n ? `${n} Zuschlag${n>1?'/Zuschläge':''} markiert – Enter öffnet die Preis-Menüs nacheinander.` : 'Kein Zuschlag markiert – Esc übernimmt die Position ohne Verarbeitung.')
+    + (kap ? `<br><span style="color:var(--warn);font-weight:600">⚠ Die Position ist auf Schnittmaße aufgeteilt – gekappt bestelltes Holz wird normalerweise <b>nicht</b> aufgeteilt. Ggf. Aufteilung in Schritt 3 entfernen.</span>` : '');
   el('zGo').disabled = n===0;
 }
 function toggleZ(i){ zSel.has(i)?zSel.delete(i):zSel.add(i); }
@@ -1113,10 +2179,15 @@ function finalizePosition(){
 }
 
 // ══════════ Position nachträglich bearbeiten ══════════
-function cloneDraft(p){ return {...p, cat:p.cat, measures:p.measures.map(m=>({...m})), surcharges:p.surcharges.map(s=>({...s}))}; }
+function cloneDraft(p){
+  const d = {...p, cat:p.cat, emV:{...(p.emV||EM_DEF)}, measures:p.measures.map(m=>({...m})), surcharges:p.surcharges.map(s=>({...s}))};
+  if(p.schnitt) d.schnitt = JSON.parse(JSON.stringify(p.schnitt));   // Schnittaufteilung mitkopieren (reine Daten)
+  return d;
+}
 function saveEdit(){
   if(!editMode) return;
   const i=editMode.idx;
+  schnittRefresh(draft);                                    // geänderte Aufmaße → Aufteilung nachziehen
   ['copied','editing','copiedZ','source','_zsel'].forEach(k=>delete draft[k]);
   positions[i]=draft; editMode=null; draft=null; closeModal(); renderAll(); flashPos(i);
 }
@@ -1127,7 +2198,7 @@ function flashPos(i){ const p=positions[i]; if(p){ p._flash=true; renderPosList(
 function editAufmass(i){
   editMode={idx:i,aspect:'aufmass'}; draft=cloneDraft(positions[i]);
   const m0=draft.measures[0]||{};
-  openAufmass({pakete:m0.pakete||0, reihen:m0.reihen||0, lagen:m0.lagen||0, stueck:m0.stueck||'',
+  openAufmass({traeger:m0.traeger||'', pakete:m0.pakete||0, reihen:m0.reihen||0, lagen:m0.lagen||0, stueck:m0.stueck||'',
     laenge:'', staerke:m0.staerke||draft.cat.s||'', breite:m0.breite||draft.cat.b||'', focusLaenge:true});
 }
 function editPreisWood(i){
@@ -1149,6 +2220,11 @@ function editZuschlaege(i){
   editMode={idx:i,aspect:'zuschlaege'}; draft=cloneDraft(positions[i]);
   draft.copiedZ = Object.fromEntries(draft.surcharges.map(s=>[s.code,s.price]));
   openZuschlaege();
+}
+function editSchnitt(i){
+  editMode={idx:i,aspect:'schnitt'}; draft=cloneDraft(positions[i]);
+  if(!schnittSplittable(draft)){ cancelEdit(); return; }
+  openSchnitt();
 }
 function tryCommitPending(){
   const m=readAuf(); m.stueck=stkOf(m);
@@ -1266,14 +2342,14 @@ function chooseCopy(){
   draft={ cat:ln.c, measures:[], woodPrice:ln.preis, surcharges:ln.zus.map(z=>({...z})),
           copied:true, editing:false, source:{nr:r.nr,datum:r.datum},
           copiedZ:Object.fromEntries(ln.zus.map(z=>[z.code,z.price])) };
-  openAufmass({pakete:0,reihen:0,lagen:0,stueck:ln.stueck,laenge:ln.laenge,staerke:ln.s,breite:ln.b,focusLaenge:true});
+  openAufmass({traeger:'',pakete:0,reihen:0,lagen:0,stueck:ln.stueck,laenge:ln.laenge,staerke:ln.s,breite:ln.b,focusLaenge:true});
 }
 
 function openCopyPrompt(){
   currentStep='copyprompt'; promptIdx=0; ov.hidden=false;
   ov.innerHTML = `
     <div class="modal narrow">
-      <div class="mhead">${backBtn('Aufmaß')}<h2>Kopierte Position</h2><span class="spacer"></span>
+      <div class="mhead">${backBtn(draft.schnitt?'Schnittaufteilung':'Aufmaß')}<h2>Kopierte Position</h2><span class="spacer"></span>
         <button class="linkish" data-close title="Nein (Esc)">✕</button></div>
       <div class="mbody"><div class="cprompt">
         <div class="big">📋</div>
@@ -1284,7 +2360,7 @@ function openCopyPrompt(){
       <div class="mfoot"><div class="khints"><span><kbd>←</kbd><kbd>→</kbd> wählen</span><span><kbd>N</kbd>/<kbd>J</kbd></span><span><kbd>Enter</kbd> bestätigen</span></div></div>
     </div>`;
   ov.querySelector('[data-close]').onclick = ()=>{ promptIdx=0; confirmPrompt(); };
-  wireBack(()=>reopenAufmass());
+  wireBack(()=>backToSchnitt());
   renderPrompt();
 }
 function renderPrompt(){
@@ -1302,67 +2378,111 @@ function renderAll(){ renderPosList(); renderSheet(); }
 
 function renderPosList(){
   const wrap = el('posList');
-  if(!positions.length){ wrap.innerHTML = `<div class="emptyhint" style="margin-top:14px">Noch keine Position. <kbd>F3</kbd> oder „Position erfassen" startet den geführten Ablauf: Artikel → Aufmaß → Preis → Zuschläge.</div>`; return; }
+  if(!positions.length){ wrap.innerHTML = `<div class="emptyhint" style="margin-top:14px">Noch keine Position. <kbd>F3</kbd> oder „Position erfassen" startet den geführten Ablauf: Artikel → Aufmaß → Schnitt → Preis → Zuschläge.</div>`; return; }
   wrap.innerHTML = positions.map((p,i)=>{
     const c=p.cat, vol=posVol(p), ai=allIn(p);
+    const volM = p.measures.reduce((s,m)=>s+(m.vol||0),0);   // bestellte cbm (Aufmaß) – bei Schnitt ≠ berechnete cbm
     const fl=p._flash; delete p._flash;
     // ── Aufmaß-Raster: jede Zelle ist per Klick änderbar (wie in Excel) ──
-    const cell = (mi,f,val)=>`<td class="cell" data-key="${i}|${f}|${mi}" data-i="${i}" data-mi="${mi}" data-f="${f}" title="Klick: ${AUF_LABEL[f]||f} ändern"><span class="v">${val}</span></td>`;
+    emDefaults(p); sortMeasures(p);
+    const emOn = p.basis!=='roh', rohC = emOn?'moff':'mon', emC = emOn?'mon':'moff';
+    const S = sortState(p);
+    const cell = (mi,f,val,cls)=>`<td class="cell ${cls||''}${S[f]?' sortcol':''}" data-key="${i}|${f}|${mi}" data-i="${i}" data-mi="${mi}" data-f="${f}" title="Klick: ${AUF_LABEL[f]||f} ändern"><span class="v">${val}</span></td>`;
+    const anyTr = p.measures.some(m=>m.traeger);             // ohne Ladungsträger: Träger-Spalten ausblenden
+    const uP = p.beinh||'cbm', beCol = uP!=='cbm';           // Berechnungseinheit als eigene Spalte
     const mrows = p.measures.map((m,j)=>`<tr>
         <td class="rn">${j+1}</td>
+        ${anyTr?`<td class="ro l">${TRAEGER_LABEL[m.traeger||'']}</td>
         ${cell(j,'pakete', m.pakete>0?num(m.pakete,0):'–')}
         ${cell(j,'reihen', m.reihen>0?num(m.reihen,0):'–')}
         ${cell(j,'lagen',  m.lagen>0?num(m.lagen,0):'–')}
-        ${cell(j,'stueck', num(m.stueck,0))}
+        ${cell(j,'stueck', num(m.stueck,0))}`:''}
         ${cell(j,'laenge', num(m.laenge,0))}
-        ${cell(j,'staerke',num(m.staerke,0))}
-        ${cell(j,'breite', num(m.breite,0))}
-        <td class="ro">${num(totOf(m),0)}</td>
-        <td class="calc">${num3(m.vol)}</td>
+        ${cell(j,'staerke',num(m.staerke,0), emOn?'moff':'')}
+        ${cell(j,'breite', num(m.breite,0),  emOn?'moff':'')}
+        ${cell(j,'emStaerke', num(m.emStaerke||0,1), emOn?'':'moff')}
+        ${cell(j,'emBreite',  num(m.emBreite||0,1),  emOn?'':'moff')}
+        <td class="ro${S.total?' sortcol':''}">${num(totOf(m),0)}</td>
+        <td class="calc${S.vol?' sortcol':''}">${num3(m.vol)}</td>
+        ${beCol?`<td class="calc">${uP==='stk'?num(beQtyRow(m,uP),0):num3(beQtyRow(m,uP))}</td>`:''}
         <td class="calc">${eur2(m.vol*ai)}</td>
         <td class="act"><button class="menubtn" data-delm="${j}" data-i="${i}" title="Aufmaßzeile löschen">✕</button></td>
       </tr>`).join('');
     const measTable = `<table class="pgrid">
-      <thead><tr><th class="rn"></th><th>Pakete</th><th>Reihen</th><th>Lagen</th><th>Stück${p.measures.some(m=>m.pakete>0)?'/Pak':''}</th><th>Länge cm</th><th>Stärke</th><th>Breite</th><th>Stück ges.</th><th>m³</th><th>Betrag</th><th></th></tr></thead>
+      <thead>
+        <tr class="grprow"><th class="grp" colspan="${anyTr?7:2}"></th><th class="grp" colspan="4">${basisBar(i, p)}</th><th class="grp" colspan="${beCol?5:4}"></th></tr>
+        <tr><th class="rn"></th>${anyTr?`<th class="l">Träger</th>${sortTh(p,'pakete','Anzahl')}${sortTh(p,'reihen','Reihen')}${sortTh(p,'lagen','Lagen')}
+        ${sortTh(p,'stueck','Stück'+(p.measures.some(m=>m.pakete>0)?'/Trg':''))}`:''}${sortTh(p,'laenge','Länge cm')}
+        ${sortTh(p,'staerke','Stärke',rohC)}${sortTh(p,'breite','Breite',rohC)}${sortTh(p,'emStaerke','EM Stärke',emC)}${sortTh(p,'emBreite','EM Breite',emC)}
+        ${sortTh(p,'total','Stück ges.')}${sortTh(p,'vol','cbm '+(emOn?'(EM)':'(Fertig)'))}${beCol?`<th>= ${BEINH_LABEL[uP]}</th>`:''}<th>Betrag</th><th></th></tr></thead>
       <tbody>${mrows}
-        <tr class="sum"><td colspan="9" class="l">Summe Position ${i+1}</td><td>${num3(vol)}</td><td>${eur2(vol*ai)}</td><td class="act"></td></tr>
+        <tr class="sum"><td colspan="${anyTr?12:7}" class="l">${p.schnitt?`Summe Aufmaß (bestellt) – berechnet wird die Schnittaufteilung`:`Summe Position ${i+1}`}</td><td>${num3(volM)}</td>${beCol?`<td>${uP==='stk'?num(beQty(p),0):num3(beQty(p))}</td>`:''}<td>${p.schnitt?'→':eur2(volM*ai)}</td><td class="act"></td></tr>
       </tbody></table>`;
+    // ── Schnittaufteilung: Lieferung in Volllängen, berechnet wird das gelieferte Maß ──
+    const schRows = p.schnitt ? p.schnitt.groups.map(g=> schPatterns(g).map(pat=>{
+        const used=schUsed(pat.boards[0]), rest=pat.len-used;
+        const cbmP = pat.boards.length*pat.len/100*g.es/1000*g.eb/1000;
+        return `<tr><td class="l ro">${pat.boards.length} × ${num(pat.len,0)} cm · ${num(g.s)}×${num(g.b)} mm</td>
+          <td class="l ro">${pat.cut? schSegText(pat) : 'ungeteilt (bestellte Volllänge)'}</td>
+          <td class="ro">${pat.cut&&rest>0? num(rest,0)+' cm':'–'}</td>
+          <td class="calc">${num3(cbmP)}</td><td class="calc">${eur2(cbmP*ai)}</td></tr>`;
+      }).join('')).join('') : '';
+    const schTable = p.schnitt ? `<table class="pgrid">
+      <thead><tr><th class="l">Liefereinheit</th><th class="l">Zuschnitt durch den Kunden (Z = Aufmaßzeile)</th><th>Rest</th><th>cbm</th><th>Betrag</th></tr></thead>
+      <tbody>${schRows}
+        <tr class="sum"><td class="l" colspan="3">Geliefert &amp; berechnet</td><td>${num3(vol)}</td><td>${eur2(vol*ai)}</td></tr>
+      </tbody></table>` : '';
     // ── Preisaufbau: Holz + je Zuschlag, ebenfalls direkt in der Zelle änderbar ──
     const pcell = (f,val,code)=>`<td class="cell" data-key="${i}|${f}|${code||''}" data-i="${i}" data-f="${f}" ${code?`data-code="${code}"`:''} title="Klick: Preis ändern"><span class="v">${val}</span></td>`;
     const surRows = p.surcharges.map(z=>`<tr>
         <td class="l ro">+ ${z.label} <span class="lbl">(${z.code})</span></td>
         ${pcell('sur', eur2(z.price), z.code)}
-        <td class="ro unit">/ m³</td>
+        <td class="ro unit">/ cbm</td>
         <td class="act"><button class="menubtn" data-edit="sur" data-i="${i}" data-code="${z.code}" title="Preis-Menü mit Historie">✎ Menü</button></td>
       </tr>`).join('');
     const priceTable = `<table class="pgrid">
       <thead><tr><th class="l">Preisaufbau</th><th>Preis</th><th class="l">Einheit</th><th></th></tr></thead>
       <tbody>
-        <tr><td class="l ro"><b>Holz</b> (${c.a})</td>${pcell('wood', eur2(p.woodPrice))}<td class="ro unit">/ m³</td>
+        <tr><td class="l ro"><b>Holz</b> (${c.a})</td>${pcell('wood', eur2(p.woodPrice))}<td class="ro unit">/ cbm</td>
           <td class="act"><button class="menubtn" data-edit="preis" data-i="${i}" title="Preis-Menü mit Historie">✎ Menü</button></td></tr>
         ${surRows}
-        <tr class="allinrow"><td class="l">Verkaufspreis (all-in)</td><td class="calc">${eur2(ai)}</td><td class="unit">/ m³</td>
+        <tr class="allinrow"><td class="l">Verkaufspreis (all-in)</td><td class="calc">${eur2(ai)}</td><td class="unit">/ cbm</td>
           <td class="act"><button class="menubtn" data-edit="zus" data-i="${i}" title="Zuschläge hinzufügen/entfernen">✎ Zuschläge</button></td></tr>
+        ${(p.beinh && p.beinh!=='cbm' && beQty(p)>0)?`<tr><td class="l ro">= Kundeneinheit (${beFmt(beQty(p),p.beinh)})</td><td class="ro" style="text-align:right;padding:var(--cellpy) var(--cellpx)">${eur2(posSum(p)/beQty(p))}</td><td class="ro unit">/ ${BEINH_LABEL[p.beinh]}</td><td class="act"></td></tr>`:''}
       </tbody></table>`;
     return `<div class="posblock ${fl?'posflash':''}">
       <div class="head"><span class="no">${i+1}</span><b>${c.a}</b>
-        <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${num3(vol)} m³</small>
+        <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${num3(vol)} cbm${(p.beinh&&p.beinh!=='cbm')?' · '+beFmt(beQty(p),p.beinh):''}</small>
         <span class="spacer"></span><b>${eur(posSum(p))}</b>
         <button class="linkish" data-del="${i}" title="Position löschen">✕</button></div>
       <div class="body">
-        <div class="gridlbl">Aufmaß <button class="menubtn" data-edit="auf" data-i="${i}" title="Aufmaß-Menü öffnen (neue Zeilen erfassen)">✎ Menü</button></div>
+        <div class="gridlbl">Aufmaß <button class="menubtn" data-edit="auf" data-i="${i}" title="Aufmaß-Menü öffnen (neue Zeilen erfassen)">✎ Menü</button>
+          ${(!p.schnitt && schnittSplittable(p))?`<button class="menubtn" data-edit="schnitt" data-i="${i}" title="Maße auf Volllängen aufteilen (Schnittaufteilung)">🪚 Schnittaufteilung</button>`:''}</div>
         <div class="gridwrap">${measTable}</div>
-        <div class="gridlbl">Preisaufbau (intern)</div>
+        ${p.schnitt?`<div class="gridlbl">Schnittaufteilung <button class="menubtn" data-edit="schnitt" data-i="${i}" title="Schnittaufteilung öffnen">✎ Menü</button></div>
+        <div class="gridwrap">${schTable}</div>`:''}
+        <div class="gridlbl">Preisaufbau (intern)
+          <span style="text-transform:none;letter-spacing:0;font-weight:500">· Berechnungseinheit:</span>
+          <select class="beinhsel" data-i="${i}" title="Berechnungseinheit dieser Position – Menge und Einzelpreis im Kunden-PDF werden umgerechnet">${BEINH.map(([v,t])=>`<option value="${v}"${uP===v?' selected':''}>${t}</option>`).join('')}</select></div>
         <div class="gridwrap">${priceTable}</div>
-        <div class="edithint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert überschreiben · <kbd>Enter</kbd> / <kbd>Tab</kbd> Zelle rechts · <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Zelle wechseln · <kbd>Esc</kbd> abbrechen · „✎ Menü" öffnet den vollen Dialog (mit Preishistorie).</div>
+        <div class="edithint">Wie in Excel: <b>in jede weiße Zelle klicken</b> und den Wert überschreiben · <kbd>Enter</kbd> / <kbd>Tab</kbd> Zelle rechts · <kbd>←</kbd><kbd>→</kbd><kbd>↑</kbd><kbd>↓</kbd> Zelle wechseln · <kbd>Esc</kbd> abbrechen · „✎ Menü" öffnet den vollen Dialog (mit Preishistorie).<br><b>Fertigmaß und EM ziehen sich gegenseitig nach</b> – egal welches der beiden Sie ändern. Der Schalter <b>„cbm aus:"</b> über den Spalten legt fest, welches Maßpaar in die cbm geht.<br><b>Sortieren:</b> <kbd>Rechtsklick</kbd> auf einen Spaltenkopf sortiert <b>absteigend</b>, das Dreieck ▼/▲ dreht die Richtung, noch ein Rechtsklick schaltet aus. Mehrere Spalten gleichzeitig – Rangfolge <b>Länge → Stärke → Breite</b>.</div>
       </div>
     </div>`;
   }).join('');
+  wireEmBar(wrap);                       // Pill-Slider + EM-Felder je Position
+  wrap.querySelectorAll('.posblock').forEach((bl,i)=>{   // Sortierung je Positionstabelle
+    const p = positions[i], head = bl.querySelector('table.pgrid thead');
+    if(p && head) wireSort(head, p, ()=>renderAll());
+  });
   wrap.querySelectorAll('[data-del]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation(); positions.splice(+b.dataset.del,1); renderAll(); });
   wrap.querySelectorAll('[data-delm]').forEach(b=> b.onclick=(e)=>{ e.stopPropagation();
     const p=positions[+b.dataset.i]; p.measures.splice(+b.dataset.delm,1);
     if(!p.measures.length) positions.splice(+b.dataset.i,1);
+    else schnittRefresh(p);
     renderAll(); });
+  wrap.querySelectorAll('select.beinhsel').forEach(s=> s.onchange=()=>{
+    positions[+s.dataset.i].beinh = s.value; renderAll();
+  });
   wrap.querySelectorAll('[data-edit]').forEach(b=> b.onclick=(e)=>{
     e.stopPropagation();
     const i=+b.dataset.i, w=b.dataset.edit;
@@ -1370,6 +2490,7 @@ function renderPosList(){
     else if(w==='sur') editSurcharge(i, b.dataset.code);
     else if(w==='zus') editZuschlaege(i);
     else if(w==='auf') editAufmass(i);
+    else if(w==='schnitt') editSchnitt(i);
   });
   wireCells(wrap);
 }
@@ -1385,6 +2506,21 @@ function wireCells(root){
   });
 }
 function openCellByKey(k){ if(!k) return; const t=document.querySelector(`td.cell[data-key="${k}"]`); if(t) startCellEdit(t); }
+// Sortierung kann die Zeilen beim Neu-Zeichnen umstellen. Damit „eine Zelle weiter"
+// wirklich dieselbe Zeile trifft, merken wir uns die Zeile als Objekt, nicht als Nummer.
+function cellKeyHold(k){
+  if(!k) return null;
+  const [sc, f, mi] = k.split('|');
+  const t = (sc==='d') ? draft : positions[+sc];
+  const m = (t && Array.isArray(t.measures)) ? t.measures[+mi] : null;
+  return m ? {sc, f, m, t} : {k};
+}
+function cellKeyAfter(h){
+  if(!h) return null;
+  if(h.k) return h.k;
+  const i = h.t.measures.indexOf(h.m);
+  return i<0 ? null : `${h.sc}|${h.f}|${i}`;
+}
 function startCellEdit(td){
   if(!td || td.classList.contains('editing')) return;
   pendingCell = null;
@@ -1409,8 +2545,9 @@ function startCellEdit(td){
     const v = parseFloat(inp.value);
     if(commit && !isNaN(v) && v>=0) applyCellEdit(p, td, f, v);
     const click = pendingCell; pendingCell = null;
+    const hold = cellKeyHold(moveKey || click);
     if(drafted){ renderComm(); updateAufMode(); } else { renderAll(); }
-    openCellByKey(moveKey || click);
+    openCellByKey(cellKeyAfter(hold));
     if(topField){ const t = el('f_'+topField); if(t && !t.disabled){ t.focus(); t.select(); } }
   };
   // Wer mit der Maus in das Feld klickt, will den Text bearbeiten – dann bewegen
@@ -1473,19 +2610,106 @@ function applyCellEdit(p, td, f, v){
   const m=p.measures[+td.dataset.mi]; if(!m) return;
   m[f]=v;
   if(f==='stueck'){ m.reihen=0; m.lagen=0; }              // Stückzahl direkt → Reihen/Lagen entfallen
+  // Fertigmaß und Einschnittmaß stehen in Beziehung: ändert man eines, folgt das andere
+  const mode = m.emMode || p.emMode || 'mm';
+  const val  = (m.emVal!=null) ? m.emVal : emValOf(p);
+  if(EM_PAIR[f])      m[EM_PAIR[f]] = emUp(v, mode, val);
+  else if(EM_BACK[f]) m[EM_BACK[f]] = emDown(v, mode, val);
   m.stueck = stkJe(m); m.total = stkOf(m); m.vol = volOf(m);
+  schnittRefresh(p);                                   // Aufteilung an die geänderten Maße anpassen
 }
 
+// Zwei PDFs aus denselben Daten: 'angebot' = Kundenansicht (wie bisher),
+// 'werk' = Werksauftrag mit Brettliste und Schnittbildern für die Leute im Werk.
+let sheetView = 'angebot';
+
+// ── Echte A4-Vorschau: der Inhalt wird auf Seiten im Verhältnis 210:297 umbrochen. ──
+// Blöcke, die nicht mehr auf die Seite passen, rutschen auf die nächste; Tabellen
+// werden zeilenweise geteilt (die Kopfzeile wird auf jeder Seite wiederholt); zu große
+// Container (z. B. ein Positionsblock im Werksauftrag) werden in ihre Kinder aufgelöst.
+function paginateA4(html){
+  const wrap = el('sheet');
+  wrap.innerHTML = '';
+  const src = document.createElement('div');
+  src.className = 'sheet pagemeasure';
+  src.innerHTML = html;
+  wrap.appendChild(src);                                  // muss im DOM stehen, sonst sind Höhen 0
+  const pages = [];
+  let page=null, innerH=0, used=0;
+  const newPage = ()=>{
+    page = document.createElement('div'); page.className='sheet page';
+    wrap.appendChild(page); pages.push(page);
+    const cs = getComputedStyle(page);
+    innerH = page.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    used = 0;
+  };
+  // exakte (nicht gerundete) Höhen – sonst summieren sich Rundungsfehler zu Überlauf
+  const outerH = n => {
+    const cs = getComputedStyle(n);
+    return n.getBoundingClientRect().height + (parseFloat(cs.marginTop)||0) + (parseFloat(cs.marginBottom)||0);
+  };
+  newPage();
+  while(src.firstElementChild){
+    const n = src.firstElementChild;
+    const h = outerH(n);
+    if(used + h <= innerH + 2){ page.appendChild(n); used += h; continue; }
+    if(n.tagName==='TABLE'){                              // Tabelle zeilenweise umbrechen
+      const headH = n.tHead ? n.tHead.getBoundingClientRect().height : 0;
+      const rows = n.tBodies.length ? [...n.tBodies[0].rows] : [];
+      const rowH = rows.map(r=> r.getBoundingClientRect().height);
+      const shell = ()=>{
+        const t = n.cloneNode(false);
+        if(n.tHead) t.appendChild(n.tHead.cloneNode(true));
+        t.appendChild(document.createElement('tbody'));
+        return t;
+      };
+      n.remove();
+      let t=null;
+      for(let i=0;i<rows.length;i++){
+        if(!t){
+          if(used + headH + rowH[i] > innerH) newPage();
+          t = shell(); page.appendChild(t); used += headH + 4;
+        }
+        if(used + rowH[i] <= innerH + 2){ t.tBodies[0].appendChild(rows[i]); used += rowH[i]; }
+        else { t=null; i--; }                             // Zeile passt nicht mehr → neue Seite, neue Schale
+      }
+      continue;
+    }
+    // Teilbare Container (Positionsblöcke, Querschnittsgruppen im Werksauftrag): nicht als
+    // Ganzes auf die nächste Seite schieben, sondern in ihre Kinder auflösen – so werden
+    // die Seiten voll, statt nach einer halben Seite umzubrechen.
+    if(n.hasAttribute('data-split') && n.children.length){ n.replaceWith(...n.children); continue; }
+    if(h > innerH && n.children.length > 1){ n.replaceWith(...n.children); continue; }   // Block größer als eine Seite
+    newPage();
+    page.appendChild(n); used += h;
+  }
+  src.remove();
+  if(pages.length>1 && !pages[pages.length-1].childElementCount) pages.pop().remove();
+  pages.forEach((p,i)=> p.insertAdjacentHTML('beforeend', `<div class="pgnum">Seite ${i+1} von ${pages.length}</div>`));
+}
 function renderSheet(){
+  if(sheetView==='werk'){ renderWerk(); return; }
   const netto = positions.reduce((s,p)=>s+posSum(p),0);
   const mwst = netto*MWST;
   let rows='';
   positions.forEach((p,i)=>{
     const c=p.cat, ai=allIn(p), vol=posVol(p);
+    // Berechnungseinheit des Kunden: Menge und Einzelpreis werden darauf umgerechnet
+    const u=p.beinh||'cbm', bq=beQty(p);
+    const menge  = (u==='cbm') ? `${num3(vol)} cbm` : beFmt(bq,u);
+    const einzel = (u==='cbm') ? eur2(ai) : eur2(bq>0 ? posSum(p)/bq : 0);
     rows += `<tr class="art"><td>${i+1}</td><td>${c.a}<small>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')}</small></td>
-      <td class="n">${num3(vol)} m³</td><td class="n">${eur2(ai)}</td><td class="n">${eur2(posSum(p))}</td></tr>`;
-    p.measures.forEach(m=>{
-      rows += `<tr class="meas"><td></td><td>${m.pakete>0?m.pakete+' Pakete × ':''}${num(totOf(m),0)} Stk, Länge ${num(m.laenge,0)} cm, ${num(m.staerke)}×${num(m.breite)} mm</td><td class="n">${num3(m.vol)} m³</td><td></td><td></td></tr>`;
+      <td class="n">${menge}</td><td class="n">${einzel}</td><td class="n">${eur2(posSum(p))}</td></tr>`;
+    if(p.schnitt && p.schnitt.groups.length){
+      // Schnittaufteilung: der Kunde sieht die gelieferten Volllängen UND was er daraus schneidet
+      p.schnitt.groups.forEach(g=> schPatterns(g).forEach(pat=>{
+        const used=schUsed(pat.boards[0]), rest=pat.len-used;
+        const cbmP = pat.boards.length*pat.len/100*g.es/1000*g.eb/1000;
+        rows += `<tr class="meas"><td></td><td>${pat.boards.length} Stk, Länge ${num(pat.len,0)} cm, ${num(g.s)}×${num(g.b)} mm${pat.cut?`<span class="cuts">Abschnitte kundenseits: ${schSegPlain(pat)}${rest>0?` · Rest ${num(rest,0)} cm`:''}</span>`:''}</td><td class="n">${num3(cbmP)} cbm</td><td></td><td></td></tr>`;
+      }));
+      rows += `<tr class="zus"><td></td><td>Lieferung in Volllängen (Schnittaufteilung) – Zuschnitt der bestellten Maße durch den Kunden</td><td></td><td></td><td></td></tr>`;
+    } else p.measures.forEach(m=>{
+      rows += `<tr class="meas"><td></td><td>${m.pakete>0?m.pakete+' Pakete × ':''}${num(totOf(m),0)} Stk, Länge ${num(m.laenge,0)} cm, ${num(m.staerke)}×${num(m.breite)} mm</td><td class="n">${num3(m.vol)} cbm</td><td></td><td></td></tr>`;
     });
     p.surcharges.forEach(z=>{
       rows += `<tr class="zus"><td></td><td>${z.label} (im Preis enthalten)</td><td></td><td></td><td></td></tr>`;
@@ -1493,7 +2717,7 @@ function renderSheet(){
   });
   if(!positions.length) rows = `<tr><td colspan="5" style="text-align:center;color:var(--ink-2);padding:26px">Noch keine Positionen im Angebot</td></tr>`;
   const d = new Date(2026,6,13).toLocaleDateString('de-DE');
-  el('sheet').innerHTML = `
+  paginateA4(`
     <div class="brand"><div class="logo">Ihr Sägewerk GmbH<span>Schnittholz · Handel · Rundholz</span></div>
       <div class="co">Waldstraße 1 · 27472 Musterort<br>Tel. 0123 / 456 78 · info@saegewerk.de<br>USt-IdNr. DE123456789</div></div>
     <div class="to"><b>${KUNDE}</b>Zimmereiweg 5 · 27474 Handwerkstadt</div>
@@ -1506,7 +2730,98 @@ function renderSheet(){
       <div class="r muted"><span>zzgl. 19 % MwSt</span><span>${eur2(mwst)}</span></div>
       <div class="r grand"><span>Gesamtbetrag</span><span>${eur2(netto+mwst)}</span></div>
     </div>
-    <div class="foot">Es gelten unsere AGB. Preise freibleibend. Alle Maße in mm, Mengen in m³ (Kubikmeter).</div>`;
+    <div class="foot">Es gelten unsere AGB. Preise freibleibend. Alle Maße in mm, Mengen in cbm (Kubikmeter).</div>`);
+}
+
+// ── PDF 2: Werksauftrag – Kopf-Layout wie der echte Beleg des Kunden (Nr. + Barcode,
+// Lagerort-/Trockenkammer-Ankreuzfelder, Datum rein/raus, Termin), darunter aber digital:
+// die Brettliste als Zusammenfassung und die Schnittbilder als Balkengrafiken je Position. ──
+function renderWerk(){
+  const d = new Date(2026,6,13).toLocaleDateString('de-DE');
+  const termin = new Date(2026,7,14).toLocaleDateString('de-DE');
+  // Brettliste: alles, was das Werk produzieren muss. Aus Positionen mit Schnittaufteilung
+  // die Bretter, aus normalen Positionen die Aufmaßzeilen – zusammengefasst je Querschnitt+Länge.
+  const agg = new Map();
+  let nBoards=0, lfm=0, cbm=0;
+  positions.forEach(p=>{
+    if(p.schnitt && p.schnitt.groups.length){
+      p.schnitt.groups.forEach(g=> g.boards.forEach(b=>{
+        if(!b.pieces.length) return;
+        const k=`${g.s}|${g.b}|${b.len}`;
+        if(!agg.has(k)) agg.set(k,{s:g.s,b:g.b,es:g.es,eb:g.eb,len:b.len,n:0});
+        agg.get(k).n++; nBoards++; lfm+=b.len/100; cbm+=b.len/100*g.es/1000*g.eb/1000;
+      }));
+    } else p.measures.forEach(m=>{
+      const n=totOf(m); if(!(n>0 && m.laenge>0)) return;
+      const k=`${m.staerke}|${m.breite}|${m.laenge}`;
+      if(!agg.has(k)) agg.set(k,{s:m.staerke,b:m.breite,es:effS(m),eb:effB(m),len:m.laenge,n:0});
+      agg.get(k).n+=n; nBoards+=n; lfm+=n*m.laenge/100; cbm+=n*(m.laenge/100)*(effS(m)/1000)*(effB(m)/1000);
+    });
+  });
+  const rows=[...agg.values()].sort((a,b)=> b.s-a.s || b.b-a.b || b.len-a.len);
+  const list = rows.length ? `<table class="doc">
+    <thead><tr><th class="n">Stück</th><th class="n">Länge</th><th>Einschnittmaß (sägen!)</th><th class="n">lfm</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td class="n"><b>${r.n} ×</b></td><td class="n">${num(r.len,0)} cm</td>
+        <td><b>${num(r.es,1)} × ${num(r.eb,1)} mm</b>${(r.es!==r.s||r.eb!==r.b)?` <span class="wsdim">(fertig ${num(r.s)} × ${num(r.b)})</span>`:''}</td>
+        <td class="n">${num(r.n*r.len/100,2)}</td></tr>`).join('')}
+      <tr class="art"><td class="n">${nBoards} ×</td><td></td><td>Bretter gesamt</td><td class="n">${num(lfm,2)} lfm · ${num3(cbm)} cbm</td></tr>
+    </tbody></table>`
+    : `<div style="text-align:center;color:var(--ink-2);padding:26px">Noch keine Positionen im Angebot</div>`;
+
+  // Schnittbilder je Position (bei Schnittaufteilung), sonst einfache Maßliste
+  let sec='';
+  positions.forEach((p,i)=>{
+    const c=p.cat;
+    const verarb = p.surcharges.length ? 'Verarbeitung: '+p.surcharges.map(z=>z.label).join(', ') : 'ohne Verarbeitung';
+    sec += `<div class="wspos" data-split><div class="wsph"><b>Pos ${i+1} · ${c.a}</b>
+      <span>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')||''}</span>
+      <span class="wsv">${verarb}</span></div>`;
+    if(p.schnitt && p.schnitt.groups.length){
+      p.schnitt.groups.forEach(g=>{
+        const maxL = Math.max(...g.boards.map(b=>b.len));
+        sec += `<div class="wsgroup" data-split><div class="wsgt">${num(g.es,1)} × ${num(g.eb,1)} mm
+          ${(g.es!==g.s||g.eb!==g.b)?`<span class="wsem">(fertig ${num(g.s)} × ${num(g.b)})</span>`:''}</div>`;
+        schPatterns(g).forEach(pat=>{
+          if(!pat.boards[0].pieces.length) return;
+          const used=schUsed(pat.boards[0]), rest=pat.len-used;
+          const refsByLen={};
+          pat.boards.forEach(b=> b.pieces.forEach(pp=>{ (refsByLen[pp.len]=refsByLen[pp.len]||new Set()).add(pp.ref); }));
+          const segs = schSorted(pat.boards[0]).map(pp=>`<span class="wsseg" style="width:${(pp.len/pat.len*100).toFixed(2)}%"
+              title="${num(pp.len,0)} cm · Aufmaßzeile ${[...refsByLen[pp.len]].sort((a,b)=>a-b).join(', ')}">${num(pp.len,0)}</span>`).join('');
+          const restSeg = (pat.cut && rest>0) ? `<span class="wsseg wsrest" style="width:${(rest/pat.len*100).toFixed(2)}%" title="Rest ${num(rest,0)} cm"></span>` : '';
+          sec += `<div class="wsrow"><span class="wsn">${pat.boards.length} ×</span><span class="wslen">${num(pat.len,0)} cm</span>
+            <span class="wsbarwrap"><span class="wsbar" style="width:${(pat.len/maxL*100).toFixed(1)}%">${segs}${restSeg}</span></span>
+            <span class="wsrest-lbl">${pat.cut?(rest>0?'Rest '+num(rest,0)+' cm':'—'):'ungeteilt'}</span></div>`;
+        });
+        sec += `</div>`;
+      });
+    } else {
+      sec += `<div class="wsplain">${p.measures.map(m=>{
+        const es=effS(m), eb=effB(m);
+        return `<div>${num(totOf(m),0)} Stk × ${num(m.laenge,0)} cm · <b>${num(es,1)} × ${num(eb,1)} mm</b>${(es!==m.staerke||eb!==m.breite)?` <span class="wsdim">(fertig ${num(m.staerke)} × ${num(m.breite)})</span>`:''}</div>`;
+      }).join('')}</div>`;
+    }
+    sec += `</div>`;
+  });
+
+  const chk = t => `<div class="wsc"><span class="box"></span>${t}</div>`;
+  const lines = n => Array.from({length:n},()=>'<div class="wsline"></div>').join('');
+  paginateA4(`
+    <div class="wshead">
+      <div><div class="wsnr">Werksauftrag Nr. 2026-0742</div><div class="wsbarcode" title="202600742"></div></div>
+      <div class="wsterm">Termin: <b>${termin}</b><br>Ihr Sägewerk GmbH · Tel. 0123 / 456 78</div>
+    </div>
+    <div class="wschecks">
+      <div><b>Lagerort</b>${chk('Regal Büro')}${chk('Durchfahrtshalle')}${chk('Halle Oben')}${chk('Schnittholzplatz')}${chk('Hobelhalle')}</div>
+      <div><b>Trockenkammer</b>${chk('Trockenkammer 1')}${chk('Trockenkammer 2')}${chk('Vakuumtrockner')}${chk('Bemerkungen')}</div>
+      <div><b>Datum rein</b>${lines(4)}</div>
+      <div><b>Datum raus</b>${lines(4)}</div>
+    </div>
+    <div class="meta">zu Angebot Nr. 2026-0742 vom ${d} · Kommission: ${KUNDE}</div>
+    <div class="wsh">Brettliste – zu produzierende Längen (gesamt)</div>
+    ${list}
+    ${positions.length?`<div class="wsh">Schnittbilder je Position</div>${sec}`:''}
+    <div class="foot">Interner Beleg – geht nicht an den Kunden. <b>Gesägt wird das Einschnittmaß</b> (fett); das Fertigmaß entsteht durch Trocknen/Hobeln. Zahlen in den Brettern = Kundenmaße in cm. Schraffiert = Rest/Verschnitt (mindestens ${SCH_RES} cm je geteiltem Brett).</div>`);
 }
 
 // ══════════ Globale Tastatursteuerung ══════════
@@ -1558,6 +2873,43 @@ document.addEventListener('keydown', e=>{
   else if(currentStep==='aufmass'){
     if(e.key==='Escape'){ e.preventDefault(); aufmassDone(); return; }
   }
+  else if(currentStep==='schnittfrage'){
+    if(e.key==='Escape'){ e.preventDefault(); schFrageIdx=0; confirmSchnittFrage(); return; }
+    if(e.key==='ArrowLeft'||e.key==='ArrowUp'){ e.preventDefault(); schFrageIdx=0; renderSchnittFrage(); return; }
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'){ e.preventDefault(); schFrageIdx=1; renderSchnittFrage(); return; }
+    if(e.key==='n'||e.key==='N'){ e.preventDefault(); schFrageIdx=0; confirmSchnittFrage(); return; }
+    if(e.key==='j'||e.key==='J'){ e.preventDefault(); schFrageIdx=1; confirmSchnittFrage(); return; }
+    if(e.key==='Enter'){ e.preventDefault(); confirmSchnittFrage(); return; }
+    return;
+  }
+  else if(currentStep==='schnitt'){
+    if(schMove){                                   // Verschiebe-Modus: Esc bricht nur das Verschieben ab
+      if(e.key==='Escape'){ e.preventDefault(); schMove=null; renderSchnitt(); return; }
+      if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault();
+        const n=schTargets().length; if(n){ schMove.tgt=(schMove.tgt+(e.key==='ArrowDown'?1:n-1))%n; renderSchnitt(); } return; }
+      if(e.key==='ArrowRight'||e.key==='ArrowLeft'){ e.preventDefault();
+        const src=schPats.find(p=>p.gi===schMove.gi&&p.key===schMove.patKey);
+        if(src && src.boards[0].pieces.length){ const n=src.boards[0].pieces.length; schMove.seg=(schMove.seg+(e.key==='ArrowRight'?1:n-1))%n; renderSchnitt(); } return; }
+      if(e.key==='Enter'){ e.preventDefault(); const t=schTargets()[schMove.tgt]; if(t) schMoveTo(t); return; }
+      return;
+    }
+    if(e.key==='Escape'||e.key==='Enter'){ e.preventDefault(); schnittDone(); return; }
+    if(e.key==='ArrowDown'){ e.preventDefault(); if(schPats.length){ schIdx=Math.min(schIdx+1,schPats.length-1); renderSchnitt(); } return; }
+    if(e.key==='ArrowUp'){ e.preventDefault(); if(schPats.length){ schIdx=Math.max(schIdx-1,0); renderSchnitt(); } return; }
+    if(e.key==='ArrowRight'){ e.preventDefault(); schLenChange(1); return; }
+    if(e.key==='ArrowLeft'){ e.preventDefault(); schLenChange(-1); return; }
+    if(e.key==='1'||e.key==='2'||e.key==='3'){ e.preventDefault(); schSetMode(SCH_STRATS[+e.key-1][0]); return; }
+    if(e.key==='4'){ e.preventDefault(); schSetMode('custom'); return; }
+    if(e.key==='a'||e.key==='A'){ e.preventDefault(); schAutoNew(); return; }
+    if(e.key==='m'||e.key==='M'){ e.preventDefault();
+      const pat=schPats[schIdx];
+      if(pat && pat.cut && pat.boards[0].pieces.length){ schMove={gi:pat.gi, patKey:pat.key, seg:0, tgt:0}; renderSchnitt(); } else schReject(schIdx);
+      return; }
+    if(e.key==='n'||e.key==='N'){ e.preventDefault();
+      schAddBoard(schPats[schIdx] ? schPats[schIdx].gi : 0); return; }
+    if(e.key==='Delete'){ e.preventDefault(); schRemoveEmpty(schIdx); return; }
+    return;
+  }
   else if(currentStep==='preis'){
     if(e.key==='Escape'){ e.preventDefault(); confirmPreis(); return; }
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){
@@ -1577,6 +2929,135 @@ document.addEventListener('keydown', e=>{
 
 el('btnNew').onclick = ()=>{ if(!currentStep && !tourActive) openPositionChoice(); };
 el('btnReset').onclick = ()=>{ if(tourActive) return; positions=[]; renderAll(); };
+// Berechnungseinheit für alle Positionen auf einmal umstellen (z. B. alles auf lfdm)
+el('beinhAll').onchange = ()=>{
+  const v = el('beinhAll').value;
+  el('beinhAll').value = '';
+  if(!v || tourActive) return;
+  positions.forEach(p=> p.beinh = v);
+  if(draft) draft.beinh = v;
+  renderAll();
+};
+
+// Umschalten zwischen den beiden PDFs (Angebot ↔ Werksauftrag)
+document.querySelectorAll('.vtab').forEach(b=> b.onclick = ()=>{
+  sheetView = b.dataset.view;
+  document.querySelectorAll('.vtab').forEach(x=> x.classList.toggle('on', x===b));
+  el('viewerNote').innerHTML = sheetView==='werk'
+    ? '<b>Werksauftrag (intern)</b> – Brettliste und Schnittbilder für die Leute im Werk. Geht nicht an den Kunden.'
+    : 'Angebots-Viewer – so sieht der Kunde das PDF. Verarbeitungen erscheinen als Positionen <b>ohne</b> Einzelpreis; der Zuschlag steckt im Artikelpreis.';
+  renderSheet();
+});
+
+// ══════════ Testbestellung (echte Abbundliste des Kunden, 59 Zeilen) ══════════
+// [Stück, Länge cm, Stärke mm, Breite mm] – Zeilennummern = Reihenfolge (Z 1 … Z 59).
+// Trocknen + Hobeln sind laut Original „im Preis enthalten" → als Zuschläge angelegt.
+const TESTBESTELLUNG = [
+  [2,510,210,210],[2,500,210,210],[1,265,210,210],[1,255,210,210],[2,365,210,210],
+  [1,435,210,210],[4,130,210,210],[4,620,210,210],[2,120,210,210],[1,250,210,210],
+  [1,70,210,210],[1,415,210,210],[5,500,190,210],[2,275,190,210],[9,240,190,210],
+  [1,55,190,210],[1,45,190,210],[1,110,190,210],[1,200,190,210],[2,375,190,210],
+  [1,265,190,210],[1,120,190,210],[14,215,170,210],[3,215,210,210],[10,130,210,210],
+  [2,150,210,210],[1,185,210,210],[1,435,210,210],[1,160,210,210],[2,120,210,210],
+  [1,50,210,210],[1,115,210,210],[1,100,210,210],[1,100,210,210],[2,85,210,210],
+  [1,70,210,210],[1,250,210,210],[2,130,210,210],[2,790,210,210],[3,95,170,210],
+  [10,130,170,210],[4,255,170,210],[1,260,170,210],[1,275,170,210],[6,130,170,210],
+  [4,235,170,210],[1,255,170,210],[1,240,190,210],[2,220,190,210],[1,170,170,210],
+  [1,170,170,210],[2,535,210,250],[8,115,170,210],[10,790,110,210],[1,520,110,210],
+  [1,330,110,210],[2,115,110,210],[1,330,110,210],[1,520,110,210]
+];
+// Füllt die erfassten Aufmaße des GERADE OFFENEN Aufmaß-Dialogs mit der Testbestellung –
+// der Knopf dazu sitzt oben rechts im Aufmaß-Modal. Preis und Zuschläge laufen danach
+// ganz normal durch die Kette, so lässt sich der komplette Ablauf realistisch durchspielen.
+function fillTestAufmass(){
+  if(!draft || currentStep!=='aufmass') return;
+  emDefaults(draft);
+  TESTBESTELLUNG.forEach(([stk,lg,s,b])=>{
+    const m = { pakete:0, reihen:0, lagen:0, stueck:stk, laenge:lg, staerke:s, breite:b,
+                emMode:draft.emMode, emVal:emValOf(draft), basis:draft.basis };
+    m.emStaerke = emUp(s, m.emMode, m.emVal);
+    m.emBreite  = emUp(b, m.emMode, m.emVal);
+    m.total = stkOf(m); m.vol = volOf(m);
+    draft.measures.push(m);
+  });
+  schnittRefresh(draft);
+  focusRow = null;
+  renderComm(true);
+  updateAufMode();
+}
+
+// ══════════ Angebot als JSON speichern / laden ══════════
+// Bewusst als Datei-Download + Dateiauswahl gelöst (kein localStorage, kein Server):
+// funktioniert offline per Doppelklick, und die JSON lässt sich per E-Mail weitergeben.
+// Artikel werden über die catId referenziert und beim Laden aus den Stammdaten aufgelöst.
+const ANGEBOT_FORMAT = 'angebotstool-angebot';
+function angebotJSON(){
+  return JSON.stringify({
+    tool: ANGEBOT_FORMAT, version: 1,
+    gespeichert: new Date().toISOString(), kunde: KUNDE,
+    positions: positions.map(p=>({
+      catId: p.cat.id, artikel: p.cat.a + (p.cat.h?' '+p.cat.h:''),   // artikel = nur Lesbarkeit, maßgeblich ist catId
+      woodPrice: p.woodPrice, beinh: p.beinh||'cbm',
+      surcharges: p.surcharges.map(s=>({code:s.code, label:s.label, price:s.price})),
+      emMode: p.emMode, emV: {...(p.emV||EM_DEF)}, basis: p.basis, sort: {...(p.sort||{})},
+      measures: p.measures.map(m=>({...m})),
+      ...(p.schnitt ? {schnitt: JSON.parse(JSON.stringify(p.schnitt))} : {})
+    }))
+  }, null, 1);
+}
+function saveAngebot(){
+  const d = new Date(), pad = n=>String(n).padStart(2,'0');
+  const name = `angebot_${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}_${pad(d.getHours())}-${pad(d.getMinutes())}.json`;
+  const blob = new Blob([angebotJSON()], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href), 1000);
+}
+function applyAngebot(data){
+  if(!data || data.tool!==ANGEBOT_FORMAT || !Array.isArray(data.positions))
+    throw new Error('kein Angebots-JSON dieses Tools (Kennung fehlt).');
+  const loaded = [], fehlt = [];
+  data.positions.forEach(q=>{
+    const cat = D.cat.find(c=>c.id===q.catId);
+    if(!cat){ fehlt.push(q.artikel||q.catId); return; }
+    const p = { cat, woodPrice:+q.woodPrice||0, beinh:q.beinh||'cbm',
+      surcharges:(q.surcharges||[]).map(s=>({code:s.code, label:s.label||zByCode(s.code).label, price:+s.price||0})),
+      emMode:q.emMode, emV:q.emV, basis:q.basis, sort:(q.sort&&typeof q.sort==='object')?q.sort:{}, measures:[] };
+    emDefaults(p);
+    (q.measures||[]).forEach(r=>{
+      const m = { traeger: r.traeger || (+r.pakete>0?'paket':''),   // ältere Dateien: Pakete → Träger „Paket"
+                  pakete:+r.pakete||0, reihen:+r.reihen||0, lagen:+r.lagen||0, stueck:+r.stueck||0,
+                  laenge:+r.laenge||0, staerke:+r.staerke||0, breite:+r.breite||0,
+                  emStaerke:+r.emStaerke||0, emBreite:+r.emBreite||0,
+                  emMode:r.emMode||p.emMode, emVal:(r.emVal!=null?+r.emVal:emValOf(p)), basis:r.basis||p.basis };
+      if(!m.emStaerke) m.emStaerke = emUp(m.staerke, m.emMode, m.emVal);
+      if(!m.emBreite)  m.emBreite  = emUp(m.breite,  m.emMode, m.emVal);
+      m.total = stkOf(m); m.vol = volOf(m);                 // wird immer frisch gerechnet, nie aus der Datei geglaubt
+      if(m.total>0 && m.laenge>0 && m.staerke>0 && m.breite>0) p.measures.push(m);
+    });
+    if(q.schnitt && q.schnitt.groups){ p.schnitt = q.schnitt; schnittRefresh(p); }   // passt die Aufteilung ggf. an
+    if(p.measures.length) loaded.push(p);
+  });
+  positions = loaded;
+  renderAll();
+  return fehlt;
+}
+function loadAngebotFile(file){
+  const rd = new FileReader();
+  rd.onload = ()=>{
+    try{
+      const data = JSON.parse(rd.result);
+      if(positions.length && !confirm(`Das aktuelle Angebot (${positions.length} Position${positions.length>1?'en':''}) wird durch die Datei ersetzt. Fortfahren?`)) return;
+      const fehlt = applyAngebot(data);
+      if(fehlt.length) alert('Geladen – aber übersprungen (Artikel nicht in den Stammdaten): '+fehlt.join(', '));
+    } catch(err){ alert('Datei konnte nicht geladen werden: '+err.message); }
+  };
+  rd.readAsText(file);
+}
+el('btnSave').onclick = ()=>{ if(!tourActive) saveAngebot(); };
+el('btnLoad').onclick = ()=>{ if(!currentStep && !tourActive) el('fileLoad').click(); };
+el('fileLoad').addEventListener('change', ()=>{ const f=el('fileLoad').files[0]; if(f) loadAngebotFile(f); el('fileLoad').value=''; });
 
 // ══════════ Geführte Tour ══════════
 let tourActive=false, tourIdx=-1, tourSnapshot=null;
@@ -1586,10 +3067,19 @@ function demoPick(){
   const i = pickRows.findIndex(c=>c.a==='SH-HOLZ' && c.h==='F/T' && c.q==='');
   pickIdx = i>=0?i:0; renderRes();
 }
+// Demo: ein Paket (2 × 5 Reihen × 4 Lagen) – zeigt Träger-Dropdown und Paketgrafik
+function demoPaket(){
+  el('f_traeger').value='paket'; updateAufMode();
+  el('f_pakete').value=2; el('f_reihen').value=5; el('f_lagen').value=4;
+  el('f_laenge').value=400; el('f_staerke').value=100; el('f_breite').value=100;
+  updateAufMode();
+}
+// Demo: Paketzeile übernehmen + zwei Zuschnitt-Längen ohne Träger (380/70 → Schnittaufteilung greift)
 function demoAuf(){
-  el('f_pakete').value=0; el('f_stueck').value=60; el('f_laenge').value=400; el('f_staerke').value=100; el('f_breite').value=100;
-  updateAufMode(); commitAuf();
-  el('f_laenge').value=500; commitAuf();
+  commitAuf();
+  el('f_traeger').value=''; updateAufMode();
+  el('f_stueck').value=6; el('f_laenge').value=380; updateAufMode(); commitAuf();
+  el('f_stueck').value=6; el('f_laenge').value=70;  updateAufMode(); commitAuf();
 }
 function demoFinalize(){
   if(draft && draft.woodPrice==null) draft.woodPrice = draft.cat.hist.length ? draft.cat.hist[draft.cat.hist.length-1].preis : draft.cat.std;
@@ -1601,60 +3091,89 @@ function demoCopyAuf(){ const lf=el('f_laenge'); if(lf) lf.value='500'; updateAu
 
 const TOUR = [
   { target:'#btnNew', title:'Willkommen 👋',
-    body:`Diese Tour führt einmal komplett durch die Angebotserfassung und zeigt, welche Taste wann hilft. <b>Alles geht auch mit der Maus.</b><br><br>Eine neue Position startest du mit <kbd>F3</kbd> oder diesem Knopf. Weiter mit <kbd>Enter</kbd> / <kbd>→</kbd>.` },
+    body:`Diese Tour führt einmal komplett durch die Angebotserfassung – vom Artikel über Aufmaß, <b>Schnittaufteilung</b>, Preis und Zuschläge bis zu den <b>zwei PDFs</b>. <b>Alles geht auch mit der Maus.</b><br><br>Eine neue Position startest du mit <kbd>F3</kbd> oder diesem Knopf. Weiter mit <kbd>Enter</kbd> / <kbd>→</kbd>, zurück mit <kbd>←</kbd>, beenden mit <kbd>Esc</kbd>.` },
   { setup:()=>openPositionChoice(), target:'.choice', title:'Zwei Wege',
     body:`Beim Anlegen fragt das Tool: <b>1 · Neue Position</b> (frisch erfassen) oder <b>2 · Aus altem Angebot kopieren</b> (frühere Bestellung des Kunden übernehmen).<br><br>Wählbar mit <kbd>1</kbd>/<kbd>2</kbd>, <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd> oder Klick. <b>Wir gehen zuerst „Neu".</b>` },
-
   { target:'.backbtn', title:'Immer ein Weg zurück',
-    body:`In <b>jedem</b> Menü sitzt oben links ein <b>Zurück</b>-Knopf – er führt genau ein Menü zurück, ohne etwas zu verlieren.<br><br>Tastatur: <kbd>⌫</kbd> (Rücktaste, wenn der Cursor nicht in einem Eingabefeld steht) oder <kbd>Alt</kbd>+<kbd>←</kbd>.` },
+    body:`In <b>jedem</b> Menü sitzt oben links ein <b>Zurück</b>-Knopf – er führt genau ein Menü zurück, ohne etwas zu verlieren.<br><br>Tastatur: <kbd>⌫</kbd> (Rücktaste, wenn der Cursor nicht in einem Eingabefeld steht) oder <kbd>Alt</kbd>+<kbd>←</kbd>. Und merken: In der Dialogkette heißt <kbd>Esc</kbd> immer <b>„weiter/übernehmen"</b> – nur hier im ersten Menü bricht es ab.` },
 
   // ── Weg 1: Neue Position ──
   { setup:()=>{ choiceIdx=0; confirmChoice(); }, target:'#q', title:'Weg 1 · Artikel suchen',
     body:`Der Cursor steht sofort in der Suche – einfach lostippen, z. B. <kbd>S</kbd><kbd>H</kbd>. Die Tabelle unten filtert live auf alles, wo „SH" vorkommt.` },
   { target:'.wgnav', title:'Weg 1 · … oder durchklicken',
     body:`Wer lieber klickt, navigiert hier durch <b>Bereich → Warengruppe → Untergruppe</b>. Graue Zweige (Rohholz/Einkauf, Logistik) haben noch keine Verkaufsartikel.` },
-  { target:'.graphics', title:'Weg 1 · Vorschau rechts',
-    body:`Rechts siehst du den <b>Querschnitt</b> (Stärke × Breite mit Maßketten) und – falls der Artikel im Paket verkauft wird – die <b>Paketansicht</b>.` },
   { setup:()=>demoPick(), target:'.restable', title:'Weg 1 · Treffer auswählen',
     body:`Die <b>erste Zeile ist automatisch markiert</b>. Mit <kbd>↑</kbd><kbd>↓</kbd> wandern, mit <kbd>Enter</kbd> übernehmen. Mit der Maus: Zeile anklicken (Doppelklick wählt direkt).` },
   { setup:()=>chooseArtikel(), target:'table.aufmass', title:'Weg 1 · Aufmaß eingeben',
-    body:`Jetzt die Maße. <kbd>Enter</kbd> springt Feld für Feld nach rechts, <kbd>Strg</kbd>+<kbd>Enter</kbd> übernimmt die Zeile sofort. Die <b>Länge wird in Zentimetern</b> erfasst – also <b>300</b> für 3 Meter.<br><br><b>Pakete = 0</b> = kein Paket. Ein Paket = <b>Reihen × Lagen</b> Bretter (z. B. 10 × 10 = 100).` },
+    body:`Jetzt die Maße. <kbd>Enter</kbd> springt Feld für Feld nach rechts, <kbd>Strg</kbd>+<kbd>Enter</kbd> übernimmt die Zeile sofort. Die <b>Länge wird in Zentimetern</b> erfasst – also <b>300</b> für 3 Meter.<br><br>Zum Ausprobieren: Der Knopf <b>„🧪 Testbestellung"</b> oben rechts füllt eine echte Abbundliste mit 59 Zeilen ein.` },
+  { setup:()=>demoPaket(), target:'#aufRow td[data-col=\'traeger\']', title:'Weg 1 · Ladungsträger',
+    body:`Das <b>Träger-Dropdown</b>: <b>– ohne –</b>, <b>Paket</b>, <b>Palette</b> oder <b>Box</b>. Die Anzahl daneben wirkt als Multiplikator.<br><br>· Ohne Träger sind Anzahl/Reihen/Lagen grau und werden übersprungen.<br>· <b>Reihen × Lagen gibt es nur beim Paket.</b><br>· Palette und Box zeigen rechts eine <b>schematische Grafik</b> (Europalette / Gitterbox) ohne Maße.` },
+  { target:'.aufright', title:'Weg 1 · Paketgrafik mit echtem Aufbau',
+    body:`Wir haben ein Paket eingegeben: <b>2 × (5 Reihen × 4 Lagen)</b>. Die Grafik zeichnet den echten Aufbau: unten <b>2 Unterleger (100 mm)</b>, zwischen den Lagen <b>20-mm-Stapelleisten</b> – und die Maßkette rechnet beides ins <b>Gesamtmaß</b> ein (hier: Höhe 560 mm statt 400).` },
   { target:'#aufHead', title:'Weg 1 · Reihen/Lagen ⇄ Stückzahl',
-    body:`Die Felder sperren sich gegenseitig, damit nichts doppelt gerechnet wird:<br><br>· <b>Reihen + Lagen</b> ausgefüllt → <b>Stück</b> wird berechnet und gesperrt.<br>· <b>Stück</b> direkt eingetippt (z. B. „3 Pakete à 80 Stück", Aufbau unbekannt) → <b>Reihen/Lagen</b> werden gesperrt. Einfach mit <kbd>Enter</kbd> überspringen.<br>· Reihen/Lagen wieder leeren gibt die Stückzahl frei.` },
+    body:`Die Felder sperren sich gegenseitig, damit nichts doppelt gerechnet wird:<br><br>· <b>Reihen + Lagen</b> ausgefüllt → <b>Stück</b> wird berechnet und gesperrt.<br>· <b>Stück</b> direkt eingetippt (Aufbau unbekannt) → <b>Reihen/Lagen</b> werden gesperrt.<br>· Wieder leeren gibt das jeweils andere frei.` },
   { target:'#aufHead th[data-col=\'laenge\']', title:'Weg 1 · Startspalte selbst festlegen',
-    body:`Nach jeder übernommenen Zeile springt der Cursor zurück in die <b>📌 markierte Spalte</b> – ab Werk die <b>Länge</b>.<br><br><b>Rechtsklick</b> auf einen anderen Spaltenkopf macht ihn zur neuen Startspalte (er wird farbig markiert). Wer z. B. immer die Stückzahl variiert, pinnt einfach „Stück".` },
-  { target:'.aufright', title:'Weg 1 · Live-Grafik',
-    body:`Querschnitt und Paket zeichnen sich live mit – beim Paket mit Maßketten für <b>Breite</b> und <b>Höhe</b>.` },
-  { setup:()=>demoAuf(), target:'#commWrap', title:'Weg 1 · Mehrere Längen',
-    body:`Am Zeilenende landet das Aufmaß hier in der Tabelle. Für weitere Längen einfach <b>nur die Länge ändern</b> und <kbd>Strg</kbd>+<kbd>Enter</kbd> – Stärke/Breite bleiben stehen.<br><br>Diese Tabelle ist ebenfalls <b>wie in Excel</b>: in jede weiße Zelle klicken und den Wert ändern – auch Stärke und Breite nachträglich. Die <b>Grafiken rechts zeigen dabei immer die angeklickte Zeile</b> (Klick auf die Zeilennummer links genügt). Fertig? <kbd>Esc</kbd> führt zum Preis.` },
-  { setup:()=>aufmassDone(), target:'.histtable', title:'Weg 1 · Preis bestimmen',
+    body:`Nach jeder übernommenen Zeile springt der Cursor zurück in die <b>📌 markierte Spalte</b> – ab Werk die <b>Länge</b>.<br><br><b>Rechtsklick</b> auf einen anderen Spaltenkopf macht ihn zur neuen Startspalte. Wer z. B. immer die Stückzahl variiert, pinnt einfach „Stück".` },
+  { target:'#f_beinh', title:'Weg 1 · Berechnungseinheit',
+    body:`Intern rechnet alles in <b>cbm</b> – aber bestellt der Kunde in <b>m², lfdm, Stück, fm oder RM</b>, stellst du es hier um. Menge und <b>Einzelpreis im Angebot werden automatisch umgerechnet</b>, der Gesamtbetrag bleibt gleich.<br><br>Später änderbar: je Position im Preisaufbau, oder <b>für alle auf einmal</b> über „Einheit für alle …" auf der Startseite.` },
+  { setup:()=>demoAuf(), target:'#commWrap', title:'Weg 1 · Mehrere Längen, wie in Excel',
+    body:`Am Zeilenende landet das Aufmaß hier. Für weitere Längen <b>nur die Länge ändern</b> + <kbd>Strg</kbd>+<kbd>Enter</kbd>.<br><br>Die Tabelle ist <b>wie Excel</b>: jede weiße Zelle per Klick änderbar, <b>Rechtsklick auf einen Spaltenkopf sortiert</b> (absteigend, Dreieck dreht). Die Träger-Spalten erscheinen nur, wenn sie gebraucht werden. Fertig? <kbd>Esc</kbd> führt weiter.` },
+
+  // ── Schritt 3: Schnittaufteilung ──
+  { setup:()=>aufmassDone(), target:'.cprompt', title:'Schnitt · Die Frage',
+    body:`Wir haben 3,80 m und 0,70 m erfasst – keine Volllängen! Nicht gekapptes Holz wird auf <b>Volllängen (3,00–5,00 m)</b> aufgeteilt: der Kunde schneidet seine Maße selbst heraus, <b>berechnet wird das gelieferte Vollmaß</b>.<br><br><b>Nein</b> (Vorauswahl) = normal zum Preis, <b>Ja</b> = aufteilen. Sind ohnehin alle Längen Vollmaße, entfällt die Frage automatisch. Wir sagen <b>Ja</b>.` },
+  { setup:()=>{ schFrageIdx=1; confirmSchnittFrage(); }, target:'#schCards', title:'Schnitt · Vier Modi',
+    body:`Oben vier Karten mit Live-Kennzahlen (<kbd>1</kbd>–<kbd>4</kbd> oder Klick):<br>· <b>1 Einheitlich</b> – möglichst wenige verschiedene Längen (Standard)<br>· <b>2 Wenigster Verschnitt</b><br>· <b>3 Wenigste Bretter</b><br>· <b>4 Angepasst ✎</b> – springt automatisch an, sobald du von Hand eingreifst, und merkt sich deine Aufteilung.` },
+  { target:'#schGroups', title:'Schnitt · Die Schnittbilder',
+    body:`Je Querschnitt die <b>Bretter als Balken</b>: Kundenmaße als Segmente, Rest schraffiert – mindestens <b>10 cm Sägeblatt-Reserve</b> je geteiltem Brett, Bestellmaße werden <b>nie</b> gekürzt.<br><br><kbd>↑</kbd><kbd>↓</kbd> wählt die Zeile, <kbd>←</kbd><kbd>→</kbd> bzw. ‹ › ändern die <b>Vorratslänge</b>. 🔒-Zeilen sind bestellte Volllängen/Überlängen – die sind fest.` },
+  { target:'.schrow.schnew', title:'Schnitt · Drag & Drop 🖱️',
+    body:`Das Beste: <b>Maße einfach ziehen!</b> Ein Maß mit der Maus anfassen und auf ein anderes Brett fallen lassen – beim Drüberhalten zeigt ein <b>Ghost-Segment</b> live, wie viel Platz es einnehmen würde. Passt es nicht (Reserve!), nimmt das Brett es gar nicht erst an.<br><br>Diese Zeile hier fügt per Klick (oder <kbd>N</kbd>) ein <b>leeres Brett</b> ein – Länge wählen, Maße hineinziehen. <b>Leergeräumte Bretter verschwinden automatisch.</b> Tastatur-Weg: <kbd>M</kbd> = verschieben.` },
+  { target:'#schStats', title:'Schnitt · Kennzahlen live',
+    body:`Bei jedem Eingriff siehst du sofort: <b>Bretter, verschiedene Längen, cbm berechnet vs. bestellt, Rest/Verschnitt in %</b>. So erkennt man direkt, ob eine Handänderung besser oder schlechter ist.<br><br><kbd>A</kbd> rechnet automatisch neu, <kbd>Esc</kbd> übernimmt → weiter zum Preis.` },
+
+  // ── Preis & Zuschläge ──
+  { setup:()=>schnittDone(), target:'.histtable', title:'Weg 1 · Preis bestimmen',
     body:`Vorbelegt ist der <b>letzte Preis dieses Kunden</b> (oberste Zeile). Mit <kbd>↑</kbd><kbd>↓</kbd> eine ältere Rechnung übernehmen oder einfach neuen Preis tippen.<br><br>Spalten: <b>Δ Vorwert</b> und <b>Δ Standard</b>. Ganz unten der Standardpreis – bei Neukunden steht er dadurch oben. Weiter mit <kbd>Enter</kbd> / <kbd>Esc</kbd>.` },
   { setup:()=>confirmPreis(), target:'.zustable', title:'Weg 1 · Zuschläge wählen',
-    body:`Verarbeitungen mehrfach markieren mit <kbd>Leertaste</kbd> (oder <kbd>Strg</kbd>+Klick), dann <kbd>Enter</kbd>. Ohne Zuschlag: einfach <kbd>Esc</kbd>.` },
+    body:`Verarbeitungen mehrfach markieren mit <kbd>Leertaste</kbd> (oder Klick), dann <kbd>Enter</kbd>. Ohne Zuschlag: einfach <kbd>Esc</kbd>.<br><br>Übrigens: Wählt man <b>Kappen</b> bei einer aufgeteilten Position, warnt das Tool – gekapptes Holz wird ja nicht auf Volllängen aufgeteilt.` },
   { setup:()=>{ zSel=new Set([0,1]); zIdx=1; renderZ(); startZuschlagPrices(); }, target:'.pricebox', title:'Weg 1 · Preis je Zuschlag',
     body:`Für <b>jeden</b> markierten Zuschlag öffnet sich exakt dasselbe Preis-Menü – mit eigener Historie. Nacheinander durchbestätigen mit <kbd>Enter</kbd> / <kbd>Esc</kbd>.` },
   { setup:()=>demoFinalize(), target:'#posList', title:'Weg 1 · fertig ✔',
-    body:`Position 1 steht im Angebot. <b>Links</b> die interne Aufschlüsselung (Holz + Zuschläge, all-in), <b>rechts</b> das Kunden-PDF mit nur dem Gesamtpreis. <br><br>Jetzt zeigen wir den <b>zweiten Weg</b> – weiter mit <kbd>Enter</kbd>.` },
+    body:`Position 1 steht im Angebot – <b>mit Schnittaufteilung</b>: links die interne Aufschlüsselung samt Schnitt-Block, rechts das Kunden-PDF, das die gelieferten Volllängen mit „Abschnitte kundenseits" zeigt.<br><br>Jetzt der <b>zweite Weg</b> – weiter mit <kbd>Enter</kbd>.` },
 
   // ── Weg 2: Aus altem Angebot kopieren ──
   { setup:()=>{ openPositionChoice(); choiceIdx=1; renderChoice(); }, target:'.choice', title:'Weg 2 · Aus altem Angebot kopieren',
     body:`Für Wiederholungsbestellungen der schnellste Weg. Wir wählen jetzt <b>Option 2</b> (Taste <kbd>2</kbd>).` },
   { setup:()=>{ choiceIdx=1; confirmChoice(); }, target:'.restable', title:'Weg 2 · Frühere Bestellung wählen',
-    body:`Hier stehen <b>alle bisherigen Bestellungen des Kunden</b> (Angebot-Nr, Datum, Artikel, Maß, Länge, Preis, Zuschläge). Zeile mit <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> (oder Klick) übernehmen.` },
+    body:`Hier stehen <b>alle bisherigen Bestellungen des Kunden</b> (Angebot-Nr, Datum, Artikel, Maß, Länge, Preis, Zuschläge) – oben mit Suchfeld. Zeile mit <kbd>↑</kbd><kbd>↓</kbd> + <kbd>Enter</kbd> (oder Klick) übernehmen.` },
   { setup:()=>{ copyIdx=0; chooseCopy(); }, target:'table.aufmass', title:'Weg 2 · Nur die Länge',
-    body:`Du landest direkt im Aufmaß – <b>Länge ist markiert</b>, Stärke/Breite/Stück kommen aus der Kopie. Länge ändern, dann <kbd>Strg</kbd>+<kbd>Enter</kbd> für weitere Längen oder gleich <kbd>Esc</kbd>.` },
+    body:`Du landest direkt im Aufmaß – <b>Länge ist markiert</b>, Stärke/Breite/Stück kommen aus der Kopie. Länge ändern, dann <kbd>Strg</kbd>+<kbd>Enter</kbd> für weitere Längen oder gleich <kbd>Esc</kbd>. (Auch hier gilt: krumme Längen → Schnittfrage.)` },
   { setup:()=>demoCopyAuf(), target:'.cprompt', title:'Weg 2 · Preise nachbearbeiten?',
-    body:`Preis <b>und</b> Zuschläge sind aus dem alten Angebot übernommen. Die Abfrage: <b>Nein</b> (Vorauswahl) = so übernehmen, <b>Ja</b> = Preise durchgehen (dann vorbelegt mit dem kopierten Wert). Wählbar mit <kbd>N</kbd>/<kbd>J</kbd> bzw. <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd>.` },
+    body:`Preis <b>und</b> Zuschläge sind aus dem alten Angebot übernommen. Die Abfrage: <b>Nein</b> (Vorauswahl) = so übernehmen, <b>Ja</b> = Preise durchgehen (vorbelegt mit dem kopierten Wert). Wählbar mit <kbd>N</kbd>/<kbd>J</kbd> bzw. <kbd>←</kbd><kbd>→</kbd> + <kbd>Enter</kbd>.` },
   { setup:()=>{ promptIdx=0; confirmPrompt(); }, target:'#posList', title:'Weg 2 · fertig ✔',
-    body:`Position 2 wurde in Sekunden kopiert – ganz ohne Preis- und Zuschlag-Klicks. <br><br>Zum Schluss noch: Positionen <b>nachträglich bearbeiten</b> – weiter mit <kbd>Enter</kbd>.` },
+    body:`Position 2 wurde in Sekunden kopiert – ganz ohne Preis- und Zuschlag-Klicks.<br><br>Jetzt das Wichtigste für den Alltag: <b>Wie komme ich nachträglich wieder in die Dialoge?</b> Weiter mit <kbd>Enter</kbd>.` },
 
-  // ── Nachträglich bearbeiten ──
+  // ── Nachträglich bearbeiten: wieder in die Dialoge kommen ──
   { target:'.posblock .edithint', title:'Bearbeiten · zwei Wege',
-    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen: die Tabellen arbeiten <b>wie in Excel</b> – jede weiße Zelle ist direkt überschreibbar. Und „<b>✎ Menü</b>" öffnet den vollen Dialog inklusive Preishistorie.` },
-  { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Bereich anklicken',
-    body:`Klick z. B. auf den <b>Holzpreis</b> einer Position → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position (kein Durchklicken). Genauso für Zuschläge und Aufmaß.` },
-  { setup:()=>confirmPreis(), target:'#posList table.pgrid', title:'Bearbeiten · wie in Excel',
-    body:`Noch schneller: <b>in eine Zelle klicken</b> und den Wert überschreiben – Stückzahl, Länge, Stärke, Breite, Pakete, aber auch Holz- und Zuschlagspreise.<br><br><kbd>Enter</kbd> und <kbd>Tab</kbd> springen eine Zelle nach rechts, <kbd>Umschalt</kbd>+ dazu nach links. Mit den <kbd>Pfeiltasten</kbd> geht es in jede Richtung durch die Zellen, <kbd>Esc</kbd> bricht ab. Mengen, m³ und Summen rechnen sofort mit.<br><br>Das war die Tour! Im Alltag: <kbd>F3</kbd> → <b>Neu</b> oder <b>Kopieren</b>, und los. Viel Erfolg!` },
+    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen:<br><br>· <b>Wie in Excel:</b> jede weiße Zelle direkt überschreiben.<br>· <b>„✎ Menü":</b> öffnet den vollen Dialog wieder – bei Aufmaß, Holzpreis, jedem Zuschlag, den Zuschlägen gesamt und der Schnittaufteilung.` },
+  { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Dialog wieder öffnen',
+    body:`Klick auf „✎ Menü" beim <b>Holzpreis</b> → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position. Genauso: „✎ Menü" beim Aufmaß (neue Zeilen erfassen) und bei den Zuschlägen. <b>Zurück</b> verwirft die Änderung.` },
+  { setup:()=>confirmPreis(), target:'.posblock [data-edit=\'schnitt\']', title:'Bearbeiten · Schnittaufteilung wieder öffnen',
+    body:`Auch die <b>Schnittaufteilung</b> hat ihr „✎ Menü" – ein Klick, und du bist wieder im Modal mit Drag & Drop, Karten und Kennzahlen. Positionen <b>ohne</b> Aufteilung zeigen stattdessen einen 🪚-Knopf zum Nachrüsten.<br><br>Wichtig: Änderst du Maße in der Tabelle, <b>rechnet die Aufteilung automatisch neu</b> – deine Handarbeit bleibt erhalten, solange sich die Stäbe nicht ändern.` },
+  { target:'#posList table.pgrid', title:'Bearbeiten · wie in Excel',
+    body:`Der schnellste Weg: <b>in eine Zelle klicken</b> und überschreiben – Stückzahl, Länge, Stärke, Breite, auch Holz- und Zuschlagspreise.<br><br><kbd>Enter</kbd>/<kbd>Tab</kbd> = Zelle rechts, <kbd>Pfeiltasten</kbd> in jede Richtung, <kbd>Esc</kbd> bricht ab. Mengen, cbm, Schnittaufteilung und Summen rechnen sofort mit. <b>Rechtsklick auf Spaltenköpfe sortiert</b> – Rangfolge fest: Länge → Stärke → Breite.` },
+  { target:'select.beinhsel', title:'Bearbeiten · Berechnungseinheit',
+    body:`Die <b>Berechnungseinheit</b> einer Position stellst du hier im Preisaufbau um – Menge und Einzelpreis im PDF rechnen sofort um.<br><br>Und oben neben „leeren" gibt es <b>„Einheit für alle …"</b>: ein Klick stellt das ganze Angebot z. B. auf lfdm um.` },
+
+  // ── Die zwei PDFs, Speichern/Laden ──
+  { target:'.viewtabs', title:'Zwei PDFs',
+    body:`Rechts liegen <b>zwei Dokumente</b> als echte A4-Vorschau mit Seitenumbruch:<br><br>· <b>📄 Angebot (Kunde):</b> nur All-in-Preise, Verarbeitungen ohne Einzelpreis, Schnittzeilen mit „Abschnitte kundenseits".<br>· <b>🏭 Werksauftrag:</b> interner Beleg fürs Werk – geht <b>nicht</b> an den Kunden.` },
+  { setup:()=>{ const b=document.querySelector('.vtab[data-view="werk"]'); if(b) b.click(); }, target:'#sheet', title:'Der Werksauftrag',
+    body:`Kopf wie euer echter Beleg (Nr., Barcode, Lagerort-/Trockenkammer-Ankreuzfelder, Termin), Inhalt digital: oben die <b>Brettliste</b> (was insgesamt zu produzieren ist), darunter die <b>Schnittbilder je Position</b>.<br><br><b>Es führt immer das Einschnittmaß</b> – das Fertigmaß steht klein in Klammern dahinter, denn gesägt wird nach EM.` },
+  { setup:()=>{ const b=document.querySelector('.vtab[data-view="angebot"]'); if(b) b.click(); }, target:'#btnSave', title:'Speichern & Laden',
+    body:`Oben in der Kopfleiste: <b>💾 Speichern</b> lädt das komplette Angebot als JSON-Datei herunter (offline-tauglich, per E-Mail weitergebbar), <b>📂 Laden</b> liest sie wieder ein – inklusive Schnittaufteilung, Trägern und Berechnungseinheit.` },
+  { target:'#btnNew', title:'Das war die Tour! ✔',
+    body:`Der Alltag in einem Satz: <kbd>F3</kbd> → Artikel → Aufmaß (<kbd>Esc</kbd>) → ggf. Schnitt (<kbd>Esc</kbd>) → Preis (<kbd>Esc</kbd>) → Zuschläge (<kbd>Esc</kbd>) – fertig. Nachbessern jederzeit per Zellklick oder „✎ Menü".<br><br>Zum Üben mit echten Daten: im Aufmaß oben rechts <b>„🧪 Testbestellung"</b>. Viel Erfolg!` },
 ];
 
 function startTour(){
@@ -1670,6 +3189,8 @@ function endTour(){
   const d=el('tourBlock'); if(d) d.remove();
   closeModal(); draft=null; editMode=null;
   positions = tourSnapshot ? JSON.parse(JSON.stringify(tourSnapshot)) : positions;
+  sheetView='angebot';                                   // falls die Tour auf dem Werksauftrag endete
+  document.querySelectorAll('.vtab').forEach(b=> b.classList.toggle('on', b.dataset.view==='angebot'));
   renderAll();
 }
 function buildTourDom(){
