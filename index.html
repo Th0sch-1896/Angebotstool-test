@@ -301,6 +301,9 @@
   .sheet .wsseg.wsrest { background: repeating-linear-gradient(45deg, oklch(0.96 0.035 85), oklch(0.96 0.035 85) 5px, white 5px, white 10px); }
   .sheet .wsrest-lbl { flex: 0 0 62px; text-align: right; font-size: 0.56rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
   .sheet .wsplain { font-size: 0.62rem; color: var(--ink-2); display: grid; gap: 1px; margin: 3px 0; font-variant-numeric: tabular-nums; }
+  /* Verpackungszeile (Paketstruktur) unter dem Positionskopf – Werksauftrag */
+  .sheet .wspak { font-size: 0.62rem; color: var(--ink-2); margin: 2px 0 3px; font-variant-numeric: tabular-nums; }
+  .sheet .wspak b { color: var(--ink); }
   .viewernote { font-size: 0.76rem; color: var(--ink-2); margin: 0 4px 12px; display: flex; gap: 6px; align-items: baseline; }
 
   /* ── Modal ── */
@@ -430,7 +433,7 @@
   .bgslider button.on { color: white; }
   .bgslider button:not(.on):hover { color: var(--accent); }
   .bgwrap { position: relative; }
-  /* EM-Zugabe als Badge direkt am EM-Maß: „+10 mm ✎" – Klick öffnet das Mini-Menü */
+  /* EM-Zugabe als Badge direkt am EM-Maß: „+0 mm ✎" (Standard 0) – Klick öffnet das Mini-Menü */
   .embadge { display: inline-flex; align-items: center; gap: 3px; font-size: 0.64rem; font-weight: 700;
              background: oklch(0.94 0.025 150); color: var(--accent); border-radius: 99px; padding: 1px 8px;
              margin-left: 6px; cursor: pointer; white-space: nowrap; }
@@ -655,6 +658,38 @@
                   background: repeating-linear-gradient(45deg, oklch(0.97 0.012 150), oklch(0.97 0.012 150) 8px, white 8px, white 16px); }
   .schseg.emptyseg { background: none; border: none; color: var(--accent); font-weight: 600; cursor: default; }
   .schseg.rest { background: repeating-linear-gradient(45deg, var(--warn-soft), var(--warn-soft) 6px, oklch(0.99 0.01 85) 6px, oklch(0.99 0.01 85) 12px); cursor: default; }
+  /* Master-Baukasten „Schnittmuster (Master)" (nur Paket-Positionen) */
+  .schmaster { margin: 6px 10px 10px; border: 1px solid var(--line); border-radius: 8px; background: white; overflow: hidden; }
+  .schmhead { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: var(--panel-2); font-size: 0.78rem; border-bottom: 1px solid var(--line); }
+  .schmhead .lbl { color: var(--ink-2); font-size: 0.72rem; }
+  .schmvorrat { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 12px; border-bottom: 1px dashed var(--line); font-size: 0.78rem; }
+  .schmvlbl { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-2); font-weight: 600; }
+  .schmchip { border: 1px solid var(--line); background: var(--panel-2); border-radius: 999px; padding: 3px 12px; cursor: pointer; font-size: 0.78rem; font-variant-numeric: tabular-nums; display: inline-flex; align-items: center; gap: 6px; }
+  .schmchip:hover { border-color: var(--accent); background: var(--accent-soft); }
+  .schmchip .fre { font-size: 0.68rem; color: var(--ink-2); border-left: 1px solid var(--line); padding-left: 6px; }
+  .schmchip .fre.offen { color: var(--warn); font-weight: 700; }
+  /* Hinweis: Master brauchen den Vorrat noch nicht auf – Rest läuft in die Automatik */
+  .schmwarn { margin: 0; padding: 6px 12px; background: var(--warn-soft); color: var(--ink); font-size: 0.74rem; border-bottom: 1px dashed var(--line); }
+  .schmwarn b { color: var(--warn); }
+  .schmcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 8px; padding: 8px 12px; }
+  .schmcard { border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; cursor: pointer; background: white; }
+  .schmcard:hover { border-color: var(--accent); }
+  .schmcard.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); background: var(--accent-soft); }
+  .schmcard .mhd { display: flex; align-items: center; gap: 6px; font-size: 0.74rem; color: var(--ink-2); margin-bottom: 5px; }
+  .schmcard .mhd span:first-child { font-weight: 700; color: var(--ink); }
+  .schmcard .mx { margin-left: auto; border: none; background: none; cursor: pointer; color: var(--ink-2); font-size: 0.78rem; padding: 0 2px; }
+  .schmcard .mx:hover { color: var(--error); }
+  .schmcard .mbar { display: flex; height: 24px; border: 1px solid var(--line); border-radius: 5px; overflow: hidden; background: repeating-linear-gradient(45deg, var(--panel-2) 0 6px, white 6px 12px); }
+  .schmcard .mseg { border: none; border-right: 1px solid white; background: var(--wood-soft); color: var(--ink); font-size: 0.74rem; font-weight: 600; cursor: pointer; min-width: 26px; font-variant-numeric: tabular-nums; }
+  .schmcard .mseg:hover { background: var(--warn-soft); text-decoration: line-through; }
+  .schmcard .mrest { display: block; }
+  .schmcard .mempty { align-self: center; margin: 0 auto; font-size: 0.7rem; color: var(--ink-2); }
+  .schmcard .mft { font-size: 0.72rem; color: var(--ink-2); margin-top: 5px; font-variant-numeric: tabular-nums; }
+  .schmcard .mft.warn { color: var(--warn); font-weight: 600; }
+  .schmaster select.schmlen { padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 0.74rem; }
+  .schmadd { border: 1.5px dashed var(--accent); background: none; border-radius: 8px; color: var(--accent); cursor: pointer; font-size: 0.78rem; font-weight: 600; min-height: 64px; }
+  .schmadd:hover { background: var(--accent-soft); }
+  .schmcard.schrej { animation: schrej 500ms ease-out; }
   .schrest { flex: 0 0 96px; text-align: right; font-size: 0.78rem; color: var(--ink-2); }
   .schrest.warn { color: var(--warn); font-weight: 600; }
   .schrow.schnew { justify-content: center; gap: 8px; margin: 8px 10px 10px; padding: 8px 12px; border: 1.5px dashed var(--accent);
@@ -866,9 +901,7 @@ function posVol(pos){
   if(pos.schnitt && pos.schnitt.groups.length && (pos.laengeBasis||'prod')==='prod') return schnittVol(pos);
   return pos.measures.reduce((s,m)=>s+m.vol,0);
 }
-// Palette/Box (Kategorie 'stk'): keine cbm – der Preis gilt je Stück (Anzahl × all-in)
 function posSum(pos){
-  if(posCat(pos)==='stk') return pos.measures.reduce((s,m)=>s+totOf(m),0) * allIn(pos);
   return posVol(pos) * allIn(pos);
 }
 
@@ -929,14 +962,16 @@ let pickIdx = 0;       // markierte Zeile
 
 function openArtikel(){
   currentStep = 'artikel';
-  draft = null;
+  // Artikel-Tausch (editMode 'artikel'): draft bleibt bestehen – nur der Artikel wird ersetzt
+  const swap = !!(editMode && editMode.aspect==='artikel');
+  if(!swap) draft = null;
   ov.hidden = false;
   ov.innerHTML = `
     <div class="modal">
       <div class="mhead">
-        ${backBtn('Neue Position anlegen')}
-        <h2>Position erfassen</h2>
-        ${stepper('artikel')}
+        ${backBtn(swap?'Abbrechen – Artikel behalten':'Neue Position anlegen')}
+        <h2>${swap?'Artikel wechseln':'Position erfassen'}</h2>
+        ${swap?'':stepper('artikel')}
         <span class="spacer"></span>
         <button class="linkish" data-close title="Abbrechen (Esc)">✕</button>
       </div>
@@ -969,13 +1004,17 @@ function openArtikel(){
         <button class="primary" id="pickGo">Aufmaß erfassen <kbd>Enter</kbd></button>
       </div>
     </div>`;
-  ov.querySelector('[data-close]').onclick = closeModal;
-  wireBack(()=>openPositionChoice());
+  ov.querySelector('[data-close]').onclick = swap ? cancelEdit : closeModal;
+  wireBack(()=> swap ? cancelEdit() : openPositionChoice());
   el('pickGo').onclick = () => chooseArtikel();
+  if(swap) el('pickGo').innerHTML = 'Artikel übernehmen → Preis <kbd>Enter</kbd>';
   el('q').addEventListener('input', () => { applyFilterFromSearch(); });
   renderPickNav();
   applyFilter();
-  setTimeout(()=>{ const q=el('q'); if(q) q.focus(); }, 30);
+  // Beim Tausch die Suche mit dem aktuellen Artikelnamen vorbelegen – so stehen die
+  // Geschwister (gleicher Artikel, andere Holzart) sofort in der Liste
+  if(swap){ el('q').value = draft.cat.a; applyFilterFromSearch(); }
+  setTimeout(()=>{ const q=el('q'); if(q){ q.focus(); if(swap) q.select(); } }, 30);
 }
 
 function renderPickNav(){
@@ -1146,7 +1185,7 @@ function boxSVG(anz){
 // daher der Faktor 0,6: Rechteckvolumen × Faktor = Festmeter. Maßkette nur Breite × Höhe.
 function rundholzSVG(m){
   const c1='#EED9B8', c2='#B08954', ring='#D9BC90', in2='var(--ink-2)', ink='var(--ink)';
-  const B=+m.breite||0, H=+m.hoehe||0;
+  const B=(+m.breite||0)/1000, H=(+m.hoehe||0)/1000;      // Eingabe in mm → Anzeige in m
   const x0=52, y0=34, W=216, Hh=102;                 // Wanne (Rechteck)
   const r=17, cols=6, rows=3;                        // 6 × 3 Stämme füllen das Rechteck
   let logs='';
@@ -1191,6 +1230,21 @@ function schuettSVG(m){
 function chooseArtikel(){
   const c = pickRows[pickIdx];
   if(!c) return;
+  // Artikel-Tausch (Kundenwunsch 11.08.2026: „Lärche → Douglasie, ohne alle Maße neu
+  // einzugeben"): NUR der Artikel wird ersetzt – Aufmaße, Schnittaufteilung (inkl.
+  // Master), EM, Berechnungseinheit und Zuschläge bleiben. Danach öffnet sich das
+  // Preis-Menü mit der Historie des NEUEN Artikels, der bisherige Preis als Vergleich.
+  if(editMode && editMode.aspect==='artikel'){
+    const alt = draft.cat;
+    if(c.id===alt.id){ cancelEdit(); return; }             // derselbe Artikel → nichts zu tun
+    draft.cat = c; draft.desc = c.a;
+    editMode.aspect = 'preis';
+    openPreis({ titel:'Holzpreis wählen – Artikel getauscht', einheit:c.e, std:c.std, hist:c.hist,
+      artLabel:`${c.a}${c.h?' '+holzName(c.h):''}`,
+      current:{preis:draft.woodPrice, label:`bisheriger Preis (${alt.a}${alt.h?' '+holzName(alt.h):''})`},
+      onConfirm:(v)=>{ draft.woodPrice=v; saveEdit(); } });
+    return;
+  }
   draft = { cat:c, measures:[], woodPrice:null, surcharges:[] };
   openAufmass();
 }
@@ -1198,15 +1252,17 @@ function chooseArtikel(){
 // ══════════ SCHRITT 2: Aufmaßerfassung ══════════
 // Stückzahl aus Aufbau: mit Paket = Pakete × Reihen × Lagen, ohne Paket = direkte Stückzahl
 // Stück je Paket: entweder aus Reihen × Lagen berechnet oder direkt eingetippt
-function stkJe(m){ if(TR_CAT(m.traeger||'')==='stk') return 1; return (m.reihen>0 && m.lagen>0) ? m.reihen*m.lagen : (m.stueck||0); }
+function stkJe(m){ return (m.reihen>0 && m.lagen>0) ? m.reihen*m.lagen : (m.stueck||0); }
 // Stück gesamt: Pakete sind ein reiner Multiplikator (0 = kein Paket); Palette/Box zählen nur die Anzahl
-function stkOf(m){ if(TR_CAT(m.traeger||'')==='stk') return +m.pakete||0; const je = stkJe(m); return m.pakete>0 ? m.pakete*je : je; }
+function stkOf(m){ const je = stkJe(m); return m.pakete>0 ? m.pakete*je : je; }
 // ── Einschnittmaß (EM) ─────────────────────────────────────────────────────────
 // Das Einschnittmaß ist das Maß, mit dem eingeschnitten wird: es liegt über dem
 // Fertigmaß, das der Kunde bestellt (Trocknungs- und Hobelzugabe). Die cbm werden
 // standardmäßig aus dem EM gerechnet, auf Wunsch aber aus dem Fertig-/Kundenmaß.
-// Zugabe entweder absolut in mm (Standard 10 mm) oder prozentual (Standard 2,4 %).
-const EM_DEF = { mm: 10, pct: 2.4 };
+// Zugabe entweder absolut in mm oder prozentual. Standard seit 11.08.2026: 0 mm
+// (Tester-Feedback) – die Zugabe wird nur gesetzt, wenn sie wirklich gebraucht wird
+// (Trocknen + Hobeln typisch 10 mm, nur Trocknen 2,4 %, nur Hobeln 6 mm).
+const EM_DEF = { mm: 0, pct: 2.4 };
 const rnd1 = v => Math.round(v*10)/10;
 // Fertigmaß → Einschnittmaß
 function emUp(v, mode, val){ v=+v||0; if(!(v>0)) return 0; return rnd1(mode==='pct' ? v*(1+(+val||0)/100) : v+(+val||0)); }
@@ -1217,13 +1273,13 @@ function emDefaults(t){ if(!t) return; if(!t.emMode) t.emMode='mm'; if(!t.emV) t
 // Welches Maßpaar geht in die cbm? (basis 'em' = Einschnittmaß, 'roh' = Kunden-/Fertigmaß)
 function effS(m){ return (m.basis==='roh') ? (+m.staerke||0) : (+m.emStaerke || +m.staerke || 0); }
 function effB(m){ return (m.basis==='roh') ? (+m.breite||0)  : (+m.emBreite  || +m.breite  || 0); }
-// Länge wird in ZENTIMETERN erfasst → für cbm durch 100 teilen.
-// Rundholz/Schüttgut rechnen auf Ladungsmaßen in METERN, Palette/Box haben keine cbm.
+// Länge wird in ZENTIMETERN erfasst → für cbm durch 100 teilen. Rundholz/Schüttgut
+// rechnen seit 11.08.2026 (Tester-Feedback) mit denselben Einheiten wie das Paket:
+// Länge in cm, Breite/Höhe in mm (vorher Meter).
 function volOf(m){
   const cat = TR_CAT(m.traeger||'');
-  if(cat==='rund')    return (m.faktor>0?+m.faktor:RUND_FAKTOR) * (+m.laenge||0) * (+m.breite||0) * (+m.hoehe||0) * (1+(+m.zfaktor||0)/100);
-  if(cat==='schuett') return (m.pakete>0?+m.pakete:1) * (+m.laenge||0) * (+m.breite||0) * (+m.hoehe||0);
-  if(cat==='stk')     return 0;
+  if(cat==='rund')    return (m.faktor>0?+m.faktor:RUND_FAKTOR) * ((+m.laenge||0)/100) * ((+m.breite||0)/1000) * ((+m.hoehe||0)/1000) * (1+(+m.zfaktor||0)/100);
+  if(cat==='schuett') return (m.pakete>0?+m.pakete:1) * ((+m.laenge||0)/100) * ((+m.breite||0)/1000) * ((+m.hoehe||0)/1000);
   return stkOf(m) * (m.laenge/100) * (effS(m)/1000) * (effB(m)/1000);
 }
 // Stück gesamt einer bereits erfassten Zeile (m.total wird beim Übernehmen gesetzt)
@@ -1238,10 +1294,12 @@ function totOf(m){ return m.total!=null ? m.total : stkOf(m); }
 const TRAEGER = [['',''],['paket','Paket'],['palette','Palette'],['box','Box'],['rundholz','Rundholz'],['schuett','Schüttgut']];
 const TRAEGER_LABEL = {'':'–', paket:'Paket', palette:'Palette', box:'Box', rundholz:'Rundholz', schuett:'Schüttgut'};
 const TRAEGER_ANZ   = {'':'Anzahl', paket:'Pakete', palette:'Paletten', box:'Boxen', rundholz:'Faktor', schuett:'Anzahl'};
-const TR_CAT = tr => (tr==='palette'||tr==='box') ? 'stk' : (tr==='rundholz') ? 'rund' : (tr==='schuett') ? 'schuett' : 'norm';
-const TR_BEINH_FIX = {stk:'stk', rund:'fm', schuett:'cbm'};       // norm: frei wählbar
+// Palette/Box erfassen seit 11.08.2026 (Tester-Feedback) ANALOG PAKET – volle Maße,
+// nur Beschriftung und Grafik unterscheiden sich. Sonderkategorien nur noch Rundholz/Schüttgut.
+const TR_CAT = tr => (tr==='rundholz') ? 'rund' : (tr==='schuett') ? 'schuett' : 'norm';
+const TR_BEINH_FIX = {rund:'fm', schuett:'cbm'};                  // norm (auch Palette/Box): frei wählbar
 const RUND_FAKTOR = 0.6;                                          // Rundholz-Faktor, änderbar je Zeile
-const RUND_B_DEF = 2.3, RUND_H_DEF = 2.0;                         // Rundholz-Wanne: Default Breite × Höhe in m, überschreibbar
+const RUND_B_DEF = 2300, RUND_H_DEF = 2000;                       // Rundholz-Wanne: Default Breite × Höhe in mm, überschreibbar
 // Kategorie einer Position = Kategorie ihrer ersten Aufmaßzeile (Mischen ist gesperrt)
 const posCat = t => (t && t.measures && t.measures.length) ? TR_CAT(t.measures[0].traeger||'') : 'norm';
 // Paketaufbau: ganz unten immer 2 Unterleger (100 mm), zwischen den Lagen 20-mm-Stapelleisten
@@ -1342,7 +1400,7 @@ function wireSort(root, t, redraw){
 // scope = 'd' (Aufmaß-Dialog) oder der Positionsindex.
 // Berechnungsgrundlage direkt im Tabellenkopf: der Slider spannt sich über die vier
 // Maßspalten – linke Hälfte = Fertigmaß, rechte Hälfte = EM-Maß. Die EM-Zugabe sitzt
-// als Badge („+10 mm ✎") direkt am EM-Maß; Klick öffnet ein Mini-Menü mit genau zwei
+// als Badge („+0 mm ✎", Standard 0) direkt am EM-Maß; Klick öffnet ein Mini-Menü mit genau zwei
 // Zeilen (in mm / in %). Jede Änderung wirkt sofort auf ALLE erfassten Zeilen.
 let emPopScope = null;                    // welches Zugabe-Menü gerade offen ist ('d' oder Positionsindex)
 function emBadgeText(t){
@@ -1532,7 +1590,7 @@ function openAufmass(prefill){
               </tr></thead>
               <tbody><tr id="aufRow">
                 <td data-col="traeger"><select id="f_traeger">${TRAEGER.map(([v,t])=>`<option value="${v}"${pv('traeger','')===v?' selected':''}>${t||'– ohne –'}</option>`).join('')}</select></td>
-                <td data-col="pakete"><input id="f_pakete" type="text" inputmode="decimal" value="${pv('pakete',0)}"></td>
+                <td data-col="pakete"><input id="f_pakete" type="text" inputmode="decimal" value="${pv('pakete',0)||''}"></td>
                 <td data-col="reihen"><input id="f_reihen" type="text" inputmode="decimal" value="${pv('reihen','')}"></td>
                 <td data-col="lagen"><input id="f_lagen" type="text" inputmode="decimal" value="${pv('lagen','')}"></td>
                 <td data-col="stueck"><input id="f_stueck" type="text" inputmode="decimal" value="${pv('stueck','')}"></td>
@@ -1667,7 +1725,7 @@ function stepAufField(from, dir){
 // changed = das gerade geänderte Feld, '*' = beide EM-Felder neu aus Stärke/Breite ableiten.
 function syncEmFields(changed){
   if(!draft) return;
-  if(TR_CAT(el('f_traeger') ? el('f_traeger').value||'' : '')!=='norm') return;   // Rundholz/Schüttgut/Palette: Zellen sind umgewidmet, kein EM
+  if(TR_CAT(el('f_traeger') ? el('f_traeger').value||'' : '')!=='norm') return;   // Rundholz/Schüttgut: Zellen sind umgewidmet, kein EM
   const mode = draft.emMode, val = emValOf(draft);
   Object.entries(EM_PAIR).forEach(([roh, em])=>{
     const R = el('f_'+roh), E = el('f_'+em);
@@ -1681,10 +1739,8 @@ function syncEmFields(changed){
 }
 function readAuf(){
   const tr = el('f_traeger').value||'', cat = TR_CAT(tr);
-  // Palette/Box: nur die Anzahl. Rundholz/Schüttgut: Ladungsmaße in METERN –
-  // die Zellen Stärke/Breite tragen dann Breite/Höhe (die Köpfe sind umbeschriftet).
-  if(cat==='stk') return { traeger:tr, pakete:npv('f_pakete'), reihen:0, lagen:0, stueck:1,
-              laenge:0, staerke:0, breite:0, emStaerke:0, emBreite:0 };
+  // Rundholz/Schüttgut: Ladungsmaße (Länge cm, Breite/Höhe mm) – die Zellen
+  // Stärke/Breite tragen dann Breite/Höhe (die Köpfe sind umbeschriftet).
   if(cat==='rund') return { traeger:tr, faktor:npv('f_pakete')||RUND_FAKTOR, pakete:0, reihen:0, lagen:0, stueck:1,
               laenge:npv('f_laenge'), breite:npv('f_staerke'), hoehe:npv('f_breite'), zfaktor:npv('f_emStaerke'),
               staerke:0, emStaerke:0, emBreite:0 };
@@ -1726,7 +1782,7 @@ function updateAufMode(){
   const st = el('f_stueck'), rh = el('f_reihen'), lg = el('f_lagen'), cnt = el('f_pakete');
   const tr = el('f_traeger').value;               // '' | paket | palette | box | rundholz | schuett
   const cat = TR_CAT(tr), lade = cat==='rund'||cat==='schuett';
-  const isPaket = tr==='paket';
+  const isBundle = cat==='norm' && !!tr;          // Paket/Palette/Box: gleiche Erfassung, nur Beschriftung/Grafik anders
   // Kategoriewechsel: Defaults setzen und Altwerte aus den umgewidmeten Zellen räumen
   // (sonst würde z. B. das vorbefüllte EM-Maß als Zusatz-% gelesen oder cm als Meter)
   const arow = el('aufRow');
@@ -1742,6 +1798,7 @@ function updateAufMode(){
         el('f_staerke').value=''; el('f_breite').value='';
         el('f_emStaerke').value=''; el('f_emBreite').value='';
       } else if(cat==='norm'){ // zurück: Artikel-Standardmaße + EM neu ableiten
+        cnt.value='';          // Faktor (0,6) bzw. Anzahl aus den Sondermodi nicht mitnehmen – Anzahl startet leer, keine 0
         el('f_staerke').value = draft.cat.s ? deStr(draft.cat.s) : '';
         el('f_breite').value  = draft.cat.b ? deStr(draft.cat.b) : '';
         el('f_emStaerke').value=''; el('f_emBreite').value='';
@@ -1757,16 +1814,16 @@ function updateAufMode(){
   if(cat==='norm'){
     cnt.disabled = !tr;                              // ohne Träger keine Anzahl
     if(!tr && (numParse(cnt.value)||0)) cnt.value='';
-    if(!isPaket && ((numParse(rh.value)||0) || (numParse(lg.value)||0))){ rh.value=''; lg.value=''; }   // Reihen/Lagen nur beim Paket
+    if(!isBundle && ((numParse(rh.value)||0) || (numParse(lg.value)||0))){ rh.value=''; lg.value=''; }   // Reihen/Lagen nur mit Träger
     pak = numParse(cnt.value)||0;
-    r = isPaket ? (numParse(rh.value)||0) : 0; l = isPaket ? (numParse(lg.value)||0) : 0;
+    r = isBundle ? (numParse(rh.value)||0) : 0; l = isBundle ? (numParse(lg.value)||0) : 0;
     if(r>0 || l>0) mode='rl';
     else {
       if(st.dataset.computed){ st.value=''; delete st.dataset.computed; }   // Reihen/Lagen geleert → Stück wieder freigeben
       mode = (numParse(st.value)||0)>0 ? 'stk' : 'open';
     }
-    rh.disabled = !isPaket || (mode==='stk');
-    lg.disabled = !isPaket || (mode==='stk');
+    rh.disabled = !isBundle || (mode==='stk');
+    lg.disabled = !isBundle || (mode==='stk');
     st.disabled = (mode==='rl');
     if(mode==='rl'){ st.value = (r*l)||''; st.dataset.computed='1'; }
   } else {
@@ -1775,13 +1832,13 @@ function updateAufMode(){
   }
   const m = readAuf();
   const je = stkJe(m), ges = stkOf(m);
-  // Spalten & Beschriftungen folgen der Trägerkategorie: Palette/Box nur Anzahl,
-  // Rundholz/Schüttgut Ladungsmaße in Metern (Zellen Stärke/Breite = Breite/Höhe).
+  // Spalten & Beschriftungen folgen dem Träger: Paket/Palette/Box identisch (nur Label),
+  // Rundholz/Schüttgut Ladungsmaße (Länge cm, Breite/Höhe mm; Zellen Stärke/Breite = Breite/Höhe).
   const thP = el('thPak');
   thP.firstChild.nodeValue = TRAEGER_ANZ[tr]||'Anzahl';
-  const showRL = cat==='norm' && isPaket;
+  const showRL = isBundle;
   const SHOW = { pakete: cat!=='norm' ? true : !!tr, reihen: showRL, lagen: showRL,
-                 stueck: cat==='norm', laenge: cat!=='stk', staerke: cat!=='stk', breite: cat!=='stk',
+                 stueck: cat==='norm', laenge: true, staerke: true, breite: true,
                  emStaerke: cat==='norm'||cat==='rund', emBreite: cat==='norm' };
   Object.entries(SHOW).forEach(([c,show])=>{
     const th = el('aufHead').querySelector(`th[data-col="${c}"]`);
@@ -1790,18 +1847,18 @@ function updateAufMode(){
     if(td) td.hidden = !show;
   });
   const setTh = (c,txt)=>{ const th=el('aufHead').querySelector(`th[data-col="${c}"]`); if(th) th.firstChild.nodeValue=txt; };
-  setTh('laenge', lade?'Länge (m)':'Länge (cm)');
-  setTh('staerke', lade?'Breite (m)':'Stärke');
-  setTh('breite', lade?'Höhe (m)':'Breite');
+  setTh('laenge', 'Länge (cm)');
+  setTh('staerke', lade?'Breite (mm)':'Stärke');
+  setTh('breite', lade?'Höhe (mm)':'Breite');
   setTh('emStaerke', cat==='rund'?'Zusatz %':'EM Stärke');
-  // Gruppenzeilen: norm = Berechnungsgrundlage + Slider, Rundholz/Schüttgut = „Ladungsmaße", Palette/Box = keine
+  // Gruppenzeilen: norm = Berechnungsgrundlage + Slider, Rundholz/Schüttgut = „Ladungsmaße"
   const capRow = el('grpCapRow'), slidRow = el('grpSlidRow');
   if(capRow && slidRow){
     slidRow.hidden = cat!=='norm';
-    capRow.hidden = cat==='stk';
+    capRow.hidden = false;
     if(lade){
       capRow.innerHTML = `<th class="grp" colspan="2"></th>
-        <th class="grp bgcap ladecap" colspan="3" title="Ladungsmaße in Metern – daraus wird ${cat==='rund'?'fm':'cbm'} gerechnet">Ladungsmaße</th>
+        <th class="grp bgcap ladecap" colspan="3" title="Ladungsmaße – Länge in cm, Breite/Höhe in mm; daraus wird ${cat==='rund'?'fm':'cbm'} gerechnet">Ladungsmaße</th>
         <th class="grp" colspan="${cat==='rund'?4:3}"></th>`;
     } else if(cat==='norm'){
       capRow.innerHTML = `<th class="grp" colspan="${2+(tr?1:0)+(showRL?2:0)}"></th><th class="grp"></th>
@@ -1814,45 +1871,43 @@ function updateAufMode(){
   if(cat==='norm') el('thStueck').firstChild.nodeValue = (tr && pak>0) ? 'Stück/'+kurz : 'Stück ges.';
   const vol = volOf(m);
   const volU = cat==='rund' ? 'fm' : 'cbm';
-  el('thVol').hidden = cat==='stk'; el('tdVol').hidden = cat==='stk';
+  el('thVol').hidden = el('tdVol').hidden = false;
   el('thVol').textContent = '= '+volU + (cat==='norm' ? (draft.basis!=='roh'?' (EM)':' (Fertig)') : '');
   el('volU').textContent = volU;
   el('liveVol').textContent = num3(vol);
-  // Berechnungseinheit: bei Palette/Box (Stück), Rundholz (fm), Schüttgut (cbm) FEST – dann
-  // gibt es nichts zu wählen: Dropdown-Spalte ausblenden, nur EINE Ergebnisspalte zeigen.
+  // Berechnungseinheit: bei Rundholz (fm) und Schüttgut (cbm) FEST – dann gibt es
+  // nichts zu wählen: Dropdown-Spalte ausblenden, nur EINE Ergebnisspalte zeigen.
   if(TR_BEINH_FIX[cat]){ draft.beinh = TR_BEINH_FIX[cat]; el('f_beinh').value = draft.beinh; el('f_beinh').disabled = true; }
   else el('f_beinh').disabled = false;
   el('thBE').hidden = el('tdBE').hidden = cat!=='norm';
   el('thBQ').hidden = el('tdBQ').hidden = lade;            // Ergebnis steht schon in „= fm/cbm"
   const u = draft.beinh||'cbm';
-  el('thBQ').textContent = cat==='stk' ? '= Stück' : '= '+BEINH_LABEL[u];
+  el('thBQ').textContent = '= '+BEINH_LABEL[u];
   el('liveBQ').textContent =
-      cat==='stk' ? (ges>0 ? num(ges,0) : '–')
-    : (ges>0 && m.laenge>0) ? (u==='stk'?num(beQtyRow(m,u),0):num3(beQtyRow(m,u))) : '–';
+    (ges>0 && m.laenge>0) ? (u==='stk'?num(beQtyRow(m,u),0):num3(beQtyRow(m,u))) : '–';
   // Sondermodi: die Grau-Färbung des Fertigmaß/EM-Sliders (mon/moff) hat hier nichts verloren
   if(cat!=='norm'){
     el('aufHead').querySelectorAll('th.mon, th.moff').forEach(t=> t.classList.remove('mon','moff'));
     el('aufRow').querySelectorAll('td.moff').forEach(t=> t.classList.remove('moff'));
   }
+  const trName = TRAEGER_LABEL[tr]||'Paket', trAnz = TRAEGER_ANZ[tr]||'Pakete';
   el('aufHint').innerHTML =
-      cat==='stk'
-        ? `<b>${TRAEGER_LABEL[tr]}:</b> nur die <b>Anzahl</b> erfassen – berechnet wird <b>je Stück</b> (Berechnungseinheit fest „Stück", nicht umstellbar).${pak>0?` Aktuell: <b>${pak} ${TRAEGER_ANZ[tr]}</b>.`:''}`
-    : cat==='rund'
-        ? `<b>Rundholz:</b> Faktor × Länge × Breite × Höhe <b>(in m!)</b> × Zusatzfaktor = <b>fm</b>. Faktor-Standard ${deStr(RUND_FAKTOR)} (änderbar), Zusatzfaktor in % (4 = ×1,04, darf leer bleiben). Einheit fest „fm", nicht umstellbar.`
+      cat==='rund'
+        ? `<b>Rundholz:</b> Faktor × Länge × Breite × Höhe <b>(Länge in cm, Breite/Höhe in mm)</b> × Zusatzfaktor = <b>fm</b>. Faktor-Standard ${deStr(RUND_FAKTOR)} (änderbar), Zusatzfaktor in % (4 = ×1,04, darf leer bleiben). Einheit fest „fm", nicht umstellbar.`
     : cat==='schuett'
-        ? `<b>Schüttgut:</b> Anzahl × Länge × Breite × Höhe <b>(in m!)</b> = <b>cbm</b>. Einheit fest „cbm", nicht umstellbar.`
+        ? `<b>Schüttgut:</b> Anzahl × Länge × Breite × Höhe <b>(Länge in cm, Breite/Höhe in mm)</b> = <b>cbm</b>. Einheit fest „cbm", nicht umstellbar.`
     : !tr
-        ? `<b>Ohne Ladungsträger:</b> Stückzahl direkt eingeben. Links im <b>Träger</b>-Dropdown: <b>Paket</b> (mit Reihen × Lagen), <b>Palette/Box</b> (nur Anzahl, je Stück), <b>Rundholz</b> (fm) oder <b>Schüttgut</b> (cbm).`
+        ? `<b>Ohne Ladungsträger:</b> Stückzahl direkt eingeben. Links im <b>Träger</b>-Dropdown: <b>Paket / Palette / Box</b> (gleiche Erfassung mit Anzahl und Reihen × Lagen), <b>Rundholz</b> (fm) oder <b>Schüttgut</b> (cbm).`
       : mode==='rl'
-        ? `<b>Reihen × Lagen:</b> ${r||'–'} × ${l||'–'} = <b>${je||0}</b> Stück je Paket – die Stückzahl wird daraus berechnet und ist gesperrt.${pak>0?` × ${pak} Paket${pak>1?'e':''} = <b>${ges}</b> Stück gesamt.`:''} Reihen/Lagen leeren gibt die Stückzahl wieder frei.`
+        ? `<b>Reihen × Lagen:</b> ${r||'–'} × ${l||'–'} = <b>${je||0}</b> Stück je ${trName} – die Stückzahl wird daraus berechnet und ist gesperrt.${pak>0?` × ${pak} ${pak>1?trAnz:trName} = <b>${ges}</b> Stück gesamt.`:''} Reihen/Lagen leeren gibt die Stückzahl wieder frei.`
       : mode==='stk'
-        ? `<b>Stückzahl direkt:</b> ${pak>0?`${pak} Paket${pak>1?'e':''} × ${je} Stück = <b>${ges}</b> Stück gesamt`:`<b>${ges}</b> Stück`} – Reihen/Lagen sind gesperrt (werden nicht gebraucht). Stückzahl leeren gibt sie wieder frei.`
-        : `<b>Paket:</b> entweder <b>Reihen × Lagen</b> eingeben (Stückzahl wird berechnet) oder die <b>Stückzahl</b> direkt. Unten liegen immer 2 Unterleger (${PAK_UNTERLEGER} mm), zwischen den Lagen ${PAK_LEISTE}-mm-Stapelleisten – die Grafik rechts zeigt das Gesamtmaß.`;
+        ? `<b>Stückzahl direkt:</b> ${pak>0?`${pak} ${pak>1?trAnz:trName} × ${je} Stück = <b>${ges}</b> Stück gesamt`:`<b>${ges}</b> Stück`} – Reihen/Lagen sind gesperrt (werden nicht gebraucht). Stückzahl leeren gibt sie wieder frei.`
+        : `<b>${trName}:</b> entweder <b>Reihen × Lagen</b> eingeben (Stückzahl wird berechnet) oder die <b>Stückzahl</b> direkt.${tr==='paket'?` Unten liegen immer 2 Unterleger (${PAK_UNTERLEGER} mm), zwischen den Lagen ${PAK_LEISTE}-mm-Stapelleisten – die Grafik rechts zeigt das Gesamtmaß.`:` Die Grafik rechts zeigt ${tr==='palette'?'die Palette':'die Gitterbox'} schematisch.`}`;
   // Grafik rechts: normalerweise die Zeile, die oben gerade eingegeben wird.
   // Klickt man unten in eine erfasste Zeile, zeigt sie genau dieses Objekt (focusRow).
   const fr = (focusRow!=null) ? draft.measures[focusRow] : null;
   if(fr) updateAufGraphics(fr, fr.traeger==='paket' && fr.reihen>0 && fr.lagen>0);
-  else   updateAufGraphics(m, isPaket && r>0 && l>0);
+  else   updateAufGraphics(m, tr==='paket' && r>0 && l>0);
   renderPinCol();
   if(cat==='norm'){ paintBasis(); refreshEmBar(); }
 }
@@ -1900,10 +1955,7 @@ function commitAuf(){
     el('f_traeger').focus();
     return;
   }
-  if(cat==='stk'){
-    if(!(m.pakete>0)){ el('f_pakete').focus(); el('f_pakete').select(); return; }
-    m.stueck = 1; m.total = m.pakete;
-  } else if(cat==='rund' || cat==='schuett'){
+  if(cat==='rund' || cat==='schuett'){
     if(!(m.laenge>0 && m.breite>0 && m.hoehe>0)){
       for(const f of ['laenge','staerke','breite'])                              // Zellen: Länge/Breite/Höhe
         if(!((numParse(el('f_'+f).value)||0)>0)){ el('f_'+f).focus(); el('f_'+f).select(); break; }
@@ -1912,6 +1964,9 @@ function commitAuf(){
     m.stueck = cat==='schuett' ? (m.pakete||1) : 1;
     m.total  = m.stueck;
   } else {
+    // Träger Paket/Palette/Box ohne Anzahl wäre ein stiller Rechenfehler (1 Satz statt
+    // n Träger) – seit die Zelle leer startet (11.08.2026) ist die Anzahl hier Pflicht
+    if(m.traeger && !(m.pakete>0)){ el('f_pakete').focus(); el('f_pakete').select(); return; }
     m.stueck = stkJe(m);          // Stück je Paket (bzw. gesamt, wenn Pakete = 0)
     m.total  = stkOf(m);          // Stück gesamt inkl. Paket-Multiplikator
     if(!(m.total>0 && m.laenge>0 && m.staerke>0 && m.breite>0)){
@@ -1925,7 +1980,7 @@ function commitAuf(){
   renderComm(true);
   // zurück in die gewählte Startspalte (Rechtsklick auf den Spaltenkopf)
   let rc = returnCol, f = el('f_'+rc);
-  if(aufFieldOff(f)){ rc = cat==='stk' ? 'pakete' : 'laenge'; f=el('f_'+rc); }
+  if(aufFieldOff(f)){ rc = 'laenge'; f=el('f_'+rc); }
   if(['pakete','reihen','lagen','stueck','laenge'].includes(rc) && !(cat==='rund'&&rc==='pakete')) f.value='';   // leeren → keine Doppel-Erfassung (Rundholz-Faktor bleibt)
   f.focus(); if(f.select) f.select();
   updateAufMode();
@@ -1992,25 +2047,19 @@ function renderCommSpecial(blink){
   const dcell = (mi,f,val)=>`<td class="cell" data-src="draft" data-key="d|${f}|${mi}" data-mi="${mi}" data-f="${f}" title="Klick: ${AUF_LABEL[f]||f} ändern"><span class="v">${val}</span></td>`;
   const del = i=>`<td class="act"><button class="menubtn" data-del="${i}" title="Zeile löschen">✕</button></td>`;
   let head, rows, sum;
-  if(cat==='stk'){
-    head = `<tr><th class="rn"></th><th class="l">Träger</th><th>Anzahl</th><th>= Stück</th><th></th></tr>`;
-    rows = draft.measures.map((m,i)=>`<tr class="${blinkM&&m===blinkM?'blink':''}"><td class="rn">${i+1}</td>
-      <td class="ro l">${TRAEGER_LABEL[m.traeger||'']}</td>${dcell(i,'pakete', num(m.pakete,0))}
-      <td class="calc">${num(totOf(m),0)}</td>${del(i)}</tr>`).join('');
-    sum = num(draft.measures.reduce((s,m)=>s+totOf(m),0),0)+' Stück gesamt';
-  } else if(cat==='rund'){
-    head = `<tr><th class="rn"></th><th class="l">Träger</th><th>Faktor</th><th>Länge (m)</th><th>Breite (m)</th><th>Höhe (m)</th><th>Zusatz %</th><th>= fm</th><th></th></tr>`;
+  if(cat==='rund'){
+    head = `<tr><th class="rn"></th><th class="l">Träger</th><th>Faktor</th><th>Länge (cm)</th><th>Breite (mm)</th><th>Höhe (mm)</th><th>Zusatz %</th><th>= fm</th><th></th></tr>`;
     rows = draft.measures.map((m,i)=>`<tr class="${blinkM&&m===blinkM?'blink':''}"><td class="rn">${i+1}</td>
       <td class="ro l">Rundholz</td>${dcell(i,'faktor', num(m.faktor||RUND_FAKTOR,2))}
-      ${dcell(i,'laenge', num(m.laenge,2))}${dcell(i,'breite', num(m.breite,2))}${dcell(i,'hoehe', num(m.hoehe,2))}
+      ${dcell(i,'laenge', num(m.laenge,0))}${dcell(i,'breite', num(m.breite,0))}${dcell(i,'hoehe', num(m.hoehe,0))}
       ${dcell(i,'zfaktor', m.zfaktor?num(m.zfaktor,1):'–')}
       <td class="calc">${num3(m.vol)}</td>${del(i)}</tr>`).join('');
     sum = num3(draft.measures.reduce((s,m)=>s+m.vol,0))+' fm gesamt';
   } else {
-    head = `<tr><th class="rn"></th><th class="l">Träger</th><th>Anzahl</th><th>Länge (m)</th><th>Breite (m)</th><th>Höhe (m)</th><th>= cbm</th><th></th></tr>`;
+    head = `<tr><th class="rn"></th><th class="l">Träger</th><th>Anzahl</th><th>Länge (cm)</th><th>Breite (mm)</th><th>Höhe (mm)</th><th>= cbm</th><th></th></tr>`;
     rows = draft.measures.map((m,i)=>`<tr class="${blinkM&&m===blinkM?'blink':''}"><td class="rn">${i+1}</td>
       <td class="ro l">Schüttgut</td>${dcell(i,'pakete', num(m.pakete||1,0))}
-      ${dcell(i,'laenge', num(m.laenge,2))}${dcell(i,'breite', num(m.breite,2))}${dcell(i,'hoehe', num(m.hoehe,2))}
+      ${dcell(i,'laenge', num(m.laenge,0))}${dcell(i,'breite', num(m.breite,0))}${dcell(i,'hoehe', num(m.hoehe,0))}
       <td class="calc">${num3(m.vol)}</td>${del(i)}</tr>`).join('');
     sum = num3(draft.measures.reduce((s,m)=>s+m.vol,0))+' cbm gesamt';
   }
@@ -2256,7 +2305,7 @@ function schGrpBilanz(g){
 }
 
 function openSchnitt(){
-  currentStep='schnitt'; schMove=null; schIdx=0; schSelKey=null;
+  currentStep='schnitt'; schMove=null; schIdx=0; schSelKey=null; schMActive=null;
   schnittRefresh(draft);
   schRes = schResOf(draft);                          // Reserve dieser Position aktiv (Default 0)
   if(!draft.schnitt) draft.schnitt = schnittAuto(draft,'uni');
@@ -2309,8 +2358,19 @@ function openSchnitt(){
   renderSchnitt();
 }
 function schnittDone(){
-  // Übrig gebliebene leere Bretter (eingefügt, aber nichts hineingelegt) verwerfen
-  if(draft && draft.schnitt) draft.schnitt.groups.forEach(g=> g.boards = g.boards.filter(b=> b.pieces.length));
+  if(draft && draft.schnitt){
+    const sch = draft.schnitt;
+    // Frei geparkte Maße (aufgelöste Bretter) automatisch packen – nichts geht verloren
+    if(sch.frei){
+      sch.groups.forEach(g=>{
+        const fp = sch.frei[g.key];
+        if(fp && fp.length) g.boards.push(...schPackGroup({pieces:fp.splice(0)}, 'uni'));
+      });
+      delete sch.frei;
+    }
+    // Übrig gebliebene leere Bretter (eingefügt, aber nichts hineingelegt) verwerfen
+    sch.groups.forEach(g=> g.boards = g.boards.filter(b=> b.pieces.length));
+  }
   if(editMode){ saveEdit(); return; }
   afterSchnitt();
 }
@@ -2353,6 +2413,44 @@ function renderSchnitt(){
       </div>`;
     if(open){
       html += `<div class="schgbody">`;
+      // Master-Baukasten (nur Paket-Positionen): oben der Vorrat der bestellten Maße,
+      // darunter die Master-Karten. Klick auf ein Vorrats-Maß legt es ins aktive Master.
+      if(schMusterMode()){
+        const calc = schMasterCalc(gi);
+        if(calc.total.size){
+          const chips = [...calc.total.entries()].sort((a,b)=>b[0]-a[0]).map(([len,cnt])=>{
+            const frei = calc.left.get(len)||0;
+            return `<button type="button" class="schmchip" data-vlen="${len}" title="Klick: ${num(len,0)} cm ins aktive Master legen (nochmal Klick = noch einmal)">
+              <b>${num(cnt,0)}</b> × ${num(len,0)} cm${frei<cnt?`<span class="fre${frei>0?' offen':''}">frei ${num(frei,0)}</span>`:''}</button>`;
+          }).join('');
+          // Hinweis, solange die Master den Vorrat noch nicht aufbrauchen bzw. aufgelöste
+          // Bretter ihre Maße frei geparkt haben (Kundenwunsch 11.08.2026)
+          const offen = [...calc.left.entries()].filter(([,n])=>n>0).sort((a,b)=>b[0]-a[0]);
+          const freiN = ((draft.schnitt.frei && draft.schnitt.frei[g.key]) || []).length;
+          const warn = (offen.length && (calc.ms.length || freiN>0))
+            ? `<div class="schmwarn">⚠ <b>Noch nicht alles aufgebraucht:</b> ${offen.map(([len,n])=>`${num(n,0)} × ${num(len,0)} cm`).join(' · ')} ohne Master – ${freiN>0?'aufgelöste Maße sind wieder frei; ':''}der Rest wird beim Übernehmen automatisch gepackt.</div>` : '';
+          const cards = calc.ms.map((e,mi2)=>{
+            const m = e.m, segSum = m.segs.reduce((s,l)=>s+l,0);
+            const on = schMActive && schMActive.gi===gi && schMActive.mi===mi2;
+            const opts = schLensAvail(g).filter(L=> segSum+schRes<=L);
+            const segs = m.segs.map((l,si)=>`<button type="button" class="mseg" data-si="${si}" style="flex:${l}" title="${num(l,0)} cm – Klick entfernt es aus dem Master">${num(l,0)}</button>`).join('');
+            const restw = m.len>0 ? Math.max(0, m.len-segSum) : 0;
+            return `<div class="schmcard ${on?'on':''}" data-mi="${mi2}">
+              <div class="mhd"><span>Master ${mi2+1}</span>
+                ${m.len>0?`<select class="schmlen" title="Brettlänge dieses Masters">${opts.map(L=>`<option value="${L}"${L===m.len?' selected':''}>${num(L/100,2)} m</option>`).join('')}</select>`:'<span class="lbl">Brettlänge folgt</span>'}
+                <button type="button" class="mx" data-delm title="Master entfernen">✕</button></div>
+              <div class="mbar">${m.segs.length ? segs + (restw>0?`<span class="mrest" style="flex:${restw}" title="Rest ${num(restw,0)} cm"></span>`:'') : '<span class="mempty">leer – Maß im Vorrat anklicken</span>'}</div>
+              <div class="mft ${e.n===0&&m.segs.length?'warn':''}">reicht für <b>${num(e.n,0)}</b> Brett${e.n===1?'':'er'}${m.len>0?` · Rest je Brett ${num(e.rest,0)} cm`:''}</div>
+            </div>`;
+          }).join('');
+          html += `<div class="schmaster" data-mgi="${gi}">
+            <div class="schmhead"><b>Schnittmuster (Master)</b><span class="lbl">Master anlegen, Maße aus dem Vorrat hineinklicken · <b>Klick auf ein Maß im Master löscht den Schnitt wieder</b> · der Rest wird automatisch gepackt</span></div>
+            <div class="schmvorrat"><span class="schmvlbl">Vorrat</span>${chips}</div>
+            ${warn}
+            <div class="schmcards">${cards}<button type="button" class="schmadd" data-addm title="Neues, leeres Master anlegen">＋ Master anlegen</button></div>
+          </div>`;
+        }
+      }
       const pats = schPatterns(g);
       const maxL = Math.max(...g.boards.map(b=>b.len));
       pats.forEach(pat=>{
@@ -2376,7 +2474,7 @@ function renderSchnitt(){
           <span class="schlen">${selP&&pat.cut?`<button class="schar" data-lc="-1" title="kleinere Vorratslänge">‹</button>`:''}${num(pat.len/100,2)} m${selP&&pat.cut?`<button class="schar" data-lc="1" title="größere Vorratslänge">›</button>`:''}${pat.cut?'':' 🔒'}</span>
           <span class="schbarwrap"><span class="schbar ${rep.length?'':'empty'}" style="width:${(pat.len/maxL*100).toFixed(1)}%"
             title="${pat.cut?'':'bestellte Volllänge – wird ungeteilt geliefert'}">${segs}${restSeg}</span></span>
-          <span class="schrest ${pat.cut&&rep.length&&rest>0?'warn':''}">${pat.cut?(rep.length?(rest>0?'Rest '+num(rest,0)+' cm':'—'):`<button class="menubtn" data-delboard="${pi}" title="Leeres Brett entfernen (Entf)">✕ leer</button>`):'ungeteilt'}</span>
+          <span class="schrest ${pat.cut&&rep.length&&rest>0?'warn':''}">${pat.cut?(rep.length?((rest>0?'Rest '+num(rest,0)+' cm':'—')+(schMusterMode()?` <button class="menubtn" data-dispat="${pi}" title="Diese Bretter auflösen – Maße zurück in den Vorrat (Entf)">✕</button>`:'')):`<button class="menubtn" data-delboard="${pi}" title="Leeres Brett entfernen (Entf)">✕ leer</button>`):'ungeteilt'}</span>
         </div>`;
       });
       html += `<div class="schrow schnew" data-new="${gi}" title="Klick: leeres Brett einfügen – dann Länge mit ‹ › wählen und Maße hineinziehen">＋ Brett einfügen <span class="lbl">· Länge wählen, Maße hineinziehen – oder Maß direkt hier ablegen</span></div></div>`;
@@ -2410,7 +2508,7 @@ function renderSchnitt(){
 
   el('schHint').innerHTML = schMove
     ? `<b>Maß verschieben:</b> Ziel-Karte (gestrichelt) mit <kbd>↑</kbd><kbd>↓</kbd> oder Klick wählen – auch „＋ Brett einfügen". <kbd>Enter</kbd> verschiebt, <kbd>Esc</kbd> bricht ab. <kbd>←</kbd><kbd>→</kbd> wechselt das Maß.`
-    : `Jede <b>Bilanzzeile</b> ist ein Querschnitt: Klick (oder <kbd>Leertaste</kbd> / <kbd>←</kbd><kbd>→</kbd>) klappt die Schnittbilder auf und zu. Darin: <b>Maße einfach ziehen</b> (oder <kbd>M</kbd>), <b>＋ Brett einfügen</b> (Klick/<kbd>N</kbd>), Länge mit ‹ › bzw. <kbd>←</kbd><kbd>→</kbd> (2,50 m nur von Hand). <b>Leergeräumte Bretter verschwinden automatisch</b> (leer eingefügte per ✕/<kbd>Entf</kbd>). 🔒 Volllängen/Überlängen sind fest.${schRes>0?` Reserve: <b>${schRes} cm</b> Luft je geteiltem Brett.`:''}`;
+    : `${schMusterMode()?`<b>📦 Paket-Position – Master anlegen:</b> oben ein <b>Master</b> anlegen (z.&nbsp;B. 4,00&nbsp;m = 200&nbsp;+&nbsp;200), die Maße per Klick aus dem <b>Vorrat</b> hineinlegen – das Master gilt automatisch für <b>alle passenden Bretter</b>, der Rest wird automatisch gepackt. <b>✕ an einer Brettzeile</b> (oder <kbd>Entf</kbd>) <b>löst die Bretter wieder auf</b> – die Maße sind dann frei, der Hinweis oben zeigt, was noch nicht aufgebraucht ist. `:''}Jede <b>Bilanzzeile</b> ist ein Querschnitt: Klick (oder <kbd>Leertaste</kbd> / <kbd>←</kbd><kbd>→</kbd>) klappt die Schnittbilder auf und zu. Darin: <b>Maße einfach ziehen</b> (oder <kbd>M</kbd>), <b>＋ Brett einfügen</b> (Klick/<kbd>N</kbd>), Länge mit ‹ › bzw. <kbd>←</kbd><kbd>→</kbd> (2,50 m nur von Hand). <b>Leergeräumte Bretter verschwinden automatisch</b> (leer eingefügte per ✕/<kbd>Entf</kbd>). 🔒 Volllängen/Überlängen sind fest.${schRes>0?` Reserve: <b>${schRes} cm</b> Luft je geteiltem Brett.`:''}`;
   el('schKeys').innerHTML = schMove
     ? `<span><kbd>↑</kbd><kbd>↓</kbd> Ziel</span><span><kbd>←</kbd><kbd>→</kbd> Maß</span><span><kbd>Enter</kbd> verschieben</span><span><kbd>Esc</kbd> abbrechen</span>`
     : `<span><kbd>1</kbd>–<kbd>4</kbd> Modus</span><span><kbd>↑</kbd><kbd>↓</kbd> Zeile</span><span><kbd>Leertaste</kbd> Gruppe auf/zu</span><span><kbd>←</kbd><kbd>→</kbd> Länge</span><span>Ziehen/<kbd>M</kbd> verschieben</span><span><kbd>N</kbd> Brett</span><span><kbd>Esc</kbd> ${editMode?'speichern':'übernehmen → Preis'}</span>`;
@@ -2490,7 +2588,39 @@ function renderSchnitt(){
   el('schGroups').querySelectorAll('[data-delboard]').forEach(b=> b.onclick=e=>{
     e.stopPropagation(); schRemoveEmpty(+b.dataset.delboard);
   });
-  el('schGroups').querySelectorAll('.schar').forEach(b=> b.onclick=e=>{ e.stopPropagation(); schLenChange(+b.dataset.lc); });
+  el('schGroups').querySelectorAll('[data-dispat]').forEach(b=> b.onclick=e=>{
+    e.stopPropagation(); schDissolvePat(+b.dataset.dispat);
+  });
+  el('schGroups').querySelectorAll('.schar[data-lc]').forEach(b=> b.onclick=e=>{ e.stopPropagation(); schLenChange(+b.dataset.lc); });
+  // Master-Baukasten: Vorrats-Chips, Master-Karten (aktivieren, Segment entfernen,
+  // Brettlänge wählen, Master löschen), „＋ Master anlegen"
+  el('schGroups').querySelectorAll('.schmaster').forEach(panel=>{
+    const gi = +panel.dataset.mgi;
+    panel.querySelectorAll('.schmchip').forEach(ch=> ch.onclick=e=>{
+      e.stopPropagation(); schMasterAddSeg(gi, +ch.dataset.vlen);
+    });
+    panel.querySelectorAll('.schmcard').forEach(card=>{
+      const mi2 = +card.dataset.mi;
+      card.onclick = e=>{ e.stopPropagation(); schMActive={gi, mi:mi2}; renderSchnitt(); };
+      card.querySelectorAll('.mseg').forEach(sg=> sg.onclick=e=>{
+        e.stopPropagation(); schMasterDelSeg(gi, mi2, +sg.dataset.si);
+      });
+      const sel = card.querySelector('.schmlen');
+      if(sel){
+        sel.onclick = e=> e.stopPropagation();
+        sel.onchange = ()=> schMasterSetLen(gi, mi2, +sel.value);
+      }
+      const del = card.querySelector('[data-delm]');
+      if(del) del.onclick = e=>{ e.stopPropagation(); schMasterDel(gi, mi2); };
+    });
+    const add = panel.querySelector('[data-addm]');
+    if(add) add.onclick = e=>{
+      e.stopPropagation();
+      const ms = schMasters(gi); ms.push({len:0, segs:[]});
+      schMActive = {gi, mi:ms.length-1};
+      renderSchnitt();
+    };
+  });
 }
 function schTargets(){
   const t=[];
@@ -2532,34 +2662,194 @@ function schLenChange(dir){
   schSelKey = {gi:pat.gi, key: lens[j]+'|1|'+schSorted(pat.boards[0]).map(p=>p.len).join(',')};
   renderSchnitt();
 }
+// Paket-Positionen arbeiten grundsätzlich musterbasiert (Kundenwunsch 11.08.2026):
+// eine Änderung am Schnittmuster gilt für ALLE gleichen Bretter – so muss niemand
+// 180 Bretter von Hand aufteilen. Ohne Paket bleibt es beim Einzelbrett (Werkbank).
+function schMusterMode(){ return !!draft && Array.isArray(draft.measures) && pakRowsOf(draft).length>0; }
+// ── Master-Baukasten (Hauptweg bei Paketen, Mockup-Entscheidung „Variante C" 11.08.2026) ──
+// Ein MASTER ist ein selbst angelegtes Schnittmuster („400 = 200 + 200"): Brettlänge +
+// Maße. Das System wendet jedes Master auf so viele Stäbe wie möglich an; was übrig
+// bleibt, packt die Automatik. Master hängen als Definition an der Aufteilung
+// (schnitt.master, je Gruppen-Key) und überleben Moduswechsel; 🔒-Volllängen/Überlängen
+// bleiben außen vor (Vorrat = nur Stücke aus geteilten Brettern).
+let schMActive = null;                     // aktives Master {gi, mi} – Klick im Vorrat legt dort ab
+function schMasters(gi){
+  const sch = draft.schnitt;
+  if(!sch.master) sch.master = {};
+  const key = sch.groups[gi].key;
+  if(!sch.master[key]) sch.master[key] = [];
+  return sch.master[key];
+}
+// Bilanz: Vorrat je Länge (gesamt/frei) und je Master „reicht für n Bretter"
+function schMasterCalc(gi){
+  const g = draft.schnitt.groups[gi];
+  const total = new Map();
+  g.boards.forEach(b=>{ if(!b.cut) return; b.pieces.forEach(p=> total.set(p.len,(total.get(p.len)||0)+1)); });
+  const fp = (draft.schnitt.frei && draft.schnitt.frei[g.key]) || [];   // aufgelöste Bretter zählen zum Vorrat
+  fp.forEach(p=> total.set(p.len,(total.get(p.len)||0)+1));
+  const left = new Map(total);
+  const ms = schMasters(gi).map(m=>{
+    if(!m.segs.length) return {m, n:0, rest:m.len||0};
+    const mult = new Map(); m.segs.forEach(l=> mult.set(l,(mult.get(l)||0)+1));
+    let n = Infinity;
+    mult.forEach((c,l)=> n = Math.min(n, Math.floor((left.get(l)||0)/c)));
+    if(!isFinite(n)) n = 0;
+    mult.forEach((c,l)=> left.set(l, (left.get(l)||0) - n*c));
+    return {m, n, rest: m.len - m.segs.reduce((s,l)=>s+l,0)};
+  });
+  return {total, left, ms};
+}
+// Master anwenden: Vorrat einsammeln, Master der Reihe nach befüllen, Rest automatisch packen
+function schApplyMasters(gi){
+  const g = draft.schnitt.groups[gi];
+  const fp = schFreiPool(gi);
+  const pool = fp.splice(0);                 // frei geparkte Maße zuerst wieder einsammeln
+  for(let i=g.boards.length-1;i>=0;i--){
+    const b = g.boards[i];
+    if(!b.cut) continue;
+    pool.push(...b.pieces);
+    g.boards.splice(i,1);
+  }
+  const byLen = new Map();
+  pool.forEach(p=>{ if(!byLen.has(p.len)) byLen.set(p.len,[]); byLen.get(p.len).push(p); });
+  schMasters(gi).forEach(m=>{
+    if(!m.segs.length || !(m.len>0)) return;
+    const mult = new Map(); m.segs.forEach(l=> mult.set(l,(mult.get(l)||0)+1));
+    let n = Infinity;
+    mult.forEach((c,l)=> n = Math.min(n, Math.floor((byLen.get(l)||[]).length / c)));
+    if(!isFinite(n)) n = 0;
+    for(let k=0;k<n;k++)
+      g.boards.push({len:m.len, cut:true, pieces:m.segs.map(l=> byLen.get(l).pop())});
+  });
+  const rest = [...byLen.values()].flat();
+  if(rest.length) g.boards.push(...schPackGroup({pieces:rest}, 'uni'));
+  schMarkCustom();
+  renderSchnitt();
+}
+// Maß aus dem Vorrat ins aktive Master legen (Brettlänge wächst automatisch mit)
+function schMasterAddSeg(gi, len){
+  const ms = schMasters(gi);
+  if(!schMActive || schMActive.gi!==gi || !ms[schMActive.mi]){ ms.push({len:0, segs:[]}); schMActive={gi, mi:ms.length-1}; }
+  const m = ms[schMActive.mi];
+  const sum = m.segs.reduce((s,l)=>s+l,0) + len;
+  const L = (m.len>0 && sum+schRes<=m.len) ? m.len : SCH_STD.find(x=> sum+schRes<=x);
+  if(!L){ schMasterReject(gi, schMActive.mi); return; }     // passt in kein Vorratsbrett mehr
+  m.segs.push(len); m.len = L;
+  schApplyMasters(gi);
+}
+function schMasterDelSeg(gi, mi, si){
+  const m = schMasters(gi)[mi]; if(!m) return;
+  m.segs.splice(si,1);
+  schMActive = {gi, mi};
+  schApplyMasters(gi);
+}
+function schMasterSetLen(gi, mi, L){
+  const m = schMasters(gi)[mi]; if(!m) return;
+  if(m.segs.reduce((s,l)=>s+l,0) + schRes > L){ schMasterReject(gi, mi); renderSchnitt(); return; }
+  m.len = L;
+  schMActive = {gi, mi};
+  schApplyMasters(gi);
+}
+function schMasterDel(gi, mi){
+  schMasters(gi).splice(mi,1);
+  schMActive = null;
+  schApplyMasters(gi);
+}
+function schMasterReject(gi, mi){
+  const c = ov.querySelector(`.schmaster[data-mgi="${gi}"] .schmcard[data-mi="${mi}"]`);
+  if(c){ c.classList.remove('schrej'); void c.offsetWidth; c.classList.add('schrej'); }
+}
+// Frei-Pool: aufgelöste Bretter parken ihre Maße hier (je Gruppen-Key), bis sie neu
+// verplant werden – beim Übernehmen packt schnittDone den Rest automatisch.
+function schFreiPool(gi){
+  const sch = draft.schnitt;
+  if(!sch.frei) sch.frei = {};
+  const key = sch.groups[gi].key;
+  if(!sch.frei[key]) sch.frei[key] = [];
+  return sch.frei[key];
+}
+// Fertige Bretter unten wieder auflösen (✕ an der Zeile bzw. Entf): Maße zurück in den
+// Vorrat; ein exakt passendes Master wird mit entfernt, sonst baute es die Bretter
+// beim nächsten Anwenden sofort wieder auf (Kundenwunsch 11.08.2026)
+function schDissolvePat(pi){
+  const pat = schPats[pi];
+  if(!pat || !pat.cut || !schMusterMode() || !pat.boards[0].pieces.length){ schReject(pi); return; }
+  const g = draft.schnitt.groups[pat.gi];
+  const pool = schFreiPool(pat.gi);
+  const segKey = schSorted(pat.boards[0]).map(p=>p.len).join(',');
+  const ms = schMasters(pat.gi);
+  for(let i=ms.length-1;i>=0;i--){
+    const m = ms[i];
+    if(m.len===pat.len && [...m.segs].sort((a,b)=>b-a).join(',')===segKey) ms.splice(i,1);
+  }
+  pat.boards.forEach(b=>{ pool.push(...b.pieces); const i=g.boards.indexOf(b); if(i>=0) g.boards.splice(i,1); });
+  schMActive = null;
+  schMarkCustom();
+  renderSchnitt();
+}
 // Ein Maß auf ein anderes Brett (oder ein neues) verschieben – per Tastatur (M),
 // Klick oder Drag & Drop (srcInfo). Leergeräumte Bretter verschwinden automatisch.
+// Im Muster-Modus (Pakete) wird das Maß aus JEDEM Brett des Musters verschoben.
 function schMoveTo(tgt, srcInfo){
   const info = srcInfo || schMove; if(!info) return;
   const sch = draft.schnitt;
   const src = schPats.find(p=> p.gi===info.gi && p.key===info.patKey);
   if(!src){ schMove=null; renderSchnitt(); return; }
-  const board = src.boards[0];
-  const piece = schSorted(board)[info.seg];
-  if(!piece){ schMove=null; renderSchnitt(); return; }
+  const srcBoards = schMusterMode() ? [...src.boards] : [src.boards[0]];
+  const probe = schSorted(srcBoards[0])[info.seg];                          // Musterlänge des bewegten Maßes
+  if(!probe){ schMove=null; renderSchnitt(); return; }
   const g = sch.groups[info.gi];
   if(tgt.type==='pat'){
     const tp = schPats[tgt.pi];
     if(!tp || tp.gi!==info.gi){ schReject(tgt.pi); return; }
     if(tp.key===info.patKey){ schMove=null; renderSchnitt(); return; }      // Quelle = abbrechen
     if(!tp.cut){ schReject(tgt.pi); return; }
-    const tb = tp.boards.find(b=> schUsed(b)+piece.len+schRes <= b.len);
-    if(!tb){ schReject(tgt.pi); return; }                                   // passt nicht (inkl. Reserve)
-    board.pieces.splice(board.pieces.indexOf(piece),1);
-    tb.pieces.push(piece);
+    if(probe.len+schRes > tp.len){ schReject(tgt.pi); return; }             // passt in diese Brettlänge nie
+    const avail = tp.boards.filter(b=> schUsed(b)+probe.len+schRes <= b.len);
+    if(!avail.length && srcBoards.length===1){ schReject(tgt.pi); return; } // Einzelmodus: passt nicht (inkl. Reserve)
+    // Zielbretter der Reihe nach bis zur Kapazität füllen (Muster bleibt einheitlich,
+    // da alle Bretter eines Musters gleich voll sind); Überzählige → neue Bretter
+    // gleicher Länge, ebenfalls voll gepackt
+    const pool = [...tp.boards];
+    srcBoards.forEach(b=>{
+      const piece = schSorted(b)[info.seg]; if(!piece) return;
+      b.pieces.splice(b.pieces.indexOf(piece),1);
+      let tb = pool.find(x=> schUsed(x)+piece.len+schRes <= x.len);
+      if(!tb){ tb = {len:tp.len, cut:true, pieces:[]}; g.boards.push(tb); pool.push(tb); }
+      tb.pieces.push(piece);
+    });
   } else {
     if(tgt.gi!==info.gi){ schRejectSel(); return; }
-    const L = SCH_STD.find(x=> piece.len+schRes <= x);
-    if(!L){ schRejectSel(); return; }
-    board.pieces.splice(board.pieces.indexOf(piece),1);
-    g.boards.push({len:L, cut:true, pieces:[piece]});
+    if(srcBoards.length>1){
+      // Muster-Modus: die Maße paarweise/optimal auf neue Bretter packen – Vorratslänge
+      // mit dem geringsten Rest je Stück, bei Gleichstand die kürzere (Kundenbeispiel:
+      // 180× 200 → 90 Bretter 4,00 m [200+200]; 180× 150 → 90 Bretter 3,00 m [150+150])
+      let bestL=null, bestK=1, bestW=Infinity;
+      SCH_STD.forEach(L=>{
+        const k = Math.floor((L-schRes)/probe.len);
+        if(k<1) return;
+        const w = (L - k*probe.len)/k;                    // Rest je Stück
+        if(w < bestW){ bestW=w; bestL=L; bestK=k; }
+      });
+      if(!bestL){ schRejectSel(); return; }
+      let nb=null;
+      srcBoards.forEach(b=>{
+        const piece = schSorted(b)[info.seg]; if(!piece) return;
+        b.pieces.splice(b.pieces.indexOf(piece),1);
+        if(!nb || nb.pieces.length>=bestK){ nb={len:bestL, cut:true, pieces:[]}; g.boards.push(nb); }
+        nb.pieces.push(piece);
+      });
+    } else {
+      const L = SCH_STD.find(x=> probe.len+schRes <= x);
+      if(!L){ schRejectSel(); return; }
+      const b=srcBoards[0], piece=schSorted(b)[info.seg];
+      b.pieces.splice(b.pieces.indexOf(piece),1);
+      g.boards.push({len:L, cut:true, pieces:[piece]});
+    }
   }
-  if(!board.pieces.length) g.boards.splice(g.boards.indexOf(board),1);      // altes Brett ohne Schnitte → weg
+  srcBoards.forEach(b=>{                                                    // Bretter ohne Schnitte → weg
+    if(!b.pieces.length){ const bi=g.boards.indexOf(b); if(bi>=0) g.boards.splice(bi,1); }
+  });
   schMarkCustom();
   schMove = null;
   renderSchnitt();
@@ -2594,8 +2884,9 @@ function schSetMode(k){
   } else {
     if(sch.strat==='custom') schProps.custom = JSON.parse(JSON.stringify(sch));
     draft.schnitt = schnittAuto(draft, k);
+    if(sch.master) draft.schnitt.master = sch.master;   // Master-Definitionen überleben den Moduswechsel
   }
-  schIdx=0; schMove=null; schSelKey=null;
+  schIdx=0; schMove=null; schSelKey=null; schMActive=null;
   renderSchnitt();
 }
 // „Automatisch neu aufteilen": rechnet den aktiven Vorschlag neu (aus „Angepasst" heraus
@@ -2604,16 +2895,19 @@ function schAutoNew(){
   const sch = draft.schnitt;
   if(sch.strat==='custom') schProps.custom = JSON.parse(JSON.stringify(sch));
   draft.schnitt = schnittAuto(draft, sch.strat==='custom' ? 'uni' : sch.strat);
-  schIdx=0; schMove=null; renderSchnitt();
+  if(sch.master) draft.schnitt.master = sch.master;     // Master-Definitionen bleiben erhalten
+  schIdx=0; schMove=null; schMActive=null; renderSchnitt();
 }
 // Sägeblatt-Reserve je geteiltem Brett ändern (cm) – wirkt sofort, rechnet neu auf
 // (verwirft dabei eine manuelle Anpassung, da sich die Platzverhältnisse ändern)
 function schSetRes(v){
   schRes = Math.max(0, Math.round(+v||0));
   const strat = draft.schnitt.strat==='custom' ? 'uni' : draft.schnitt.strat;
+  const mk = draft.schnitt.master;
   draft.schnitt = schnittAuto(draft, strat);
+  if(mk) draft.schnitt.master = mk;                     // Master-Definitionen bleiben erhalten
   schProps = { uni:schnittAuto(draft,'uni'), waste:schnittAuto(draft,'waste'), boards:schnittAuto(draft,'boards'), custom:null };
-  schIdx=0; schMove=null; schSelKey=null;
+  schIdx=0; schMove=null; schSelKey=null; schMActive=null;
   const ri=el('schResInp'); if(ri) ri.value=schRes;
   renderSchnitt();
 }
@@ -2851,6 +3145,11 @@ function saveEdit(){
 function cancelEdit(){ editMode=null; draft=null; closeModal(); renderAll(); }
 function flashPos(i){ const p=positions[i]; if(p){ p._flash=true; renderPosList(); } }
 
+// Artikel tauschen – Maße, Schnitt und Zuschläge bleiben (Weiterführung in chooseArtikel)
+function editArtikel(i){
+  editMode={idx:i,aspect:'artikel'}; draft=cloneDraft(positions[i]);
+  openArtikel();
+}
 function editAufmass(i){
   editMode={idx:i,aspect:'aufmass'}; draft=cloneDraft(positions[i]);
   const m0=draft.measures[0]||{};
@@ -3050,22 +3349,16 @@ function renderPosList(){
     const catP = posCat(p);                                  // Palette/Box, Rundholz, Schüttgut: eigene Raster
     const delBtn = j=>`<td class="act"><button class="menubtn" data-delm="${j}" data-i="${i}" title="Aufmaßzeile löschen">✕</button></td>`;
     let measTableSp = '';
-    if(catP==='stk'){
-      const stkSum = p.measures.reduce((s,m)=>s+totOf(m),0);
-      measTableSp = `<table class="pgrid"><thead><tr><th class="rn"></th><th class="l">Träger</th><th>Anzahl</th><th>= Stück</th><th>Betrag</th><th></th></tr></thead>
-        <tbody>${p.measures.map((m,j)=>`<tr><td class="rn">${j+1}</td><td class="ro l">${TRAEGER_LABEL[m.traeger||'']}</td>
-          ${cell(j,'pakete',num(m.pakete,0))}<td class="ro">${num(totOf(m),0)}</td><td class="calc">${eur2(totOf(m)*ai)}</td>${delBtn(j)}</tr>`).join('')}
-        <tr class="sum"><td colspan="3" class="l">Summe Position ${i+1}</td><td>${num(stkSum,0)}</td><td>${eur2(posSum(p))}</td><td class="act"></td></tr></tbody></table>`;
-    } else if(catP==='rund'){
-      measTableSp = `<table class="pgrid"><thead><tr><th class="rn"></th><th class="l">Träger</th><th>Faktor</th><th>Länge (m)</th><th>Breite (m)</th><th>Höhe (m)</th><th>Zusatz %</th><th>= fm</th><th>Betrag</th><th></th></tr></thead>
+    if(catP==='rund'){
+      measTableSp = `<table class="pgrid"><thead><tr><th class="rn"></th><th class="l">Träger</th><th>Faktor</th><th>Länge (cm)</th><th>Breite (mm)</th><th>Höhe (mm)</th><th>Zusatz %</th><th>= fm</th><th>Betrag</th><th></th></tr></thead>
         <tbody>${p.measures.map((m,j)=>`<tr><td class="rn">${j+1}</td><td class="ro l">Rundholz</td>
-          ${cell(j,'faktor',num(m.faktor||RUND_FAKTOR,2))}${cell(j,'laenge',num(m.laenge,2))}${cell(j,'breite',num(m.breite,2))}${cell(j,'hoehe',num(m.hoehe,2))}
+          ${cell(j,'faktor',num(m.faktor||RUND_FAKTOR,2))}${cell(j,'laenge',num(m.laenge,0))}${cell(j,'breite',num(m.breite,0))}${cell(j,'hoehe',num(m.hoehe,0))}
           ${cell(j,'zfaktor', m.zfaktor?num(m.zfaktor,1):'–')}<td class="calc">${num3(m.vol)}</td><td class="calc">${eur2(m.vol*ai)}</td>${delBtn(j)}</tr>`).join('')}
         <tr class="sum"><td colspan="7" class="l">Summe Position ${i+1}</td><td>${num3(vol)}</td><td>${eur2(posSum(p))}</td><td class="act"></td></tr></tbody></table>`;
     } else if(catP==='schuett'){
-      measTableSp = `<table class="pgrid"><thead><tr><th class="rn"></th><th class="l">Träger</th><th>Anzahl</th><th>Länge (m)</th><th>Breite (m)</th><th>Höhe (m)</th><th>= cbm</th><th>Betrag</th><th></th></tr></thead>
+      measTableSp = `<table class="pgrid"><thead><tr><th class="rn"></th><th class="l">Träger</th><th>Anzahl</th><th>Länge (cm)</th><th>Breite (mm)</th><th>Höhe (mm)</th><th>= cbm</th><th>Betrag</th><th></th></tr></thead>
         <tbody>${p.measures.map((m,j)=>`<tr><td class="rn">${j+1}</td><td class="ro l">Schüttgut</td>
-          ${cell(j,'pakete',num(m.pakete||1,0))}${cell(j,'laenge',num(m.laenge,2))}${cell(j,'breite',num(m.breite,2))}${cell(j,'hoehe',num(m.hoehe,2))}
+          ${cell(j,'pakete',num(m.pakete||1,0))}${cell(j,'laenge',num(m.laenge,0))}${cell(j,'breite',num(m.breite,0))}${cell(j,'hoehe',num(m.hoehe,0))}
           <td class="calc">${num3(m.vol)}</td><td class="calc">${eur2(m.vol*ai)}</td>${delBtn(j)}</tr>`).join('')}
         <tr class="sum"><td colspan="6" class="l">Summe Position ${i+1}</td><td>${num3(vol)}</td><td>${eur2(posSum(p))}</td><td class="act"></td></tr></tbody></table>`;
     }
@@ -3134,7 +3427,8 @@ function renderPosList(){
       </tbody></table>`;
     return `<div class="posblock ${fl?'posflash':''}">
       <div class="head"><span class="no">${i+1}</span><b>${c.a}</b>
-        <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${catP==='stk' ? num(p.measures.reduce((s,m)=>s+totOf(m),0),0)+' Stk' : num3(vol)+' '+(catP==='rund'?'fm':'cbm')}${(catP==='norm'&&p.beinh&&p.beinh!=='cbm')?' · '+beFmt(beQty(p),p.beinh):''}</small>
+        <button class="menubtn" data-edit="artikel" data-i="${i}" title="Artikel tauschen (z. B. Lärche → Douglasie) – Aufmaße, Schnittaufteilung und Zuschläge bleiben erhalten, nur der Preis wird neu gewählt">⇄ Artikel</button>
+        <small>${[c.h?holzName(c.h):'', c.q?qualName(c.q):''].filter(Boolean).join(' · ')} · ${num3(vol)+' '+(catP==='rund'?'fm':'cbm')}${(catP==='norm'&&p.beinh&&p.beinh!=='cbm')?' · '+beFmt(beQty(p),p.beinh):''}</small>
         <span class="spacer"></span><b>${eur(posSum(p))}</b>
         <button class="linkish" data-del="${i}" title="Position löschen">✕</button></div>
       <div class="body">
@@ -3173,6 +3467,7 @@ function renderPosList(){
     else if(w==='zus') editZuschlaege(i);
     else if(w==='auf') editAufmass(i);
     else if(w==='schnitt') editSchnitt(i);
+    else if(w==='artikel') editArtikel(i);
   });
   wireCells(wrap);
 }
@@ -3312,8 +3607,8 @@ function applyCellEdit(p, td, f, v){
     else if(EM_BACK[f]) m[EM_BACK[f]] = emDown(v, mode, val);
     m.stueck = stkJe(m); m.total = stkOf(m);
   } else {
-    m.stueck = cat==='schuett' ? (m.pakete||1) : 1;       // Palette/Box: total = Anzahl; Lade: 1 bzw. Anzahl
-    m.total  = cat==='stk' ? (+m.pakete||0) : m.stueck;
+    m.stueck = cat==='schuett' ? (m.pakete||1) : 1;       // Rundholz: 1, Schüttgut: Anzahl
+    m.total  = m.stueck;
   }
   m.vol = volOf(m);
   schnittRefresh(p);                                   // Aufteilung an die geänderten Maße anpassen
@@ -3427,11 +3722,20 @@ function sheetZplan(p, i){
 // Aufmaßzeile als Kundentext – berücksichtigt die Trägerkategorien (Palette/Box, Rundholz, Schüttgut)
 function measLine(m){
   const cat = TR_CAT(m.traeger||'');
-  if(cat==='stk')  return `<b>${num(totOf(m),0)} ${TRAEGER_ANZ[m.traeger]||'Stück'}</b> — ${num(totOf(m),0)} Stk`;
-  if(cat==='rund') return `<b>Rundholz-Polter</b> ${num(m.laenge,2)} × ${num(m.breite,2)} × ${num(m.hoehe,2)} m · Faktor ${num(m.faktor||RUND_FAKTOR,2)}${m.zfaktor?` · Zusatz +${num(m.zfaktor,1)} %`:''} — ${num3(m.vol)} fm`;
-  if(cat==='schuett') return `<b>Schüttgut</b> ${num(m.pakete||1,0)} × ${num(m.laenge,2)} × ${num(m.breite,2)} × ${num(m.hoehe,2)} m — ${num3(m.vol)} cbm`;
-  return `${m.pakete>0?m.pakete+' Pakete × ':''}<b>${num(totOf(m),0)} Stk</b> × ${num(m.laenge,0)} cm · ${num(m.staerke)} × ${num(m.breite)} mm — ${num3(m.vol)} cbm`;
+  if(cat==='rund') return `<b>Rundholz-Polter</b> ${num(m.laenge/100,2)} × ${num(m.breite/1000,2)} × ${num(m.hoehe/1000,2)} m · Faktor ${num(m.faktor||RUND_FAKTOR,2)}${m.zfaktor?` · Zusatz +${num(m.zfaktor,1)} %`:''} — ${num3(m.vol)} fm`;
+  if(cat==='schuett') return `<b>Schüttgut</b> ${num(m.pakete||1,0)} × ${num(m.laenge/100,2)} × ${num(m.breite/1000,2)} × ${num(m.hoehe/1000,2)} m — ${num3(m.vol)} cbm`;
+  // Pakete NIE aufsummiert darstellen: „2 Pakete × 90 Stk = 180 Stk", nicht „2 Pakete × 180"
+  return `${pakText(m)}<b>${num(totOf(m),0)} Stk</b> × ${num(m.laenge,0)} cm · ${num(m.staerke)} × ${num(m.breite)} mm — ${num3(m.vol)} cbm`;
 }
+// Trägerstruktur einer Aufmaßzeile als Text („2 Pakete × 90 Stk = " bzw. Paletten/Boxen), leer ohne Träger
+function pakName(m){ return m.pakete===1 ? (TRAEGER_LABEL[m.traeger]||'Paket') : (TRAEGER_ANZ[m.traeger]||'Pakete'); }
+function pakText(m){
+  if(!(m.pakete>0 && TR_CAT(m.traeger||'')==='norm')) return '';
+  return `${num(m.pakete,0)} ${pakName(m)} × ${num(stkJe(m),0)} Stk = `;
+}
+// Träger-Zeilen einer Position (für die „Verpackung"-Zeile bei aufgeteilten Positionen)
+function pakRowsOf(p){ return p.measures.filter(m=> m.pakete>0 && TR_CAT(m.traeger||'')==='norm'); }
+function pakLine(m){ return `${num(m.pakete,0)} ${pakName(m)} × ${num(stkJe(m),0)} Stk × ${num(m.laenge,0)} cm · ${num(m.staerke)} × ${num(m.breite)} mm`; }
 function renderSheet(){
   if(sheetView==='werk'){ renderWerk(); return; }
   const netto = positions.reduce((s,p)=>s+posSum(p),0);
@@ -3450,6 +3754,8 @@ function renderSheet(){
     p.surcharges.forEach((z,zi)=>{ zus += `<div class="ap-zus">Pos ${i+1}.${zi+1} · ${z.label} — im Preis enthalten</div>`; });
     let meas='';
     if(!aufgeteilt && p.measures.length) meas = `<div class="ap-meas">${p.measures.map(m=>`<div>${measLine(m)}</div>`).join('')}</div>`;
+    else if(aufgeteilt && pakRowsOf(p).length)   // Paket darf im Angebot nicht untergehen, auch wenn der Zuschnittplan die Maße zeigt
+      meas = `<div class="ap-meas">${pakRowsOf(p).map(m=>`<div><b>Verpackung:</b> ${pakLine(m)}</div>`).join('')}</div>`;
     blocks += `<div class="appos${i===0?' first':''}" data-split>
       <div class="ap-head"><span class="ap-nr">Pos ${i+1}</span><b>${c.a}</b>
         <span class="ap-sub">${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')}</span>
@@ -3512,7 +3818,7 @@ function renderWerk(){
         agg.get(k).n++; nBoards++; lfm+=b.len/100; cbm+=b.len/100*g.es/1000*g.eb/1000;
       }));
     } else p.measures.forEach(m=>{
-      if(TR_CAT(m.traeger||'')!=='norm') return;   // Palette/Box/Rundholz/Schüttgut gehören nicht in die Brettliste
+      if(TR_CAT(m.traeger||'')!=='norm') return;   // Rundholz/Schüttgut gehören nicht in die Brettliste (Paket/Palette/Box schon)
       const n=totOf(m); if(!(n>0 && m.laenge>0)) return;
       const k=`${m.staerke}|${m.breite}|${m.laenge}`;
       if(!agg.has(k)) agg.set(k,{s:m.staerke,b:m.breite,es:effS(m),eb:effB(m),len:m.laenge,n:0});
@@ -3537,6 +3843,10 @@ function renderWerk(){
     sec += `<div class="wspos" data-split><div class="wsph"><b>Pos ${i+1} · ${c.a}</b>
       <span>${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')||''}</span>
       <span class="wsv">${verarb}</span></div>`;
+    // Paketstruktur sichtbar halten – nicht aufsummieren (2 Pak. × 90, nicht 180);
+    // bei mehreren Paketzeilen EINE je Zeile (Kundenwunsch 11.08.2026)
+    if(pakRowsOf(p).length && p.schnitt && p.schnitt.groups.length)
+      sec += pakRowsOf(p).map(m=>`<div class="wspak"><b>Verpackung:</b> ${pakLine(m)}</div>`).join('');
     if(p.schnitt && p.schnitt.groups.length){
       p.schnitt.groups.forEach(g=>{
         const maxL = Math.max(...g.boards.map(b=>b.len));
@@ -3560,7 +3870,7 @@ function renderWerk(){
       sec += `<div class="wsplain">${p.measures.map(m=>{
         if(TR_CAT(m.traeger||'')!=='norm') return `<div>${measLine(m)}</div>`;
         const es=effS(m), eb=effB(m);
-        return `<div>${num(totOf(m),0)} Stk × ${num(m.laenge,0)} cm · <b>${num(es,1)} × ${num(eb,1)} mm</b>${(es!==m.staerke||eb!==m.breite)?` <span class="wsdim">(fertig ${num(m.staerke)} × ${num(m.breite)})</span>`:''}</div>`;
+        return `<div>${pakText(m)}${num(totOf(m),0)} Stk × ${num(m.laenge,0)} cm · <b>${num(es,1)} × ${num(eb,1)} mm</b>${(es!==m.staerke||eb!==m.breite)?` <span class="wsdim">(fertig ${num(m.staerke)} × ${num(m.breite)})</span>`:''}</div>`;
       }).join('')}</div>`;
     }
     sec += `</div>`;
@@ -3629,7 +3939,7 @@ document.addEventListener('keydown', e=>{
   }
 
   if(currentStep==='artikel'){
-    if(e.key==='Escape'){ e.preventDefault(); closeModal(); return; }
+    if(e.key==='Escape'){ e.preventDefault(); if(editMode && editMode.aspect==='artikel') cancelEdit(); else closeModal(); return; }
     if(e.key==='ArrowDown'){ e.preventDefault(); if(pickRows.length){ pickIdx=Math.min(pickIdx+1,pickRows.length-1); renderRes(); } return; }
     if(e.key==='ArrowUp'){ e.preventDefault(); if(pickRows.length){ pickIdx=Math.max(pickIdx-1,0); renderRes(); } return; }
     if(e.key==='Enter'){ e.preventDefault(); chooseArtikel(); return; }
@@ -3685,7 +3995,11 @@ document.addEventListener('keydown', e=>{
       schAddBoard(it ? (it.type==='grp' ? it.gi : schPats[it.pi].gi) : 0); return; }
     if(e.key==='Delete'){ e.preventDefault();
       const it=schNav[schIdx];
-      if(it && it.type==='pat') schRemoveEmpty(it.pi); else schRejectSel();
+      if(it && it.type==='pat'){
+        const pat=schPats[it.pi];
+        if(schMusterMode() && pat && pat.cut && pat.boards[0].pieces.length) schDissolvePat(it.pi);
+        else schRemoveEmpty(it.pi);
+      } else schRejectSel();
       return; }
     return;
   }
@@ -3977,14 +4291,14 @@ function applyAngebot(data){
     (q.measures||[]).forEach(r=>{
       const cat = TR_CAT(r.traeger||'');
       if(cat!=='norm'){
-        // Palette/Box (nur Anzahl), Rundholz (Faktor/L/B/H in m, Zusatz %), Schüttgut (Anzahl/L/B/H in m)
+        // Rundholz (Faktor/L/B/H, Zusatz %), Schüttgut (Anzahl/L/B/H) – Länge cm, Breite/Höhe mm
         const m = { traeger:r.traeger, pakete:+r.pakete||0, reihen:0, lagen:0, stueck:+r.stueck||1,
                     laenge:+r.laenge||0, breite:+r.breite||0, hoehe:+r.hoehe||0,
                     faktor:+r.faktor||0, zfaktor:+r.zfaktor||0, staerke:0, emStaerke:0, emBreite:0 };
-        m.total = cat==='stk' ? (+m.pakete||0) : (cat==='schuett' ? (m.pakete||1) : 1);
-        m.stueck = cat==='stk' ? 1 : m.total;
+        m.total = cat==='schuett' ? (m.pakete||1) : 1;
+        m.stueck = m.total;
         m.vol = volOf(m);                                   // wird immer frisch gerechnet
-        if(cat==='stk' ? m.pakete>0 : (m.laenge>0 && m.breite>0 && m.hoehe>0)) p.measures.push(m);
+        if(m.laenge>0 && m.breite>0 && m.hoehe>0) p.measures.push(m);
         return;
       }
       const m = { traeger: r.traeger || (+r.pakete>0?'paket':''),   // ältere Dateien: Pakete → Träger „Paket"
@@ -4035,10 +4349,10 @@ function demoPaket(){
   el('f_laenge').value=400; el('f_staerke').value=100; el('f_breite').value=100;
   updateAufMode();
 }
-// Demo: Rundholz – Faktor 0,6 und Wanne 2,3 × 2,0 m sind vorbelegt, nur die Länge tippen
+// Demo: Rundholz – Faktor 0,6 und Wanne 2300 × 2000 mm sind vorbelegt, nur die Länge (cm) tippen
 function demoRundholz(){
   el('f_traeger').value='rundholz'; updateAufMode();
-  el('f_laenge').value=10; updateAufMode();
+  el('f_laenge').value=1000; updateAufMode();
 }
 // Demo: Paketzeile übernehmen + zwei Zuschnitt-Längen ohne Träger (380/70 → Schnittaufteilung greift)
 function demoAuf(){
@@ -4073,17 +4387,17 @@ const TOUR = [
   { setup:()=>chooseArtikel(), target:'table.aufmass', title:'Weg 1 · Aufmaß eingeben',
     body:`Jetzt die Maße. <kbd>Enter</kbd> springt Feld für Feld nach rechts, <kbd>Strg</kbd>+<kbd>Enter</kbd> übernimmt die Zeile sofort. Die <b>Länge wird in Zentimetern</b> erfasst – also <b>300</b> für 3 Meter.<br><br>Zum Ausprobieren: Der Knopf <b>„🧪 Testbestellung"</b> oben rechts füllt eine echte Abbundliste mit 59 Zeilen ein.` },
   { setup:()=>demoPaket(), target:'#aufRow td[data-col=\'traeger\']', title:'Weg 1 · Ladungsträger',
-    body:`Das <b>Träger-Dropdown</b> passt den ganzen Dialog an:<br>· <b>– ohne –</b> / <b>Paket</b>: wie gewohnt (Reihen × Lagen nur beim Paket).<br>· <b>Palette / Box</b>: nur noch die <b>Anzahl</b> – berechnet wird <b>je Stück</b> (Einheit fest).<br>· <b>Rundholz</b>: Faktor × Länge × Breite × Höhe <b>(in m)</b> × Zusatz-% = <b>fm</b>, rechts der Polter mit Maßkette Breite × Höhe.<br>· <b>Schüttgut</b>: Anzahl × L × B × H <b>(in m)</b> = <b>cbm</b>, rechts der Schütthaufen.<br><br>Palette/Box/Rundholz/Schüttgut haben ihre <b>feste Berechnungseinheit</b> – nicht umstellbar.` },
+    body:`Das <b>Träger-Dropdown</b> passt den ganzen Dialog an:<br>· <b>– ohne –</b>: Stückzahl direkt.<br>· <b>Paket / Palette / Box</b>: gleiche Erfassung (Anzahl × Reihen × Lagen bzw. Stückzahl direkt) – nur Beschriftung und Grafik zeigen den gewählten Träger.<br>· <b>Rundholz</b>: Faktor × Länge <b>(cm)</b> × Breite × Höhe <b>(mm)</b> × Zusatz-% = <b>fm</b>, rechts der Polter mit Maßkette.<br>· <b>Schüttgut</b>: Anzahl × L (cm) × B × H (mm) = <b>cbm</b>, rechts der Schütthaufen.<br><br>Rundholz/Schüttgut haben ihre <b>feste Berechnungseinheit</b> – nicht umstellbar.` },
   { target:'.aufright', title:'Weg 1 · Paketgrafik mit echtem Aufbau',
     body:`Wir haben ein Paket eingegeben: <b>2 × (5 Reihen × 4 Lagen)</b>. Die Grafik zeichnet den echten Aufbau: unten <b>2 Unterleger (100 mm)</b>, zwischen den Lagen <b>20-mm-Stapelleisten</b> – und die Maßkette rechnet beides ins <b>Gesamtmaß</b> ein (hier: Höhe 560 mm statt 400).` },
   { setup:()=>demoRundholz(), target:'.aufright', title:'Weg 1 · Neu: Rundholz & Schüttgut',
-    body:`Beispiel <b>Rundholz</b>: Der Dialog stellt komplett um – <b>Faktor 0,6</b>, Wanne <b>Breite 2,3 m × Höhe 2,0 m</b> sind vorbelegt (alles überschreibbar), nur die Länge tippen. Die Grafik zeigt die Stämme <b>rechteckig in der Wanne</b>: Rechteckvolumen × Faktor = <b>fm</b>.<br><br><b>Schüttgut</b> genauso einfach: Anzahl × Länge × Breite × Höhe (in m) = <b>cbm</b>, rechts der Schütthaufen. Beide haben ihre <b>feste Einheit</b> – deshalb zeigt die Zeile nur EINE Ergebnisspalte. Trägertypen lassen sich <b>je Position nicht mischen</b>.` },
+    body:`Beispiel <b>Rundholz</b>: Der Dialog stellt komplett um – <b>Faktor 0,6</b>, Wanne <b>Breite 2300 mm × Höhe 2000 mm</b> sind vorbelegt (alles überschreibbar), nur die Länge in <b>cm</b> tippen – gleiche Einheiten wie beim Paket. Die Grafik zeigt die Stämme <b>rechteckig in der Wanne</b>: Rechteckvolumen × Faktor = <b>fm</b>.<br><br><b>Schüttgut</b> genauso einfach: Anzahl × Länge (cm) × Breite × Höhe (mm) = <b>cbm</b>, rechts der Schütthaufen. Beide haben ihre <b>feste Einheit</b> – deshalb zeigt die Zeile nur EINE Ergebnisspalte. Rundholz/Schüttgut lassen sich <b>je Position nicht mit anderen Trägern mischen</b>.` },
   { setup:()=>demoPaket(), target:'#aufHead', title:'Weg 1 · Reihen/Lagen ⇄ Stückzahl',
     body:`Die Felder sperren sich gegenseitig, damit nichts doppelt gerechnet wird:<br><br>· <b>Reihen + Lagen</b> ausgefüllt → <b>Stück</b> wird berechnet und gesperrt.<br>· <b>Stück</b> direkt eingetippt (Aufbau unbekannt) → <b>Reihen/Lagen</b> werden gesperrt.<br>· Wieder leeren gibt das jeweils andere frei.` },
   { target:'#aufHead th[data-col=\'laenge\']', title:'Weg 1 · Startspalte selbst festlegen',
     body:`Nach jeder übernommenen Zeile springt der Cursor zurück in die <b>📌 markierte Spalte</b> – ab Werk die <b>Länge</b>.<br><br><b>Rechtsklick</b> auf einen anderen Spaltenkopf macht ihn zur neuen Startspalte. Wer z. B. immer die Stückzahl variiert, pinnt einfach „Stück".` },
   { target:'#grpSlidRow', title:'Weg 1 · Berechnungsgrundlage: BL/PL + Fertigmaß/EM',
-    body:`Die beiden Slider über den Spalten bilden zusammen die <b>Berechnungsgrundlage</b> – womit die cbm gerechnet werden:<br><br>· <b>BL / PL</b> über der Länge: <b>PL = Produktionslänge</b> (Standard) rechnet auf den <b>gelieferten Volllängen</b> – der Rest aus der Schnittaufteilung wird mitberechnet. <b>BL = Bestelllänge</b> rechnet nur die <b>bestellten Maße</b> – der Kunde zahlt den Verschnitt dann NICHT mit. Wirkt nur bei aufgeteilten Positionen und ändert ausschließlich die cbm.<br>· <b>Fertigmaß / EM-Maß</b> über den Maßspalten: welches Maßpaar in die cbm geht – Standard ist das <b>Einschnittmaß</b> (Fertigmaß + Zugabe). Das Badge <b>„+10 mm ✎"</b> stellt die Zugabe um (mm oder %) und wirkt sofort auf alle erfassten Zeilen.<br><br>Beides gibt es genauso in der Positionstabelle – Umschalten rechnet sofort.` },
+    body:`Die beiden Slider über den Spalten bilden zusammen die <b>Berechnungsgrundlage</b> – womit die cbm gerechnet werden:<br><br>· <b>BL / PL</b> über der Länge: <b>PL = Produktionslänge</b> (Standard) rechnet auf den <b>gelieferten Volllängen</b> – der Rest aus der Schnittaufteilung wird mitberechnet. <b>BL = Bestelllänge</b> rechnet nur die <b>bestellten Maße</b> – der Kunde zahlt den Verschnitt dann NICHT mit. Wirkt nur bei aufgeteilten Positionen und ändert ausschließlich die cbm.<br>· <b>Fertigmaß / EM-Maß</b> über den Maßspalten: welches Maßpaar in die cbm geht – Standard ist das <b>Einschnittmaß</b> (Fertigmaß + Zugabe). Das Badge <b>„+0 mm ✎"</b> stellt die Zugabe ein (mm oder %, Standard <b>0 mm</b> – z. B. +10 mm bei Trocknen + Hobeln) und wirkt sofort auf alle erfassten Zeilen.<br><br>Beides gibt es genauso in der Positionstabelle – Umschalten rechnet sofort.` },
   { target:'#f_beinh', title:'Weg 1 · Berechnungseinheit',
     body:`Intern rechnet alles in <b>cbm</b> – aber bestellt der Kunde in <b>m², lfdm, Stück, fm oder RM</b>, stellst du es hier um. Menge und <b>Einzelpreis im Angebot werden automatisch umgerechnet</b>, der Gesamtbetrag bleibt gleich.<br><br>Später änderbar: je Position im Preisaufbau, oder <b>für alle auf einmal</b> über „Einheit für alle …" auf der Startseite.` },
   { setup:()=>demoAuf(), target:'#commWrap', title:'Weg 1 · Mehrere Längen, wie in Excel',
@@ -4097,7 +4411,7 @@ const TOUR = [
   { target:'#schGroups', title:'Schnitt · Bilanzzeilen & Schnittbilder',
     body:`Jeder Querschnitt ist eine <b>Bilanzzeile</b>: Lieferlängen im Klartext, Mini-Balken und Rest-% als Ampel. Bei großen Bestellungen bleibt so alles auf einen Blick – aufgeklappt wird nur, wo man eingreift (Klick, <kbd>Leertaste</kbd> oder <kbd>←</kbd><kbd>→</kbd>; die Gruppe mit dem meisten Verschnitt öffnet automatisch).<br><br>Darin die <b>Bretter als Balken</b>: Kundenmaße als Segmente, Rest schraffiert – optional mit <b>einstellbarer Sägeblatt-Reserve</b> je geteiltem Brett (Default 0 cm, Feld oben im Modal). <kbd>↑</kbd><kbd>↓</kbd> wählt, <kbd>←</kbd><kbd>→</kbd>/‹ › ändern die Vorratslänge, 🔒 = fest.` },
   { target:'.schrow.schnew', title:'Schnitt · Drag & Drop 🖱️',
-    body:`Das Beste: <b>Maße einfach ziehen!</b> Ein Maß mit der Maus anfassen und auf ein anderes Brett fallen lassen – beim Drüberhalten zeigt ein <b>Ghost-Segment</b> live, wie viel Platz es einnehmen würde. Passt es nicht (Reserve!), nimmt das Brett es gar nicht erst an.<br><br>Diese Zeile hier fügt per Klick (oder <kbd>N</kbd>) ein <b>leeres Brett</b> ein – Länge wählen, Maße hineinziehen. <b>Leergeräumte Bretter verschwinden automatisch.</b> Tastatur-Weg: <kbd>M</kbd> = verschieben.` },
+    body:`Das Beste: <b>Maße einfach ziehen!</b> Ein Maß mit der Maus anfassen und auf ein anderes Brett fallen lassen – beim Drüberhalten zeigt ein <b>Ghost-Segment</b> live, wie viel Platz es einnehmen würde. Passt es nicht (Reserve!), nimmt das Brett es gar nicht erst an.<br><br>Diese Zeile hier fügt per Klick (oder <kbd>N</kbd>) ein <b>leeres Brett</b> ein – Länge wählen, Maße hineinziehen. <b>Leergeräumte Bretter verschwinden automatisch.</b> Tastatur-Weg: <kbd>M</kbd> = verschieben.<br><br>📦 <b>Paket-Positionen: Master anlegen.</b> Oben im Baukasten <b>„Schnittmuster (Master)"</b> legst du ein Master an und klickst die Maße aus dem <b>Vorrat</b> hinein – z. B. zweimal 200 → Master „4,00 m = 200 + 200". Das Master gilt automatisch für <b>alle passenden Bretter</b> (statt 180 Stück von Hand aufzuteilen), der Rest wird automatisch gepackt. <b>✕ an einer Brettzeile löst die Bretter wieder auf</b> – ein Hinweis zeigt dann, was noch nicht aufgebraucht ist. Auch Zieh-Änderungen wirken bei Paketen auf alle gleichen Bretter.` },
   { target:'#schStats', title:'Schnitt · Kennzahlen live',
     body:`Bei jedem Eingriff siehst du sofort: <b>Bretter, verschiedene Längen, cbm berechnet vs. bestellt, Rest/Verschnitt in %</b>. So erkennt man direkt, ob eine Handänderung besser oder schlechter ist.<br><br><kbd>A</kbd> rechnet automatisch neu, <kbd>Esc</kbd> übernimmt → weiter zum Preis.` },
 
@@ -4125,7 +4439,7 @@ const TOUR = [
 
   // ── Nachträglich bearbeiten: wieder in die Dialoge kommen ──
   { target:'.posblock .edithint', title:'Bearbeiten · zwei Wege',
-    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen:<br><br>· <b>Wie in Excel:</b> jede weiße Zelle direkt überschreiben.<br>· <b>„✎ Menü":</b> öffnet den vollen Dialog wieder – bei Aufmaß, Holzpreis, jedem Zuschlag, den Zuschlägen gesamt und der Schnittaufteilung.` },
+    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen:<br><br>· <b>Wie in Excel:</b> jede weiße Zelle direkt überschreiben.<br>· <b>„✎ Menü":</b> öffnet den vollen Dialog wieder – bei Aufmaß, Holzpreis, jedem Zuschlag, den Zuschlägen gesamt und der Schnittaufteilung.<br>· <b>„⇄ Artikel"</b> im Positionskopf <b>tauscht nur den Artikel</b> (z. B. Lärche → Douglasie): alle Aufmaße, die Schnittaufteilung und die Zuschläge bleiben – nur der Preis wird neu gewählt, mit der Historie des neuen Artikels.` },
   { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Dialog wieder öffnen',
     body:`Klick auf „✎ Menü" beim <b>Holzpreis</b> → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position. Genauso: „✎ Menü" beim Aufmaß (neue Zeilen erfassen) und bei den Zuschlägen. <b>Zurück</b> verwirft die Änderung.` },
   { setup:()=>confirmPreis(), target:'.posblock [data-edit=\'schnitt\']', title:'Bearbeiten · Schnittaufteilung wieder öffnen',
@@ -4197,7 +4511,7 @@ function goTour(newIdx){
   setTimeout(renderTourUI, 70);
 }
 function renderTourUI(){
-  const st=TOUR[tourIdx]; if(!st) return;
+  const st=TOUR[tourIdx]; if(!st || !el('tourProg')) return;   // Tour evtl. schon beendet (verzögerter Aufruf)
   el('tourProg').textContent = `Schritt ${tourIdx+1} von ${TOUR.length}`;
   el('tourTitle').textContent = st.title;
   el('tourBody').innerHTML = st.body;
