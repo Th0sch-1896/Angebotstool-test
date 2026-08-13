@@ -675,61 +675,73 @@
   button.pkseg:hover { background: var(--warn-soft); text-decoration: line-through; }
   .pkrest { background: repeating-linear-gradient(45deg, var(--panel-2) 0 5px, white 5px 10px); }
   .pkempty { align-self: center; margin: 0 auto; font-size: 0.68rem; color: var(--ink-2); }
-  .pkxrow { display: flex; align-items: center; gap: 10px; padding: 6px 12px; background: white; border: 1px solid var(--line); border-radius: 8px; margin: 4px 0; font-size: 0.8rem; }
-  .pkxrow.sel { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
-  .pkxrow .pkxl { flex: 0 0 auto; font-weight: 600; }
-  .pkt { width: 15px; height: 15px; border-radius: 3px; display: inline-block; }
-  .pkt.full { background: var(--accent); }
-  .pkt.part { background: var(--accent-soft); border: 1px solid var(--accent); }
-  .pkt.open { border: 1.5px dashed var(--ink-2); opacity: 0.55; }
-  .pkt.overfull { background: var(--error); }
-  .pkovern { font-size: 0.7rem; color: var(--error); font-weight: 700; }
-  /* Ein Block je Bestellzeile: Ampelzeile + eingerückte Lieferpakete */
-  .pkz { margin: 8px 0; }
-  .pkz .pkst { margin: 0 0 4px; }
-  .pkzrows { margin: 0 0 4px 26px; display: grid; gap: 4px; }
-  .pkzrows .pkxrow { margin: 0; }
   .pkfit { border: 1px solid var(--ok); background: var(--ok-soft); color: var(--ink); border-radius: 999px; padding: 1px 9px; font-size: 0.72rem; font-weight: 600; cursor: pointer; margin-left: 3px; }
   .pkfit:hover { border-color: var(--accent); background: var(--accent-soft); }
-  .pkbar { display: inline-block; width: 200px; height: 10px; border-radius: 99px; background: var(--panel-2); overflow: hidden; }
-  .pkbar span { display: block; height: 100%; background: var(--accent); }
-  /* Deckungs-Ampel oben: grün = exakt · gelb = Überhang · rot = offen */
-  .pkst { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 8px 0 6px; padding: 9px 12px; background: white; border: 1px solid var(--line); border-radius: 8px; font-size: 0.82rem; }
-  .pkst .pkdot { width: 13px; height: 13px; border-radius: 50%; flex: 0 0 auto; }
-  .pkst .big { font-size: 0.95rem; }
-  .pkst .lbl { color: var(--ink-2); font-size: 0.74rem; font-weight: 400; }
-  .pkst .sp { flex: 1; }
-  .pkst .pktiles { display: flex; gap: 3px; align-items: center; flex-wrap: wrap; }
-  .pkst.ok   { box-shadow: inset 4px 0 0 var(--ok); }   .pkst.ok .pkdot   { background: var(--ok); }
-  .pkst.over { box-shadow: inset 4px 0 0 var(--warn); background: var(--warn-soft); } .pkst.over .pkdot { background: var(--warn); }
-  .pkst.open { box-shadow: inset 4px 0 0 var(--error); background: oklch(0.97 0.02 25); } .pkst.open .pkdot { background: var(--error); }
-  .pkst .pkstinfo { font-weight: 700; }
-  .pkst.over .pkstinfo { color: var(--warn); }
-  .pkst.open .pkstinfo { color: var(--error); }
   .pkvoll { font-size: 0.74rem; padding: 3px 10px; white-space: nowrap; font-weight: 600; }
-  .pkbuild { display: grid; grid-template-columns: minmax(0,1fr) 200px; gap: 10px; align-items: start; margin-top: 6px; }
-  .pkcard { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; cursor: pointer; }
-  .pkcard:hover { border-color: var(--accent); }
-  .pkcard.on { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
-  .pkcard.sel { box-shadow: inset 3px 0 0 var(--accent); }
-  .pkcard .pkhd { display: flex; align-items: center; gap: 8px; font-size: 0.8rem; margin-bottom: 5px; }
-  .pkcard .pkhd .lbl { color: var(--ink-2); font-size: 0.72rem; }
-  .pkcard .mx { margin-left: auto; border: none; background: none; cursor: pointer; color: var(--ink-2); }
-  .pkcard .mx:hover { color: var(--error); }
-  .pkcard .pkft { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 0.74rem; }
-  .pkcard .pkft .lbl { color: var(--ink-2); }
-  .pkcard.schrej { animation: schrej 500ms ease-out; }
-  .pknew { border: 1.5px dashed var(--accent); border-radius: 8px; padding: 12px; text-align: center; color: var(--accent); font-size: 0.78rem; font-weight: 600; }
-  .pkmain.dropsel { outline: 2px dashed var(--accent); outline-offset: 3px; border-radius: 8px; background: var(--accent-soft); }
-  .pkcard.dropsel { border-color: var(--ok); box-shadow: 0 0 0 2px var(--ok-soft); }
-  .pkside { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 6px; }
+  .pkchip { text-align: left; border: 1px solid var(--ok); background: var(--ok-soft); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 0.78rem; }
+  .pkchip:hover { border-color: var(--accent); }
+  .pkchip .lbl { color: var(--ink-2); font-size: 0.68rem; }
+  .pkchip.schrej { animation: schrej 500ms ease-out; }
+  .eqref { border: 1px dashed var(--ok); border-radius: 8px; padding: 6px 12px; font-size: 0.76rem; color: var(--ink-2); align-self: center; background: white; }
+  /* Paket-GLEICHUNG: braunes Bestellpaket = grüne Lieferpakete */
+  .eqrow { display: flex; align-items: center; gap: 12px; background: white; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; margin: 8px 0; }
+  .eqrow.open { border-color: var(--warn); }
+  .eqrow.dropsel { outline: 2px dashed var(--accent); outline-offset: 2px; background: var(--accent-soft); }
+  .eqrow .lbl { color: var(--ink-2); font-size: 0.72rem; }
+  .eqbest { flex: 0 0 165px; text-align: center; }
+  .eqbest .lbl b { color: var(--ink); font-size: 0.78rem; }
+  .eqeq { font-size: 1.3rem; color: var(--ink-2); flex: 0 0 auto; }
+  .eqliste { flex: 1; display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+  .eqpak { border: 2px solid var(--ok); background: var(--ok-soft); border-radius: 8px; padding: 6px 10px; cursor: pointer; display: grid; gap: 4px; align-content: start; }
+  .eqpak.kombi { border-style: double; border-width: 4px; }
+  .eqpak.sel { box-shadow: 0 0 0 2px var(--accent-soft); border-color: var(--accent); }
+  .eqpak .eqh { display: flex; align-items: center; gap: 7px; font-size: 0.8rem; }
+  .eqpak .eqh b { font-size: 0.88rem; }
+  .eqpak .mx { border: none; background: none; cursor: pointer; color: var(--ink-2); padding: 0 2px; }
+  .eqpak .mx:hover { color: var(--error); }
+  .eqpak .pkbarw { background: white; }
+  .eqpak .eqf { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 0.72rem; }
+  select.eqlen { padding: 2px 6px; border: 1px solid var(--line); border-radius: 6px; background: white; font-size: 0.76rem; }
+  .eqmiss { border: 2px dashed var(--warn); border-radius: 8px; padding: 8px 12px; color: var(--warn); font-weight: 700; font-size: 0.82rem; text-align: center; align-self: center; }
+  .eqmiss .btns { display: flex; gap: 6px; margin-top: 5px; }
+  .eqover { border: 2px solid var(--error); background: oklch(0.97 0.02 25); border-radius: 8px; padding: 8px 12px; color: var(--error); font-weight: 700; font-size: 0.82rem; text-align: center; align-self: center; }
+  .eqover .lbl { color: var(--error); font-weight: 400; }
+  .eqadd { border: 1.5px dashed var(--accent); background: none; border-radius: 8px; color: var(--accent); font-size: 0.76rem; font-weight: 600; padding: 0 12px; cursor: pointer; align-self: center; min-height: 40px; }
+  .eqadd:hover { background: var(--accent-soft); }
+  .eqstat { flex: 0 0 76px; text-align: right; font-weight: 800; font-size: 0.95rem; font-variant-numeric: tabular-nums; }
+  .eqstat.ok { color: var(--ok); } .eqstat.open { color: var(--warn); } .eqstat.over { color: var(--error); }
+  .eqrow.kombirow { border-style: dashed; }
+  .eqpak.schrej { animation: schrej 500ms ease-out; }
+  /* Baukasten-Dreispalter: Längen links · Pakete Mitte · Bestellmaße mit Ampel rechts */
+  .pkb3 { display: grid; grid-template-columns: 150px minmax(0,1fr) 235px; gap: 10px; align-items: start; margin-top: 6px; }
+  .pkbL, .pkbR { background: white; border: 1px solid var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 6px; align-content: start; }
+  .pkbM { display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; align-items: flex-start; min-height: 150px; border: 1.5px dashed var(--line); border-radius: 8px; padding: 10px; }
+  .pkbM.dropsel { outline: 2px dashed var(--accent); outline-offset: 2px; background: var(--accent-soft); }
+  .pknew2 { flex: 1 1 100%; text-align: center; color: var(--ink-2); font-size: 0.74rem; padding: 14px 6px; }
+  .bpak { min-width: 235px; }
+  .pkfrei { display: flex; gap: 6px; align-items: center; }
+  .pkfreiinp { width: 74px; padding: 4px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 0.8rem; }
+  .pkfreiinp.schrej { animation: schrej 500ms ease-out; }
+  .pkfreigo { flex: 0 0 auto; }
+  .pkbz2 { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; cursor: grab; background: white; display: grid; gap: 5px; font-size: 0.78rem; }
+  .pkbz2 .hd { display: flex; gap: 6px; align-items: center; }
+  .pkbz2 .hd b { font-size: 0.86rem; }
+  .pkdot2 { width: 11px; height: 11px; border-radius: 50%; background: var(--ink-2); flex: 0 0 auto; }
+  .pkbz2.ok   { box-shadow: inset 3px 0 0 var(--ok); }   .pkbz2.ok .pkdot2   { background: var(--ok); }
+  .pkbz2.open { box-shadow: inset 3px 0 0 var(--warn); } .pkbz2.open .pkdot2 { background: var(--warn); }
+  .pkbz2.over { box-shadow: inset 3px 0 0 var(--error); } .pkbz2.over .pkdot2 { background: var(--error); }
+  .pkbz2 .cnt { font-variant-numeric: tabular-nums; }
+  .pkbz2 .cnt .ov { color: var(--error); font-weight: 700; }
+  .pkbz2 .pbar { height: 8px; border-radius: 99px; background: var(--panel-2); overflow: hidden; }
+  .pkbz2 .pbar span { display: block; height: 100%; background: var(--ok); }
+  .pkbz2.open .pbar span { background: var(--warn); }
+  .pkbz2.over .pbar span { background: var(--error); }
+  .pkbz2 .acts { display: flex; gap: 5px; flex-wrap: wrap; }
+  .pkbz2.schrej { animation: schrej 500ms ease-out; }
   .pksl { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-2); font-weight: 600; margin-top: 4px; }
   .pkslen { text-align: left; border: 1px solid var(--line); background: var(--panel-2); border-radius: 6px; padding: 5px 10px; cursor: pointer; font-size: 0.78rem; }
   .pkslen:hover { border-color: var(--accent); background: var(--accent-soft); }
-  .pkslen .lbl, .pkchip .lbl { color: var(--ink-2); font-size: 0.68rem; }
-  .pkchip { text-align: left; border: 1px solid var(--ok); background: var(--ok-soft); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 0.78rem; }
-  .pkchip:hover { border-color: var(--accent); }
-  .pksh { font-size: 0.68rem; color: var(--ink-2); line-height: 1.5; }
+  .pkslen .lbl { color: var(--ink-2); font-size: 0.68rem; }
   .schrow.schnew { justify-content: center; gap: 8px; margin: 8px 10px 10px; padding: 8px 12px; border: 1.5px dashed var(--accent);
                    border-radius: 8px; background: oklch(0.975 0.012 150); color: var(--accent); font-size: 0.8rem; font-weight: 700; }
   .schrow.schnew:hover { background: var(--accent-soft); box-shadow: 0 0 0 3px var(--accent-soft); }
@@ -2866,21 +2878,54 @@ function schPakVoll(gkey, ti){
   ty.teil = false;
   schPakAfter();
 }
-// Bauen-Modus: neues Lieferpaket aus der Sidebar (bei einer Bestellzeile sortenrein vorbefüllt)
-function schPakAddType(gkey, Len){
+// Neue Lieferlänge für eine Bestellzeile (＋ Länge, Sidebar-Klick oder Drop auf die Zeile):
+// nimmt die angegebene bzw. die beste noch nicht genutzte Vorratslänge, sortenrein
+function schPakAddLen(gkey, zref, forceLen){
   const g=schPakGrp(gkey); if(!g) return;
-  const zeilen=schPakZeilen(draft,g), plan=schPakPlan(g);
-  const ty={len:Len, segs:[], anz:1, bretter:0};
-  if(zeilen.length===1){
-    const k=schPakK(Len, zeilen[0].L);
-    if(k>=1){ ty.segs=Array(k).fill(zeilen[0].L); ty.bretter=zeilen[0].S; }
+  const z=schPakZeilen(draft,g).find(x=>x.ref===zref); if(!z) return;
+  let Len = forceLen;
+  if(!Len){
+    const used = new Set(schPakPlan(g).types.filter(ty=>ty.segs.length && ty.segs.every(l=>l===z.L)).map(ty=>ty.len));
+    const opts = SCH_STD.filter(L=> schPakK(L,z.L)>=1 && !used.has(L))
+      .sort((a,b)=> (a-schPakK(a,z.L)*z.L)/schPakK(a,z.L) - (b-schPakK(b,z.L)*z.L)/schPakK(b,z.L));
+    Len = opts[0];
   }
-  plan.types.push(ty);
-  schPakActive={gkey, ti:plan.types.length-1};
+  if(!Len || schPakK(Len, z.L)<1) return;
+  schPakPlan(g).types.push({len:Len, segs:Array(schPakK(Len,z.L)).fill(z.L), anz:1, bretter:z.S});
+  schPakAfter();
+}
+// Baukasten: LEERES Lieferpaket einer Länge anlegen (auch freie Länge bis 5,00 m) –
+// die Bestellmaße kommen danach per Drag/Klick von rechts ins Brett
+function schPakAddEmpty(gkey, Len){
+  const g=schPakGrp(gkey); if(!g) return;
+  Len = Math.round(+Len||0);
+  if(!(Len>0 && Len<=SCH_MAX)) return;
+  const plan=schPakPlan(g);
+  plan.types.push({len:Len, segs:[], anz:1, bretter:0});
+  draft.schnitt.pakSel='frei';
+  const ti = plan.types.length-1;
+  schPakMaterialize();
+  renderSchnitt();
+  // das neue Paket direkt auswählen, damit Bestellmaß-Klicks sofort hineingehen
+  const ni = schPakNav.findIndex(n=> n.t==='type' && n.gkey===gkey && n.ti===ti);
+  if(ni>=0){ schPakIdx=ni; const c=ov.querySelector(`[data-pknav="${ni}"]`); if(c) c.classList.add('sel'); }
+}
+// Brettlänge eines Lieferpakets wechseln: sortenrein wird neu befüllt, Kombi nur wenn es passt
+function schPakSetLen(gkey, ti, Len){
+  const g=schPakGrp(gkey); if(!g) return;
+  const ty=schPakPlan(g).types[ti]; if(!ty) return;
+  const lens=[...new Set(ty.segs)];
+  if(lens.length===1){
+    const k=schPakK(Len, lens[0]); if(k<1){ renderSchnitt(); return; }
+    ty.segs=Array(k).fill(lens[0]); ty.len=Len;
+  } else {
+    if(ty.segs.reduce((s,l)=>s+l,0)+schRes>Len){ renderSchnitt(); return; }
+    ty.len=Len;
+  }
   schPakAfter();
 }
 function schPakRejectCard(gkey, ti){
-  const c = ov.querySelector(`.pkcard[data-gkey="${gkey}"][data-ti="${ti}"]`);
+  const c = ov.querySelector(`.eqpak[data-gkey="${gkey}"][data-ti="${ti}"]`);
   if(c){ c.classList.remove('schrej'); void c.offsetWidth; c.classList.add('schrej'); }
 }
 function schPakChip(gkey, zref){
@@ -2914,26 +2959,7 @@ function schPakDelSeg(gkey, ti, si){
   schPakActive={gkey, ti};
   schPakAfter();
 }
-// Kachelleiste: jedes Bestellpaket eine Kachel (kräftig = gedeckt, hell = angebrochen,
-// gestrichelt = offen); bei sehr vielen Paketen ein Fortschrittsbalken
-function schPakTiles(z){
-  // Überhang (mehr geliefert als bestellt) → ROTE Kacheln hinter den grünen
-  const overStk = Math.max(0, z.cov - z.need);
-  const overTiles = Math.min(12, Math.ceil(overStk / z.S));
-  const overHtml = overStk>0
-    ? Array(overTiles).fill(`<span class="pkt overfull" title="+${num(overStk,0)} Stk über Bestellung"></span>`).join('') + (Math.ceil(overStk/z.S)>12?`<span class="pkovern">+${num(Math.ceil(overStk/z.S)-12,0)}</span>`:'')
-    : '';
-  if(z.B > 26){
-    const pct = Math.min(100, z.need? z.cov/z.need*100 : 0);
-    return `<span class="pkbar" title="${num(pct,0)} % gedeckt"><span style="width:${pct.toFixed(1)}%"></span></span>${overHtml}`;
-  }
-  const full = Math.min(z.B, Math.floor(z.cov / z.S));
-  const part = (full<z.B && z.cov - full*z.S > 0) ? 1 : 0;
-  let t='';
-  for(let i=0;i<z.B;i++) t += `<span class="pkt ${i<full?'full':(i<full+part?'part':'open')}"></span>`;
-  return t + overHtml;
-}
-// Vorschau für die Karten 1–3 (ohne den Plan zu verändern; berücksichtigt „Mischen")
+// Vorschau für die Automatik-Knöpfe (ohne den Plan zu verändern)
 function schPakPreview(kind){
   let pak=0, lfm=0, used=0, teil=false;
   draft.schnitt.groups.forEach(g=>{
@@ -2967,20 +2993,38 @@ function schPakBar(ty, click){
   }
   return `<span class="pkbarw">${ty.segs.length?segs:'<span class="pkempty">leer – Bestellmaß rechts anklicken</span>'}${rest>0&&ty.segs.length?`<span class="pkrest" style="flex:${rest}" title="Rest ${num(rest,0)} cm"></span>`:''}</span>`;
 }
-// ── Die Paket-Ansicht des Schnitt-Modals (ersetzt Pillen + Werkbank bei Paketen) ──
+// Bestellpaket-Symbol (braun): Breite folgt der Bestelllänge
+function pakBestellSVG(L){
+  const w = Math.max(44, Math.min(110, Math.round(L/500*110)));
+  const g1 = Math.round(w/3)+4, g2 = Math.round(2*w/3)+4;
+  return `<svg width="${w+8}" height="40" aria-hidden="true"><rect x="4" y="4" width="${w}" height="30" rx="2" fill="#EED9B8" stroke="#B08954" stroke-width="2"/>
+    <line x1="4" y1="14" x2="${w+4}" y2="14" stroke="#B08954"/><line x1="4" y1="24" x2="${w+4}" y2="24" stroke="#B08954"/>
+    <line x1="${g1}" y1="4" x2="${g1}" y2="34" stroke="#B08954"/><line x1="${g2}" y1="4" x2="${g2}" y2="34" stroke="#B08954"/></svg>`;
+}
+// ── Paket-Ansicht des Schnitt-Modals: grafische „PAKET-GLEICHUNG" (13.08.2026 Thorben:
+// „auf jeden Fall mit Grafiken") – je Bestellzeile: braunes Bestellpaket = grüne
+// Lieferpakete (Stepper, Längenwahl, Brettgrafik, „passt noch"-Chips), gelb
+// gestrichelt = fehlt (Teilpaket/aufrunden), rot = zu viel. Karte 4 „Baukasten" =
+// dieselbe Gleichung, leer gestartet, plus Längen-Sidebar (Klick oder Drag auf die Zeile). ──
 function renderSchnittPak(){
   const sch = draft.schnitt;
   const pctCls = p => p<=5 ? 'ok' : p<=12 ? 'mid' : 'bad';
-  // Karten (12.08.2026 Thorben): Verschnitt · Pakete · Mischen · Baukasten – bei 1–3
-  // wird nur das ERGEBNIS gezeigt (keine Längen-Stepper, „viel zu unübersichtlich")
-  const KARTEN = [['v1','1 · Wenigster Verschnitt','sortenrein, exakt aufgehend'],['v2','2 · Wenigste Pakete','sortenrein, exakt aufgehend'],['mix','3 · Mischen','Kombi-Pakete – verschiedene Maße in einem Brett']];
+  const bauen = schPakView==='bauen';
+  const st = schnittStats(sch);
+  const pakCount = sch.groups.reduce((s,g)=> s + ((sch.pak&&sch.pak[g.key])?sch.pak[g.key].types.reduce((x,t)=>x+(t.anz||0),0):0), 0);
+  // Karten in derselben Optik wie bei der normalen Schnittaufteilung (Pillen mit
+  // Kennzahlen + Rest-% – 13.08.2026 Thorben: „Optik wie bei normalen Brettern")
+  // „Wenigste Pakete" gestrichen (13.08.2026 Thorben) – fiel praktisch immer mit
+  // „wenigster Verschnitt" zusammen und „Pakete" wurde als Bestellpakete missverstanden
+  const KARTEN = [['v1','1 · Wenigster Verschnitt','sortenrein, exakt aufgehend'],['mix','2 · Mischen','Kombi-Pakete: verschiedene Maße in einem Brett']];
   el('schCards').innerHTML = KARTEN.map(([k,t,sub])=>{
     const pv = schPakPreview(k);
-    return `<button type="button" class="schpill ${sch.pakSel===k&&schPakView!=='bauen'?'on':''}" data-pkkind="${k}" title="${sub||t}">
+    return `<button type="button" class="schpill ${sch.pakSel===k&&!bauen?'on':''}" data-pkkind="${k}" title="${sub}">
       <span class="pl">${t}</span><span class="ps">${pv.pak} Lieferpakete${pv.teil?' (inkl. Teilpaket)':''} · Rest <b class="cpct ${pctCls(pv.pct)}">${num(pv.pct,1)} %</b></span></button>`;
   }).join('')
-    + `<button type="button" class="schpill ${schPakView==='bauen'?'on':''}" data-pkkind="bauen" title="Leere Fläche: Längen aus dem Baukasten rechts anklicken oder hineinziehen und selbst zusammenstellen">
-        <span class="pl">4 · Baukasten 🔧</span><span class="ps">selbst bauen – alle Längen rechts</span></button>`;
+    + `<button type="button" class="schpill ${bauen?'on':''}" data-pkkind="bauen" title="Leer starten und selbst zusammenstellen: Längen links, Pakete Mitte, Bestellmaße rechts">
+        <span class="pl">3 · Baukasten 🔧</span><span class="ps">selbst bauen · Länge rein, Maße rein, Anzahl hoch</span></button>`
+    + `<span class="schsum">${num(pakCount,0)} Lieferpakete · ${st.boards} Bretter · Rest <b class="cpct ${pctCls(st.pct)}">${num(st.pct,1)} %</b></span>`;
   el('schCards').querySelectorAll('[data-pkkind]').forEach(b=> b.onclick=()=>{
     const k=b.dataset.pkkind;
     if(k==='bauen'){ if(schPakView!=='bauen') schPakOpenBauen(); }
@@ -2997,78 +3041,103 @@ function renderSchnittPak(){
     }
     const plan = schPakPlan(g);
     if(sch.groups.length>1) html += `<div class="pkghead"><b>${num(g.s)} × ${num(g.b)} mm</b>${(g.es!==g.s||g.eb!==g.b)?`<span class="lbl">EM ${num(g.es,1)} × ${num(g.eb,1)}</span>`:''}</div>`;
-    // Je Bestellzeile EIN Block (12.08.2026 Thorben „sehr unübersichtlich – besser
-    // strukturieren"): Ampelzeile = Bestellt-Info + Deckung + Aktionen in einer Zeile,
-    // darunter eingerückt die zugehörigen sortenreinen Lieferpakete. Kombis decken
-    // mehrere Zeilen und stehen deshalb als eigener Block darunter.
-    const typRow = (ty, ti)=>{
-      const kombi = new Set(ty.segs).size>1;
-      const rest = Math.max(0, ty.len - ty.segs.reduce((s,l)=>s+l,0));
-      return `<div class="pkxrow">
-        <span class="pkxl">${num(ty.anz,0)} ${ty.anz===1?(ty.teil?'Teilpaket':'Paket'):(ty.teil?'Teilpakete':'Pakete')}${kombi?' (Kombi)':''} × ${num(ty.bretter,0)} Stk · ${num(ty.len/100,2)} m</span>
-        ${schPakBar(ty, false)}
-        <span class="lbl" style="color:var(--ink-2)">${rest>0?'Rest '+num(rest,0)+' cm je Brett':'—'}</span>
-        ${ty.teil?`<button type="button" class="ghost pkvoll" data-pkvoll data-gkey="${g.key}" data-ti="${ti}" title="Teilpaket zum vollen Paket aufrunden – der Überhang wird mitgeliefert und berechnet">⤒ aufrunden: volles Paket</button>`:''}
-      </div>`;
-    };
-    const pkstHtml = z=>{
-      const state = z.cov===z.need ? 'ok' : (z.cov<z.need ? 'open' : 'over');
-      const teils = plan.types.map((ty,ti)=>({ty,ti})).filter(x=> x.ty.teil && x.ty.segs.includes(z.L));
-      const b = schPakBest(z.L);
-      return `<div class="pkst ${state}">
-        <span class="pkdot" title="${state==='ok'?'exakt gedeckt':state==='open'?'Deckung offen':'mehr als bestellt'}"></span>
-        <span class="pksttxt"><b>${num(z.L/100,2)} m · ${num(z.B,0)} ${z.B===1?'Paket':'Pakete'} × ${num(z.S,0)} Stk</b> — <b class="big">${num(Math.min(z.B, Math.floor(z.cov/z.S)),0)} von ${num(z.B,0)}</b> gedeckt${teils.length?` <span class="lbl">· inkl. Teilpaket ${teils.map(x=>num(x.ty.bretter,0)+' Stk').join(', ')}</span>`:''}</span>
-        <span class="pktiles">${schPakTiles(z)}</span>
-        <span class="sp"></span>
-        ${state==='open' ? `<span class="pkstinfo">${num(z.need-z.cov,0)} Stk offen – wie liefern?</span>
-          <button type="button" class="ghost pkvoll" data-pkteil data-gkey="${g.key}" data-zref="${z.ref}">Teilpaket ${b?num(b.Len/100,2)+' m ('+num(Math.ceil((z.need-z.cov)/b.k),0)+' Stk)':''}</button>
-          <button type="button" class="ghost pkvoll" data-pkauf data-gkey="${g.key}" data-zref="${z.ref}">aufrunden: volles Paket</button>` : ''}
-        ${state==='over' ? `<span class="pkstinfo">+ ${num(z.cov-z.need,0)} Stk über Bestellung – wird mitgeliefert und berechnet</span>` : ''}
-        ${teils.map(x=>`<button type="button" class="ghost pkvoll" data-pkvoll data-gkey="${g.key}" data-ti="${x.ti}" title="Teilpaket (${num(x.ty.bretter,0)} Stk) zum vollen Paket aufrunden – der Überhang wird mitgeliefert und berechnet">⤒ Teilpaket aufrunden</button>`).join('')}
-      </div>`;
-    };
-    if(schPakView!=='bauen'){
-      zeilen.forEach(z=>{
-        html += `<div class="pkz">${pkstHtml(z)}`;
-        const own = plan.types.map((ty,ti)=>({ty,ti})).filter(x=> x.ty.anz>0 && x.ty.bretter>0 && x.ty.segs.length && x.ty.segs.every(l=>l===z.L));
-        if(own.length) html += `<div class="pkzrows">${own.map(x=>typRow(x.ty,x.ti)).join('')}</div>`;
-        html += `</div>`;
-      });
-      const kombis = plan.types.map((ty,ti)=>({ty,ti})).filter(x=> x.ty.anz>0 && x.ty.bretter>0 && new Set(x.ty.segs).size>1);
-      if(kombis.length){
-        html += `<div class="pkz"><div class="pkbz"><span class="lbl">Kombi-Pakete (decken mehrere Maße gleichzeitig):</span></div>
-          <div class="pkzrows">${kombis.map(x=>typRow(x.ty,x.ti)).join('')}</div></div>`;
-      }
-      html += `<div class="pkbz"><span class="lbl">Anpassen (Anzahl, Längen, Kombis): Karte 4 · Baukasten</span></div>`;
-    } else {
-      zeilen.forEach(z=>{ html += pkstHtml(z); });
-      // Bauen-Modus: links die Lieferpaket-Karten, rechts der Baukasten
-      let cards='';
-      plan.types.forEach((ty,ti)=>{
+    if(bauen){
+      // BAUKASTEN-Dreispalter (13.08.2026 Thorben): Vorratslängen links (+ freie Länge
+      // bis 5,00 m per Hand), Pakete in der Mitte (starten leer, Bestellmaße per Drag),
+      // rechts die Bestellmaße mit Ampel + „x / y Paketen verwendet"
+      const bCards = plan.types.map((ty,ti)=>{
         const nav = schPakNav.length; schPakNav.push({t:'type', gkey:g.key, ti});
-        const on = schPakActive && schPakActive.gkey===g.key && schPakActive.ti===ti;
         const kombi = new Set(ty.segs).size>1;
-        cards += `<div class="pkcard ${on?'on':''} ${schPakIdx===nav?'sel':''}" data-gkey="${g.key}" data-ti="${ti}" data-pknav="${nav}">
-          <div class="pkhd"><b>${ty.teil?'Teilpaket':(kombi?'Kombi':'Paket')} · ${num(ty.len/100,2)} m</b><span class="lbl">${ty.bretter>0?num(ty.bretter,0)+' Stk je Paket':'Stückzahl folgt'}</span>
-            <button type="button" class="mx" data-pkdel data-gkey="${g.key}" data-ti="${ti}" title="Lieferpaket entfernen (Entf)">✕</button></div>
+        const segsum = ty.segs.reduce((s,l)=>s+l,0);
+        const rest = Math.max(0, ty.len - segsum);
+        const kInfo = [...new Set(ty.segs)].sort((a,b)=>b-a).map(l=>`${ty.segs.filter(x=>x===l).length} × ${num(l,0)}`).join(' + ');
+        return `<div class="eqpak bpak ${schPakIdx===nav?'sel':''}" data-pknav="${nav}" data-gkey="${g.key}" data-ti="${ti}">
+          <div class="eqh"><b>${num(ty.len/100,2)} m</b>
+            <span class="pkstep"><button type="button" class="schar" data-pkts="-1" data-gkey="${g.key}" data-ti="${ti}">−</button><b>×${num(ty.anz,0)}</b><button type="button" class="schar" data-pkts="1" data-gkey="${g.key}" data-ti="${ti}">＋</button></span>
+            <span class="lbl">${ty.bretter>0?num(ty.bretter,0)+' Stk':'leer'}${ty.teil?' · Teilpaket':''}${kombi?' · Kombi':''}</span>
+            <button type="button" class="mx" data-pkdel data-gkey="${g.key}" data-ti="${ti}" title="Paket entfernen (Entf)">✕</button></div>
           ${schPakBar(ty, true)}
-          <div class="pkft"><span class="pkstep"><button type="button" class="schar" data-pkts="-1" data-gkey="${g.key}" data-ti="${ti}">−</button><b>${num(ty.anz,0)}</b><button type="button" class="schar" data-pkts="1" data-gkey="${g.key}" data-ti="${ti}">＋</button></span>
-            ${ty.teil?`<button type="button" class="ghost pkvoll" data-pkvoll data-gkey="${g.key}" data-ti="${ti}" title="Teilpaket zum vollen Paket aufrunden">⤒ voll</button>`:''}
-            <span class="lbl">${ty.segs.length?`deckt: ${[...new Set(ty.segs)].map(l=>`${ty.segs.filter(x=>x===l).length} × ${num(l,0)}`).join(' + ')}`:''}</span>
-            <span class="lbl">· passt noch:</span>${(fits=>fits.length
-              ? fits.map(z=>`<button type="button" class="pkfit" data-pkfit="${z.ref}" data-gkey="${g.key}" data-ti="${ti}" title="${num(z.L,0)} cm in den Rest dieses Bretts legen">+ ${num(z.L,0)}</button>`).join('')
-              : '<span class="lbl">– Rest zu klein</span>')(zeilen.filter(z=> ty.segs.reduce((s,l)=>s+l,0) + z.L + schRes <= ty.len))}</div>
+          <div class="eqf"><span class="lbl">${ty.segs.length?`je Brett ${kInfo} · ${rest>0?'Rest '+num(rest,0)+' cm':'kein Rest'}`:'Bestellmaß von rechts hierher ziehen (oder anklicken)'}</span>
+            ${ty.teil?`<button type="button" class="ghost pkvoll" data-pkvoll data-gkey="${g.key}" data-ti="${ti}" title="Teilpaket zum vollen Paket aufrunden">⤒ voll</button>`:''}</div>
         </div>`;
-      });
-      const side = `<div class="pkside">
-        <div class="pksl">Vorratslängen</div>
-        ${SCH_STD.map(Len=>`<button type="button" class="pkslen" data-pblen="${Len}" data-gkey="${g.key}" title="Klick oder in die Fläche ziehen: neues Lieferpaket ${num(Len/100,2)} m">${num(Len/100,2)} m${zeilen.length===1?` <span class="lbl">${schPakK(Len,zeilen[0].L)>=1?schPakK(Len,zeilen[0].L)+' × '+num(zeilen[0].L,0):'passt nicht'}</span>`:''}</button>`).join('')}
-        <div class="pksl">Bestellmaße</div>
-        ${zeilen.map(z=>`<button type="button" class="pkchip" data-pbchip="${z.ref}" data-gkey="${g.key}" title="Klick oder auf ein Paket ziehen: ${num(z.L,0)} cm ins Brett legen">${num(z.L,0)} cm <span class="lbl">${z.cov>=z.need?'gedeckt':num(Math.ceil((z.need-z.cov)/z.S),0)+' Pak. offen'}</span></button>`).join('')}
-        <div class="pksh">Länge anklicken oder <b>in die Fläche ziehen</b> = neues Paket · Bestellmaß anklicken/ziehen füllt das Brett · Anzahl je Paket über −/＋</div>
+      }).join('');
+      const rechts = zeilen.map(z=>{
+        const state = z.cov===z.need ? 'ok' : (z.cov<z.need ? 'open' : 'over');
+        const b = schPakBest(z.L);
+        return `<div class="pkbz2 ${state}" draggable="true" data-pbchip="${z.ref}" data-gkey="${g.key}" title="In ein Paket in der Mitte ziehen – oder Paket anklicken und dann hier klicken">
+          <div class="hd"><span class="pkdot2"></span><b>${num(z.L/100,2)} m</b><span class="lbl">· ${num(z.S,0)} Stk je Paket</span></div>
+          <div class="cnt"><b>${num(Math.floor(z.cov/z.S),0)} / ${num(z.B,0)}</b> Paketen verwendet${z.cov>z.need?` · <span class="ov">+${num(z.cov-z.need,0)} Stk</span>`:''}</div>
+          <div class="pbar"><span style="width:${Math.min(100, z.need?z.cov/z.need*100:0).toFixed(1)}%"></span></div>
+          ${state==='open'?`<div class="acts"><button type="button" class="ghost pkvoll" data-pkteil data-gkey="${g.key}" data-zref="${z.ref}">Teilpaket${b?' '+num(Math.ceil((z.need-z.cov)/b.k),0)+' Stk':''}</button><button type="button" class="ghost pkvoll" data-pkauf data-gkey="${g.key}" data-zref="${z.ref}">aufrunden</button></div>`:''}
+        </div>`;
+      }).join('');
+      html += `<div class="pkb3">
+        <div class="pkbL"><div class="pksl">Vorratslängen</div>
+          ${SCH_STD.map(Len=>`<button type="button" class="pkslen" data-pblen="${Len}" data-gkey="${g.key}" title="Klick oder in die Mitte ziehen: neues leeres Paket ${num(Len/100,2)} m">${num(Len/100,2)} m</button>`).join('')}
+          <div class="pksl">Freie Länge (cm, bis 500)</div>
+          <div class="pkfrei"><input type="text" inputmode="decimal" class="pkfreiinp" data-gkey="${g.key}" placeholder="z. B. 420"><button type="button" class="pkslen pkfreigo" data-gkey="${g.key}" title="Leeres Paket mit dieser Länge anlegen">＋</button></div>
+        </div>
+        <div class="pkbM" data-pkmid="${g.key}">${bCards}
+          <div class="pknew2">＋ Vorratslänge von links hierher ziehen (oder anklicken) – dann Bestellmaße von rechts ins Brett, Anzahl mit −/＋ hochschrauben</div></div>
+        <div class="pkbR"><div class="pksl">Bestellmaße</div>${rechts}</div>
       </div>`;
-      html += `<div class="pkbuild"><div class="pkmain" data-pkdrop="${g.key}">${cards}
-        <div class="pknew">＋ Länge rechts anklicken oder hierher ziehen – neues Lieferpaket</div></div>${side}</div>`;
+      return;
+    }
+    // grüne Lieferpaket-Karte: Stepper, Längenwahl, Brettgrafik, passt-noch-Chips
+    const lieferCard = (ty, ti)=>{
+      const nav = schPakNav.length; schPakNav.push({t:'type', gkey:g.key, ti});
+      const kombi = new Set(ty.segs).size>1;
+      const segsum = ty.segs.reduce((s,l)=>s+l,0);
+      const rest = Math.max(0, ty.len - segsum);
+      const kInfo = [...new Set(ty.segs)].sort((a,b)=>b-a).map(l=>`${ty.segs.filter(x=>x===l).length} × ${num(l,0)}`).join(' + ');
+      const lenOpts = kombi ? SCH_STD.filter(L=> segsum+schRes<=L) : SCH_STD.filter(L=> schPakK(L, ty.segs[0]||1)>=1);
+      const fits = zeilen.filter(z=> segsum + z.L + schRes <= ty.len);
+      return `<div class="eqpak ${kombi?'kombi':''} ${schPakIdx===nav?'sel':''}" data-pknav="${nav}" data-gkey="${g.key}" data-ti="${ti}">
+        <div class="eqh">
+          <span class="pkstep"><button type="button" class="schar" data-pkts="-1" data-gkey="${g.key}" data-ti="${ti}">−</button><b>×${num(ty.anz,0)}</b><button type="button" class="schar" data-pkts="1" data-gkey="${g.key}" data-ti="${ti}">＋</button></span>
+          <select class="eqlen" data-gkey="${g.key}" data-ti="${ti}" title="Brettlänge wählen – das Muster rechnet sich um">${lenOpts.map(L=>`<option value="${L}"${L===ty.len?' selected':''}>${num(L/100,2)} m</option>`).join('')}</select>
+          <span class="lbl">${ty.teil?`Teilpaket · ${num(ty.bretter,0)} Stk`:`${num(ty.bretter,0)} Stk`}${kombi?' · Kombi':''}</span>
+          <button type="button" class="mx" data-pkdel data-gkey="${g.key}" data-ti="${ti}" title="Lieferpaket entfernen (Entf)">✕</button>
+        </div>
+        ${schPakBar(ty, true)}
+        <div class="eqf"><span class="lbl">je Brett ${kInfo||'–'} · ${rest>0?'Rest '+num(rest,0)+' cm':'kein Rest'}</span>
+          ${ty.teil?`<button type="button" class="ghost pkvoll" data-pkvoll data-gkey="${g.key}" data-ti="${ti}" title="Teilpaket zum vollen Paket aufrunden – der Überhang wird mitgeliefert und berechnet">⤒ voll</button>`:''}
+          ${fits.length?`<span class="lbl">· passt noch:</span>${fits.map(z=>`<button type="button" class="pkfit" data-pkfit="${z.ref}" data-gkey="${g.key}" data-ti="${ti}" title="${num(z.L,0)} cm in den Rest legen (Kombi)">+ ${num(z.L,0)}</button>`).join('')}`:''}
+        </div>
+      </div>`;
+    };
+    // je Bestellzeile eine Gleichungszeile (Pakete mit Anzahl 0 werden nie gezeigt)
+    const kombiTypes = plan.types.map((ty,ti)=>({ty,ti})).filter(x=> x.ty.anz>0 && new Set(x.ty.segs).size>1);
+    zeilen.forEach(z=>{
+      const own = plan.types.map((ty,ti)=>({ty,ti})).filter(x=> x.ty.anz>0 && x.ty.segs.length && x.ty.segs.every(l=>l===z.L));
+      const via = kombiTypes.filter(x=> x.ty.segs.includes(z.L));
+      const state = z.cov===z.need ? 'ok' : (z.cov<z.need ? 'open' : 'over');
+      const missPak = Math.ceil(Math.max(0, z.need-z.cov)/z.S);
+      const overStk = Math.max(0, z.cov-z.need);
+      const b = schPakBest(z.L);
+      html += `<div class="eqrow ${state}" data-eqdrop="${z.ref}" data-gkey="${g.key}">
+        <span class="eqbest">${pakBestellSVG(z.L)}<div class="lbl"><b>×${num(z.B,0)} bestellt</b><br>${num(z.L/100,2)} m · ${num(z.S,0)} Stk je Paket</div></span>
+        <span class="eqeq">=</span>
+        <span class="eqliste">
+          ${own.map(x=> lieferCard(x.ty, x.ti)).join('')}
+          ${via.map(x=>`<span class="eqref" title="Dieses Maß wird über ein Kombi-Paket mitgeliefert (siehe Kombi-Zeile unten)">über Kombi: ×${num(x.ty.anz,0)} · ${num(x.ty.len/100,2)} m</span>`).join('')}
+          ${state==='open' ? `<span class="eqmiss">×${num(missPak,0)} ${missPak===1?'fehlt':'fehlen'}<div class="btns">
+              <button type="button" class="ghost pkvoll" data-pkteil data-gkey="${g.key}" data-zref="${z.ref}">Teilpaket${b?' '+num(Math.ceil((z.need-z.cov)/b.k),0)+' Stk':''}</button>
+              <button type="button" class="ghost pkvoll" data-pkauf data-gkey="${g.key}" data-zref="${z.ref}">aufrunden</button></div></span>` : ''}
+          ${overStk>0 ? `<span class="eqover">×${num(Math.ceil(overStk/z.S),0)} zu viel<div class="lbl">+${num(overStk,0)} Stk über Bestellung –<br>wird mitgeliefert und berechnet</div></span>` : ''}
+          <button type="button" class="eqadd" data-eqadd="${z.ref}" data-gkey="${g.key}" title="Weitere Lieferlänge für dieses Bestellmaß">＋ Länge</button>
+        </span>
+        <span class="eqstat ${state}">${state==='ok'?'✓ ':''}${num(Math.floor(z.cov/z.S),0)} / ${num(z.B,0)}</span>
+      </div>`;
+    });
+    // Kombi-Pakete decken mehrere Bestellzeilen → eigener Block
+    if(kombiTypes.length){
+      html += `<div class="eqrow kombirow">
+        <span class="eqbest"><div class="lbl" style="text-align:center"><b>Kombi-Pakete</b><br>decken mehrere Maße gleichzeitig</div></span>
+        <span class="eqeq">=</span>
+        <span class="eqliste">${kombiTypes.map(x=> lieferCard(x.ty, x.ti)).join('')}</span>
+        <span class="eqstat"></span>
+      </div>`;
     }
   });
   if(schPakIdx >= schPakNav.length) schPakIdx = Math.max(0, schPakNav.length-1);
@@ -3081,49 +3150,79 @@ function renderSchnittPak(){
   wire('[data-pkvoll]',b=> schPakVoll(b.dataset.gkey, +b.dataset.ti));
   wire('[data-pkteil]',b=> schPakTeil(b.dataset.gkey, +b.dataset.zref));
   wire('[data-pkauf]', b=> schPakAuf(b.dataset.gkey, +b.dataset.zref));
-  wire('[data-pblen]', b=> schPakAddType(b.dataset.gkey, +b.dataset.pblen));
-  wire('[data-pbchip]',b=> schPakChip(b.dataset.gkey, +b.dataset.pbchip));
-  wire('[data-pkfit]', b=>{ schPakActive={gkey:b.dataset.gkey, ti:+b.dataset.ti}; schPakChip(b.dataset.gkey, +b.dataset.pkfit); });
-  el('schGroups').querySelectorAll('.pkcard').forEach(card=>{
-    card.onclick = ()=>{ schPakActive={gkey:card.dataset.gkey, ti:+card.dataset.ti}; schPakIdx=+card.dataset.pknav; renderSchnitt(); };
-    card.querySelectorAll('.pkseg').forEach(sg=> sg.onclick=e=>{ e.stopPropagation(); schPakDelSeg(card.dataset.gkey, +card.dataset.ti, +sg.dataset.si); });
-    // Bestellmaß-Chip direkt auf ein Paket ziehen → Segment landet in DIESEM Brett
-    card.addEventListener('dragover', e=>{ if(schPakDrag && schPakDrag.t==='chip' && schPakDrag.gkey===card.dataset.gkey){ e.preventDefault(); card.classList.add('dropsel'); } });
-    card.addEventListener('dragleave', ()=> card.classList.remove('dropsel'));
-    card.addEventListener('drop', e=>{ e.preventDefault(); card.classList.remove('dropsel');
-      const d=schPakDrag; schPakDrag=null;
-      if(d && d.t==='chip'){ schPakActive={gkey:card.dataset.gkey, ti:+card.dataset.ti}; schPakChip(card.dataset.gkey, d.zref); }
-    });
+  wire('[data-eqadd]', b=> schPakAddLen(b.dataset.gkey, +b.dataset.eqadd));
+  wire('[data-pblen]', b=> schPakAddEmpty(b.dataset.gkey, +b.dataset.pblen));
+  // Freie Länge (cm, bis 5,00 m) per Hand anlegen
+  el('schGroups').querySelectorAll('.pkfreigo').forEach(b=> b.onclick=e=>{
+    e.stopPropagation();
+    const inp = b.parentElement.querySelector('.pkfreiinp');
+    const L = Math.round(numParse(inp.value)||0);
+    if(!(L>0 && L<=SCH_MAX)){ inp.classList.remove('schrej'); void inp.offsetWidth; inp.classList.add('schrej'); return; }
+    schPakAddEmpty(b.dataset.gkey, L);
   });
-  // Drag & Drop aus der Sidebar: Länge → Fläche = neues Lieferpaket
+  el('schGroups').querySelectorAll('.pkfreiinp').forEach(inp=>{
+    inp.onkeydown = e=>{ e.stopPropagation(); if(e.key==='Enter'){ e.preventDefault(); inp.parentElement.querySelector('.pkfreigo').click(); } };
+    inp.onclick = e=> e.stopPropagation();
+  });
+  wire('[data-pkfit]', b=>{ schPakActive={gkey:b.dataset.gkey, ti:+b.dataset.ti}; schPakChip(b.dataset.gkey, +b.dataset.pkfit); });
+  // Bestellmaß-Chip (Sidebar): legt das Maß ins AUSGEWÄHLTE grüne Paket (Mischen)
+  wire('[data-pbchip]', b=>{
+    const it = schPakNav[schPakIdx];
+    if(!it || it.t!=='type' || it.gkey!==b.dataset.gkey){
+      b.classList.remove('schrej'); void b.offsetWidth; b.classList.add('schrej');   // erst ein Paket anklicken
+      return;
+    }
+    schPakActive={gkey:it.gkey, ti:it.ti};
+    schPakChip(it.gkey, +b.dataset.pbchip);
+  });
+  el('schGroups').querySelectorAll('.eqlen').forEach(s=>{
+    s.onclick = e=> e.stopPropagation();
+    s.onchange = ()=> schPakSetLen(s.dataset.gkey, +s.dataset.ti, +s.value);
+  });
+  el('schGroups').querySelectorAll('.eqpak').forEach(card=>{
+    card.addEventListener('click', ()=>{ schPakIdx=+card.dataset.pknav; renderSchnitt(); });
+    card.querySelectorAll('.pkseg').forEach(sg=> sg.onclick=e=>{ e.stopPropagation(); schPakDelSeg(card.dataset.gkey, +card.dataset.ti, +sg.dataset.si); });
+  });
+  // Drag & Drop: Vorratslänge → Mitte (neues leeres Paket) bzw. auf eine Gleichungszeile;
+  // Bestellmaß-Karte (rechts) → auf ein grünes Paket (Maß landet in dessen Brett)
   el('schGroups').querySelectorAll('[data-pblen]').forEach(b=>{
     b.draggable = true;
-    b.addEventListener('dragstart', e=>{ schPakDrag={t:'len', gkey:b.dataset.gkey, len:+b.dataset.pblen};
+    b.addEventListener('dragstart', e=>{ schPakDrag={t:'len', len:+b.dataset.pblen};
       e.dataTransfer.effectAllowed='copy'; try{ e.dataTransfer.setData('text/plain', b.textContent); }catch(_){ } });
     b.addEventListener('dragend', ()=>{ schPakDrag=null; });
   });
   el('schGroups').querySelectorAll('[data-pbchip]').forEach(b=>{
-    b.draggable = true;
+    if(!b.draggable) return;
     b.addEventListener('dragstart', e=>{ schPakDrag={t:'chip', gkey:b.dataset.gkey, zref:+b.dataset.pbchip};
       e.dataTransfer.effectAllowed='copy'; try{ e.dataTransfer.setData('text/plain', b.textContent); }catch(_){ } });
     b.addEventListener('dragend', ()=>{ schPakDrag=null; });
   });
-  el('schGroups').querySelectorAll('[data-pkdrop]').forEach(m=>{
-    m.addEventListener('dragover', e=>{ if(schPakDrag && schPakDrag.t==='len' && schPakDrag.gkey===m.dataset.pkdrop){ e.preventDefault(); m.classList.add('dropsel'); } });
+  el('schGroups').querySelectorAll('[data-pkmid]').forEach(m=>{
+    m.addEventListener('dragover', e=>{ if(schPakDrag && schPakDrag.t==='len'){ e.preventDefault(); m.classList.add('dropsel'); } });
     m.addEventListener('dragleave', e=>{ if(e.target===m) m.classList.remove('dropsel'); });
     m.addEventListener('drop', e=>{ e.preventDefault(); m.classList.remove('dropsel');
       const d=schPakDrag; schPakDrag=null;
-      if(d && d.t==='len') schPakAddType(d.gkey, d.len);
+      if(d && d.t==='len') schPakAddEmpty(m.dataset.pkmid, d.len);
     });
   });
-  el('schGroups').querySelectorAll('[data-pknav]').forEach(r=>{
-    if(r.classList.contains('pkcard')) return;
-    r.addEventListener('click', ()=>{ schPakIdx=+r.dataset.pknav; renderSchnitt(); });
+  el('schGroups').querySelectorAll('.bpak').forEach(card=>{
+    card.addEventListener('dragover', e=>{ if(schPakDrag && schPakDrag.t==='chip' && schPakDrag.gkey===card.dataset.gkey){ e.preventDefault(); e.stopPropagation(); card.classList.add('dropsel'); } });
+    card.addEventListener('dragleave', ()=> card.classList.remove('dropsel'));
+    card.addEventListener('drop', e=>{ e.preventDefault(); e.stopPropagation(); card.classList.remove('dropsel');
+      const d=schPakDrag; schPakDrag=null;
+      if(d && d.t==='chip'){ schPakActive={gkey:card.dataset.gkey, ti:+card.dataset.ti}; schPakChip(card.dataset.gkey, d.zref); }
+    });
+  });
+  el('schGroups').querySelectorAll('[data-eqdrop]').forEach(r=>{
+    r.addEventListener('dragover', e=>{ if(schPakDrag && schPakDrag.t==='len'){ e.preventDefault(); r.classList.add('dropsel'); } });
+    r.addEventListener('dragleave', e=>{ if(e.target===r) r.classList.remove('dropsel'); });
+    r.addEventListener('drop', e=>{ e.preventDefault(); r.classList.remove('dropsel');
+      const d=schPakDrag; schPakDrag=null;
+      if(d && d.t==='len') schPakAddLen(r.dataset.gkey, +r.dataset.eqdrop, d.len);
+    });
   });
 
-  // Kennzahlen: Lieferpakete + die vertrauten Kacheln
-  const st = schnittStats(sch);
-  const pakCount = sch.groups.reduce((s,g)=> s + ((sch.pak&&sch.pak[g.key])?sch.pak[g.key].types.reduce((x,t)=>x+(t.anz||0),0):0), 0);
+  // Kennzahlen
   const ordered = draft.measures.reduce((s,m)=>s+(m.vol||0),0);
   el('schStats').innerHTML = `
     <div class="schstat"><div class="k">Lieferpakete</div><div class="v">${num(pakCount,0)}</div><div class="s">feste Stückzahl je Paket</div></div>
@@ -3134,12 +3233,10 @@ function renderSchnittPak(){
       <div class="schmeter"><span class="use" style="width:${Math.max(0,100-st.pct).toFixed(1)}%"></span><span class="lost" style="width:${Math.min(100,st.pct).toFixed(1)}%"></span></div>
       <div class="s">Ausnutzung ${num(100-st.pct,1)} %</div></div>`;
 
-  el('schHint').innerHTML = schPakView==='bauen'
-    ? `<b>📦 Baukasten:</b> Länge rechts anklicken oder <b>in die Fläche ziehen</b> = neues Lieferpaket (feste Paketstückzahl). Bestellmaß-Chips füllen das aktive Brett – auch <b>gemischt</b> (Kombi). Segment-Klick entfernt einen Schnitt, −/＋ zählt Pakete, ✕ löscht das Paket. Die Ampel oben zeigt live die Deckung.`
-    : `<b>📦 Paket-Aufteilung:</b> geliefert werden <b>ganze Pakete je Länge</b> mit der festen Paketstückzahl – ein Paket 3,00 m deckt z. B. 3 Bestellpakete à 1,00 m. Karte <kbd>1</kbd> = wenigster Verschnitt, <kbd>2</kbd> = wenigste Pakete, <kbd>3</kbd> = <b>Mischen</b> (verschiedene Maße in einem Brett, z. B. 1,98 + 1,02 auf 3,00 m), <kbd>4</kbd> = <b>Baukasten</b> zum Selbstbauen. Unten steht nur das <b>Ergebnis</b> – angepasst wird im Baukasten. Bleibt etwas offen: <b>Teilpaket</b> (exakt) oder <b>Aufrunden</b> (volles Paket) direkt in der Ampelzeile; beim Übernehmen wird Offenes automatisch als Teilpaket geschlossen.`;
-  el('schKeys').innerHTML = schPakView==='bauen'
-    ? `<span><kbd>1</kbd>–<kbd>3</kbd> Karten</span><span><kbd>↑</kbd><kbd>↓</kbd> Paket</span><span><kbd>+</kbd><kbd>−</kbd> Anzahl</span><span><kbd>Entf</kbd> Paket weg</span><span><kbd>Esc</kbd> ${editMode?'speichern':'übernehmen → Preis'}</span>`
-    : `<span><kbd>1</kbd> Verschnitt</span><span><kbd>2</kbd> Pakete</span><span><kbd>3</kbd> Mischen</span><span><kbd>4</kbd> Baukasten</span><span><kbd>A</kbd> neu rechnen</span><span><kbd>Esc</kbd> ${editMode?'speichern':'übernehmen → Preis'}</span>`;
+  el('schHint').innerHTML = bauen
+    ? `<b>📦 Baukasten:</b> <b>Vorratslänge links</b> anklicken oder <b>in die Mitte ziehen</b> (freie Länge bis 5,00 m per Hand) → leeres Paket. Dann <b>Bestellmaße von rechts</b> auf das Paket ziehen (oder Paket anklicken + Bestellmaß klicken) – auch mehrere = <b>Kombi</b>. <b>Anzahl mit −/＋ hochschrauben</b>, bis die Ampel rechts voll ist („x / y Paketen verwendet"). Segment-Klick im Brett entfernt einen Schnitt.`
+    : `<b>📦 Paket-Gleichung:</b> links das <b>braune Bestellpaket</b>, rechts die <b>grünen Lieferpakete</b> (Stepper ×n, Brettlänge, Brettgrafik). <b>Gelb gestrichelt = fehlt</b> (Teilpaket oder aufrunden direkt im Kasten), <b>rot = zu viel</b> (wird mitgeliefert und berechnet). „＋ Länge" splittet auf mehrere Lieferlängen, die „passt noch"-Chips legen ein zweites Maß mit ins Brett (Kombi).`;
+  el('schKeys').innerHTML = `<span><kbd>1</kbd> Verschnitt</span><span><kbd>2</kbd> Mischen</span><span><kbd>3</kbd> Baukasten</span><span><kbd>↑</kbd><kbd>↓</kbd> Paket</span><span><kbd>+</kbd><kbd>−</kbd> Anzahl</span><span><kbd>Entf</kbd> Paket weg</span><span><kbd>A</kbd> neu rechnen</span><span><kbd>Esc</kbd> ${editMode?'speichern':'übernehmen → Preis'}</span>`;
 }
 // Ein Maß auf ein anderes Brett (oder ein neues) verschieben – per Tastatur (M),
 // Klick oder Drag & Drop (srcInfo). Leergeräumte Bretter verschwinden automatisch.
@@ -3212,7 +3309,7 @@ function schSetMode(k){
 // wird der Einheitlich-Vorschlag gerechnet, die Handarbeit bleibt über Karte 4 erhalten)
 function schAutoNew(){
   const sch = draft.schnitt;
-  if(schPakMode()){ schPakVorschlag(['v1','v2','mix'].includes(sch.pakSel)?sch.pakSel:'v1'); return; }   // Paket-Positionen: aktive Karte neu rechnen
+  if(schPakMode()){ schPakVorschlag(['v1','mix'].includes(sch.pakSel)?sch.pakSel:'v1'); return; }   // Paket-Positionen: aktive Karte neu rechnen
   if(sch.strat==='custom') schProps.custom = JSON.parse(JSON.stringify(sch));
   draft.schnitt = schnittAuto(draft, sch.strat==='custom' ? 'uni' : sch.strat);
   schIdx=0; schMove=null; renderSchnitt();
@@ -4317,8 +4414,8 @@ document.addEventListener('keydown', e=>{
     }
     if(schPakMode()){                              // Paket-Aufteilung: eigene Tastenbelegung
       if(e.key==='Escape'||e.key==='Enter'){ e.preventDefault(); schnittDone(); return; }
-      if(e.key==='1'||e.key==='2'||e.key==='3'){ e.preventDefault(); schPakView='tabelle'; schPakVorschlag({'1':'v1','2':'v2','3':'mix'}[e.key]); return; }
-      if(e.key==='4'){ e.preventDefault(); if(schPakView!=='bauen') schPakOpenBauen(); return; }
+      if(e.key==='1'||e.key==='2'){ e.preventDefault(); schPakView='tabelle'; schPakVorschlag(e.key==='1'?'v1':'mix'); return; }
+      if(e.key==='3'){ e.preventDefault(); if(schPakView!=='bauen') schPakOpenBauen(); return; }
       if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault();
         if(schPakNav.length){ schPakIdx=Math.max(0, Math.min(schPakNav.length-1, schPakIdx+(e.key==='ArrowDown'?1:-1))); renderSchnitt(); } return; }
       if(e.key==='+'||e.key==='-'){ e.preventDefault();
@@ -4773,7 +4870,7 @@ const TOUR = [
   { target:'#schGroups', title:'Schnitt · Bilanzzeilen & Schnittbilder',
     body:`Jeder Querschnitt ist eine <b>Bilanzzeile</b>: Lieferlängen im Klartext, Mini-Balken und Rest-% als Ampel. Bei großen Bestellungen bleibt so alles auf einen Blick – aufgeklappt wird nur, wo man eingreift (Klick, <kbd>Leertaste</kbd> oder <kbd>←</kbd><kbd>→</kbd>; die Gruppe mit dem meisten Verschnitt öffnet automatisch).<br><br>Darin die <b>Bretter als Balken</b>: Kundenmaße als Segmente, Rest schraffiert – optional mit <b>einstellbarer Sägeblatt-Reserve</b> je geteiltem Brett (Default 0 cm, Feld oben im Modal). <kbd>↑</kbd><kbd>↓</kbd> wählt, <kbd>←</kbd><kbd>→</kbd>/‹ › ändern die Vorratslänge, 🔒 = fest.` },
   { target:'.schrow.schnew', title:'Schnitt · Drag & Drop 🖱️',
-    body:`Das Beste: <b>Maße einfach ziehen!</b> Ein Maß mit der Maus anfassen und auf ein anderes Brett fallen lassen – beim Drüberhalten zeigt ein <b>Ghost-Segment</b> live, wie viel Platz es einnehmen würde. Passt es nicht (Reserve!), nimmt das Brett es gar nicht erst an.<br><br>Diese Zeile hier fügt per Klick (oder <kbd>N</kbd>) ein <b>leeres Brett</b> ein – Länge wählen, Maße hineinziehen. <b>Leergeräumte Bretter verschwinden automatisch.</b> Tastatur-Weg: <kbd>M</kbd> = verschieben.<br><br>📦 <b>Paket-Positionen rechnen in ganzen Paketen:</b> dort ersetzt die <b>Paket-Aufteilung</b> diese Werkbank – geliefert werden n Pakete je Länge mit der festen Paketstückzahl (ein 3,00-m-Paket deckt z. B. 3 Bestellpakete à 1,00 m). Vier Karten: <kbd>1</kbd> wenigster Verschnitt, <kbd>2</kbd> wenigste Pakete, <kbd>3</kbd> <b>Mischen</b> (Kombi-Pakete, z. B. 1,98 + 1,02 auf 3,00 m), <kbd>4</kbd> <b>Baukasten</b> – leere Fläche, Längen von rechts hineinziehen. Die <b>Ampel</b> oben zeigt die Deckung; geht sie nicht auf: <b>Teilpaket</b> (exakt) oder <b>aufrunden</b> (volles Paket).` },
+    body:`Das Beste: <b>Maße einfach ziehen!</b> Ein Maß mit der Maus anfassen und auf ein anderes Brett fallen lassen – beim Drüberhalten zeigt ein <b>Ghost-Segment</b> live, wie viel Platz es einnehmen würde. Passt es nicht (Reserve!), nimmt das Brett es gar nicht erst an.<br><br>Diese Zeile hier fügt per Klick (oder <kbd>N</kbd>) ein <b>leeres Brett</b> ein – Länge wählen, Maße hineinziehen. <b>Leergeräumte Bretter verschwinden automatisch.</b> Tastatur-Weg: <kbd>M</kbd> = verschieben.<br><br>📦 <b>Paket-Positionen rechnen in ganzen Paketen:</b> dort ersetzt die <b>Paket-Aufteilung</b> diese Werkbank – geliefert werden n Pakete je Länge mit der festen Paketstückzahl (ein 3,00-m-Paket deckt z. B. 3 Bestellpakete à 1,00 m). Drei Karten: <kbd>1</kbd> wenigster Verschnitt, <kbd>2</kbd> <b>Mischen</b> (Kombi-Pakete, z. B. 1,98 + 1,02 auf 3,00 m), <kbd>3</kbd> <b>Baukasten</b> – Vorratslängen links (auch freie Länge bis 5,00 m), Pakete in der Mitte, rechts die Bestellmaße mit <b>Ampel</b> („x / y Paketen verwendet"). Geht die Deckung nicht auf: <b>Teilpaket</b> (exakt) oder <b>aufrunden</b> (volles Paket).` },
   { target:'#schStats', title:'Schnitt · Kennzahlen live',
     body:`Bei jedem Eingriff siehst du sofort: <b>Bretter, verschiedene Längen, cbm berechnet vs. bestellt, Rest/Verschnitt in %</b>. So erkennt man direkt, ob eine Handänderung besser oder schlechter ist.<br><br><kbd>A</kbd> rechnet automatisch neu, <kbd>Esc</kbd> übernimmt → weiter zum Preis.` },
 
