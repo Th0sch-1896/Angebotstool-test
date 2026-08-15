@@ -269,15 +269,22 @@
   /* Position = das markante Element: KEINE Box (kam nicht an), stattdessen fett und etwas größer */
   .sheet .appos { margin: 10px 0 2px; }
   .sheet .appos.first { margin-top: 3px; }
-  /* gleiche Größe/Stärke wie der Gesamtbetrag (.docsum .r.grand: 0.76rem, fett) */
-  .sheet .ap-head { display: flex; gap: 8px; align-items: baseline; font-size: 0.76rem; flex-wrap: wrap; font-weight: 700; }
+  /* Seit der vollen Artikelbezeichnung (15.08.2026) bewusst kleiner als der Gesamtbetrag –
+     die langen Texte („Schnittholz Fichte/Tanne sägerauh") wirkten sonst zu wuchtig */
+  .sheet .ap-head { display: flex; gap: 8px; align-items: baseline; font-size: 0.64rem; flex-wrap: wrap; font-weight: 700; }
   .sheet .ap-head .ap-nr { font-weight: 700; }
-  .sheet .ap-head .ap-sub { color: var(--ink-2); font-size: 0.6rem; font-weight: 400; }
-  .sheet .ap-price { margin-left: auto; font-size: 0.62rem; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink-2); font-weight: 400; }
-  .sheet .ap-price b { font-size: 0.76rem; color: var(--ink); font-weight: 700; }
+  /* Holzart/Qualität stehen NICHT mehr im Kopf (15.08.2026: „Der Kunde sieht nur die Bezeichnung") */
+  .sheet .ap-price { margin-left: auto; font-size: 0.6rem; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink-2); font-weight: 400; }
+  .sheet .ap-price b { font-size: 0.66rem; color: var(--ink); font-weight: 700; }
   .sheet .ap-zus { font-size: 0.56rem; color: var(--ink-2); font-style: italic; margin: 1px 0 0 14px; }
   .sheet .ap-meas { font-size: 0.6rem; color: var(--ink-2); display: grid; gap: 1px; margin: 3px 0 1px 14px; font-variant-numeric: tabular-nums; }
   .sheet .ap-meas b { color: var(--ink); font-weight: 600; }
+  .sheet .ap-frei { font-size: 0.6rem; font-style: italic; color: var(--ink-2); white-space: pre-wrap; margin: 2px 0 1px 14px; font-weight: 400; }
+  /* Freitext je Position: immer sichtbare Box direkt unter dem Positionskopf – reinklicken
+     und lostippen, Übernahme beim Verlassen (blur) bzw. Strg+Enter */
+  .posblock .freibox { width: 100%; font: inherit; font-size: 0.8rem; font-style: italic; color: var(--ink); padding: 6px 10px; border: 1px dashed var(--line); border-radius: 8px; background: var(--panel); resize: none; overflow: hidden; margin: 0 0 10px; min-height: 32px; display: block; }
+  .posblock .freibox::placeholder { color: var(--ink-2); font-style: italic; }
+  .posblock .freibox:focus { border-style: solid; border-color: var(--accent); outline: none; }
   /* Zuschnittplan im Kunden-PDF: grüner Kopf, Balkengrafik wie im Werksauftrag (wsrow/wsseg).
      Auf .sheet gescopet (nicht auf .zplan): paginateA4 löst den data-split-Container beim
      Seitenumbruch in seine Kinder auf – Kopf und Legende müssen auch dann gestylt bleiben. */
@@ -1336,7 +1343,8 @@ function schuettSVG(m){
 function festOf(c){
   return (c.fest||[]).map(name=>{
     const a = D.cat.find(x=>x.a===name);
-    return { code:'FEST', label:(a?a.a:name), price:(a&&a.std)||0, fest:true };
+    // lang = volle Artikelbezeichnung fürs Kunden-PDF (intern bleibt die Kurzbezeichnung)
+    return { code:'FEST', label:(a?a.a:name), lang:(a&&a.lang)||'', price:(a&&a.std)||0, fest:true };
   });
 }
 // Fakturier-Einheit des Stamms → Berechnungseinheit der Position
@@ -1363,7 +1371,7 @@ function chooseArtikel(){
       onConfirm:(v)=>{ draft.woodPrice=v; saveEdit(); } });
     return;
   }
-  draft = { cat:c, measures:[], woodPrice:null, surcharges:festOf(c), beinh:beinhOfCat(c) };
+  draft = { cat:c, measures:[], woodPrice:null, surcharges:festOf(c), beinh:beinhOfCat(c), freitext:'' };
   openAufmass();
 }
 
@@ -3713,6 +3721,9 @@ function editSchnitt(i){
   if(!schnittSplittable(draft)){ cancelEdit(); return; }
   openSchnitt();
 }
+// Freitext je Position (15.08.2026): immer sichtbare Box direkt unter dem Positionskopf
+// (Kundenwunsch „direkt ne Box … unter den Header") – Wiring in renderPosList (.freibox),
+// Ausgabe kursiv im Angebots-PDF direkt unter der Positionszeile (.ap-frei).
 function tryCommitPending(){
   const m=readAuf(); m.stueck=stkOf(m);
   if(m.stueck>0 && m.laenge>0 && m.staerke>0 && m.breite>0){ m.vol=volOf(m); draft.measures.push(m); return true; }
@@ -3964,6 +3975,7 @@ function renderPosList(){
         <span class="spacer"></span><b>${eur(posSum(p))}</b>
         <button class="linkish" data-del="${i}" title="Position löschen">✕</button></div>
       <div class="body">
+        <textarea class="freibox" data-freibox="${i}" rows="1" title="Freitext zur Position – erscheint kursiv im Angebots-PDF direkt unter der Positionszeile. Übernahme beim Verlassen des Feldes oder mit Strg+Enter, Esc verwirft." placeholder="＋ Freitext zur Position – erscheint im Angebots-PDF (z. B. Lieferhinweis, Vereinbarung) …">${stEsc(p.freitext||'')}</textarea>
         <div class="gridlbl">Aufmaß <button class="menubtn" data-edit="auf" data-i="${i}" title="Aufmaß-Menü öffnen (neue Zeilen erfassen)">✎ Menü</button>
           ${(!p.schnitt && schnittSplittable(p))?`<button class="menubtn" data-edit="schnitt" data-i="${i}" title="Maße auf Volllängen aufteilen (Schnittaufteilung)">🪚 Schnittaufteilung</button>`:''}</div>
         <div class="gridwrap">${measTableUse}</div>
@@ -3988,6 +4000,18 @@ function renderPosList(){
     if(!p.measures.length) positions.splice(+b.dataset.i,1);
     else schnittRefresh(p);
     renderAll(); });
+  // Freitext-Box unter dem Positionskopf: direkt reintippen, Übernahme beim Verlassen
+  // (blur) bzw. Strg+Enter; Esc stellt den gespeicherten Text wieder her. Höhe wächst mit.
+  wrap.querySelectorAll('.freibox').forEach(ta=>{
+    const grow = ()=>{ ta.style.height='auto'; ta.style.height = ta.scrollHeight+'px'; };
+    grow(); ta.oninput = grow;
+    ta.onkeydown = ev=>{ ev.stopPropagation();
+      if(ev.key==='Enter' && (ev.ctrlKey||ev.metaKey)){ ev.preventDefault(); ta.blur(); }
+      if(ev.key==='Escape'){ ev.preventDefault(); const p=positions[+ta.dataset.freibox]; ta.value = (p&&p.freitext)||''; ta.blur(); } };
+    ta.onblur = ()=>{ const p = positions[+ta.dataset.freibox]; if(!p) return;
+      const v = ta.value.trim();
+      if(v !== (p.freitext||'')){ p.freitext = v; renderAll(); } else grow(); };
+  });
   wrap.querySelectorAll('select.beinhsel').forEach(s=> s.onchange=()=>{
     positions[+s.dataset.i].beinh = s.value; renderAll();
   });
@@ -4298,16 +4322,18 @@ function renderSheet(){
     const einzel = ((u==='cbm') ? eur2(ai) : eur2(bq>0 ? posSum(p)/bq : 0)) + '/' + BEINH_LABEL[u];
     const aufgeteilt = p.schnitt && p.schnitt.groups.length;
     let zus='';
-    p.surcharges.forEach((z,zi)=>{ zus += `<div class="ap-zus">Pos ${i+1}.${zi+1} · ${z.label} — im Preis enthalten</div>`; });
+    // Kundenverständlich: die volle Artikelbezeichnung des Zuschlag-Artikels, nicht die Kurzbezeichnung
+    p.surcharges.forEach((z,zi)=>{ zus += `<div class="ap-zus">Pos ${i+1}.${zi+1} · ${z.lang||z.label} — im Preis enthalten</div>`; });
     let meas='';
     if(!aufgeteilt && p.measures.length) meas = `<div class="ap-meas">${p.measures.map(m=>`<div>${measLine(m)}</div>`).join('')}</div>`;
     else if(aufgeteilt && pakRowsOf(p).length)   // Paket darf im Angebot nicht untergehen, auch wenn der Zuschnittplan die Maße zeigt
       meas = `<div class="ap-meas">${pakRowsOf(p).map(m=>`<div><b>Verpackung:</b> ${pakLine(m)}</div>`).join('')}</div>`;
+    // Im Kunden-PDF die volle ARTIKELBEZEICHNUNG („Schnittholz Fichte/Tanne sägerauh"),
+    // nicht die interne Kurzbezeichnung („SH FI/TA") – Kundenwunsch 15.08.2026
     blocks += `<div class="appos${i===0?' first':''}" data-split>
-      <div class="ap-head"><span class="ap-nr">Pos ${i+1}</span><b>${c.a}</b>
-        <span class="ap-sub">${[c.h?holzName(c.h):'',c.q?qualName(c.q):''].filter(Boolean).join(' · ')}</span>
+      <div class="ap-head"><span class="ap-nr">Pos ${i+1}</span><b>${c.lang||c.a}</b>
         <span class="ap-price">${menge} × ${einzel} = <b>${eur2(posSum(p))}</b></span></div>
-      ${zus}${meas}</div>`;
+      ${p.freitext?`<div class="ap-frei">${stEsc(p.freitext)}</div>`:''}${zus}${meas}</div>`;
     if(aufgeteilt) blocks += sheetZplan(p, i);      // Zuschnittplan direkt nach der Position
   });
   if(!positions.length) blocks = `<div style="text-align:center;color:var(--ink-2);padding:26px;font-size:0.68rem">Noch keine Positionen im Angebot</div>`;
@@ -4590,7 +4616,7 @@ function renderStDetail(){
     <h3>Stammdaten</h3>
     <div class="strow"><label>Artikel-Nr.</label><input value="${c.nr}" readonly title="Nummernkreis vergibt das ERP – im Mockup fortlaufend"></div>
     <div class="strow"><label>Kurzbezeichnung</label><input id="sd_a" value="${stEsc(c.a)}"></div>
-    <div class="strow"><label>Bezeichnung</label><input id="sd_lang" value="${stEsc(c.lang||'')}"></div>
+    <div class="strow"><label>Bezeichnung</label><input id="sd_lang" value="${stEsc(c.lang||'')}" title="volle Artikelbezeichnung – steht im Angebots-PDF als Positionstext"></div>
     <div class="strow"><label>Warengruppe</label><input value="${stEsc(b+' › '+w+' › '+u)}" readonly title="Warengruppe wechseln: im ERP per Auswahl – im Mockup fest"></div>
     <div class="strow"><label>Holzart</label><select id="sd_h"><option value="">– keine –</option>${selOpt(Object.keys(D.holz), c.h, k=>k+' – '+D.holz[k])}</select></div>
     <div class="strow"><label>Qualität</label><select id="sd_q"><option value="">– keine –</option>${selOpt(Object.keys(D.qual), c.q, k=>k+' – '+D.qual[k])}</select></div>
@@ -5053,7 +5079,8 @@ function angebotJSON(){
     positions: positions.map(p=>({
       catId: p.cat.id, artikel: p.cat.a + (p.cat.h?' '+p.cat.h:''),   // artikel = nur Lesbarkeit, maßgeblich ist catId
       woodPrice: p.woodPrice, beinh: p.beinh||'cbm', laengeBasis: p.laengeBasis||'prod',
-      surcharges: p.surcharges.map(s=>({code:s.code, label:s.label, price:s.price, ...(s.fest?{fest:true}:{})})),
+      ...(p.freitext?{freitext:p.freitext}:{}),
+      surcharges: p.surcharges.map(s=>({code:s.code, label:s.label, price:s.price, ...(s.fest?{fest:true}:{}), ...(s.lang?{lang:s.lang}:{})})),
       emMode: p.emMode, emV: {...(p.emV||EM_DEF)}, basis: p.basis, sort: {...(p.sort||{})},
       measures: p.measures.map(m=>({...m})),
       ...(p.schnitt ? {schnitt: JSON.parse(JSON.stringify(p.schnitt))} : {})
@@ -5077,7 +5104,8 @@ function applyAngebot(data){
     const cat = D.cat.find(c=>c.id===q.catId);
     if(!cat){ fehlt.push(q.artikel||q.catId); return; }
     const p = { cat, woodPrice:+q.woodPrice||0, beinh:q.beinh||'cbm', laengeBasis:q.laengeBasis||'prod',
-      surcharges:(q.surcharges||[]).map(s=>({code:s.code, label:s.label||zByCode(s.code).label, price:+s.price||0, ...(s.fest?{fest:true}:{})})),
+      freitext:(typeof q.freitext==='string'?q.freitext:''),
+      surcharges:(q.surcharges||[]).map(s=>({code:s.code, label:s.label||zByCode(s.code).label, price:+s.price||0, ...(s.fest?{fest:true}:{}), ...(s.lang?{lang:s.lang}:{})})),
       emMode:q.emMode, emV:q.emV, basis:q.basis, sort:(q.sort&&typeof q.sort==='object')?q.sort:{}, measures:[] };
     emDefaults(p);
     (q.measures||[]).forEach(r=>{
@@ -5232,7 +5260,7 @@ const TOUR = [
 
   // ── Nachträglich bearbeiten: wieder in die Dialoge kommen ──
   { target:'.posblock .edithint', title:'Bearbeiten · zwei Wege',
-    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen:<br><br>· <b>Wie in Excel:</b> jede weiße Zelle direkt überschreiben.<br>· <b>„✎ Menü":</b> öffnet den vollen Dialog wieder – bei Aufmaß, Holzpreis, jedem Zuschlag, den Zuschlägen gesamt und der Schnittaufteilung.<br>· <b>„⇄ Artikel"</b> im Positionskopf <b>tauscht nur den Artikel</b> (z. B. Lärche → Douglasie): alle Aufmaße, die Schnittaufteilung und die Zuschläge bleiben – nur der Preis wird neu gewählt, mit der Historie des neuen Artikels.` },
+    body:`Jede Position lässt sich später ändern, <b>ohne</b> alles neu zu erfassen:<br><br>· <b>Wie in Excel:</b> jede weiße Zelle direkt überschreiben.<br>· <b>„✎ Menü":</b> öffnet den vollen Dialog wieder – bei Aufmaß, Holzpreis, jedem Zuschlag, den Zuschlägen gesamt und der Schnittaufteilung.<br>· <b>„⇄ Artikel"</b> im Positionskopf <b>tauscht nur den Artikel</b> (z. B. Lärche → Douglasie): alle Aufmaße, die Schnittaufteilung und die Zuschläge bleiben – nur der Preis wird neu gewählt, mit der Historie des neuen Artikels.<br>· <b>Freitext-Box direkt unter dem Positionskopf:</b> reinklicken und lostippen (Lieferhinweis, Vereinbarung …) – erscheint <b>kursiv im Angebots-PDF</b> direkt unter der Positionszeile. Im Kunden-PDF steht übrigens immer die volle <b>Artikelbezeichnung</b>, nicht das interne Kürzel.` },
   { setup:()=>editPreisWood(0), target:'.histtable', title:'Bearbeiten · Dialog wieder öffnen',
     body:`Klick auf „✎ Menü" beim <b>Holzpreis</b> → dasselbe Preis-Menü mit Historie, oben der <b>aktuelle Preis</b> markiert. Ändern + <kbd>Enter</kbd> ersetzt die Position. Genauso: „✎ Menü" beim Aufmaß (neue Zeilen erfassen) und bei den Zuschlägen. <b>Zurück</b> verwirft die Änderung.` },
   { setup:()=>confirmPreis(), target:'.posblock [data-edit=\'schnitt\']', title:'Bearbeiten · Schnittaufteilung wieder öffnen',
